@@ -9,3 +9,6 @@ Ohjelmistuotanto syksy 2025
 ## Branchit
  - Branchit nimetään taskin tai user storyn mukaan
  - Kun definition of done kriteerity täyttyy muuten kuin branchin osalta, se mergetään main branchiin
+
+## Vaatimusmäärittely
+ - Book -tyyppinen viite, joka sisältää: title, author, year, ISBN, publisher
