@@ -1,5 +1,8 @@
-CREATE TABLE todos (
+CREATE TABLE citations (
   id SERIAL PRIMARY KEY, 
-  content TEXT NOT NULL,
-  done BOOLEAN DEFAULT FALSE
+  title TEXT NOT NULL,
+  authors TEXT,
+  year INT,
+  isbn TEXT,
+  publisher TEXT
 )
