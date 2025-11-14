@@ -1,0 +1,18 @@
+<h2>Muokkaa viitettä<h2>
+
+<form action="/edit/{{ reference.id }}" method="post">
+    <p>
+        Otsikko:<br />
+        <input type="text" name="title" value="{{ reference.title }}">
+    </p>
+    <p>
+        Kirjoittaja:<br />
+        <input type="text" name="author" value="{{ reference.author }}">
+    </p>
+    <p>
+        Vuosi:<br />
+        <input type="text" name="year" value="{{ reference.year }}">
+    </p>
+
+  <input type="submit" value="Tallenna muutokset" />
+</form>
