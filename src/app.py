@@ -1,6 +1,6 @@
 from flask import redirect, render_template, request, jsonify, flash
 from db_helper import reset_db
-from repositories.todo_repository import get_todos, create_todo, set_done
+from repositories.todo_repository import get_todos, create_todo, set_done, delete
 from config import app, test_env
 from util import validate_todo
 
@@ -37,3 +37,15 @@ if test_env:
     def reset_database():
         reset_db()
         return jsonify({ 'message': "db reset" })
+
+@app.route("/delete/<int:citations_id>", methods=["GET", "POST"]) #muokkaa lähde.id jos pitää
+def delete(citations_id):
+    citations = todo_repositorys.get_citations(citations_id) #oletus mistä lähde löytyy
+
+    if request.method == "GET":
+        return render_template("poisto.html", citations=citations)
+    
+    if request.method == "POST":
+        if "delete" in request.form:
+            todo_repository.delete(citations["id"])  #oletus miten lähde poistetaan, forum = todo_repository?
+        return redirect("/aloitussivu/" + str(citations["aloitussivu_id"])) #vaihda oletus aloittussivu/thread
