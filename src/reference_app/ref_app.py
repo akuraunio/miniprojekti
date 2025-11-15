@@ -1,22 +1,31 @@
 from flask import Flask, request, redirect, url_for, render_template
+from repositories.references_repository import get_references, add_new_reference
+
 
 app = Flask(__name__)
-references = []
 
-@app.route('/')
+
+@app.route("/")
 def index():
-    return render_template('index.html', references=references)
+    citations = get_references()
+    return render_template("index.html", citations=citations)
 
-@app.route('/add', methods=['POST'])
+@app.route("/new_reference")
+def new_reference():
+    return render_template("add.html")
+
+@app.route("/add", methods=["POST"])
 def add_reference():
-    if request.method == 'POST':
+    title = request.form["title"]
+    authors = request.form["authors"]
+    year = request.form["year"]
+    isbn = request.form["isbn"]
+    publisher = request.form["publisher"]
+    
+    add_new_reference(title, authors, year, isbn, publisher)
 
-        title = request.form['title']
-        author = request.form['author']
-        year = request.form['year']
-        references.append({'title': title, 'author': author, 'year': year})
-        return redirect(url_for('index'))
-    return render_template('add.html')
+    return redirect(url_for("index"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
