@@ -18,5 +18,9 @@ def add_reference():
         return redirect(url_for('index'))
     return render_template('add.html')
 
+@app.route('/edit', methods=['POST'])
+def edit_reference():
+    if request.method == 'POST':
+
 if __name__ == "__main__":
     app.run(debug=True)
