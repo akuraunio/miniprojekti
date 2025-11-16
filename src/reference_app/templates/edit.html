@@ -1,18 +1,28 @@
-<h2>Muokkaa viitettä<h2>
+<h2>Muokkaa viitettä</h2>
 
 <form action="/edit/{{ reference.id }}" method="post">
     <p>
         Otsikko:<br />
-        <input type="text" name="title" value="{{ reference.title }}">
+        <input type="text" name="title" value="{{ reference.title }}" maxlength="50" required>
     </p>
     <p>
-        Kirjoittaja:<br />
-        <input type="text" name="author" value="{{ reference.author }}">
+        Kirjoittaja(t):<br />
+        <input type="text" name="authors" value="{{ reference.authors }}">
     </p>
     <p>
         Vuosi:<br />
         <input type="text" name="year" value="{{ reference.year }}">
     </p>
-
+    <p>
+        ISBN:<br />
+        <input type="text" name="isbn" value="{{ reference.isbn }}">
+    </p>
+    <p>
+        Julkaisija:<br />
+        <input type="text" name="publisher" value="{{ reference.publisher }}">
+    </p>
   <input type="submit" value="Tallenna muutokset" />
 </form>
+<p>
+  <a href="/reference/{{ reference.id }}">Takaisin viitteeseen</a>
+</p>
