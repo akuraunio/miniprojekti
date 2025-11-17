@@ -14,3 +14,8 @@ Ohjelmistuotanto syksy 2025
  - Book -tyyppinen viite, joka sisältää: title, author, year, ISBN, publisher
 ## Backlog
  - https://docs.google.com/spreadsheets/d/1kqmGFZCdFphiSFvcZc1TDuBp6KPJ7YDvSF_VAUqDIxU/edit?usp=sharing
+
+## Kielikysymykset
+ - Commitit ja branchit suomeksi
+ - Koodi englanniksi
+ - Koodikommentit suomeksi
