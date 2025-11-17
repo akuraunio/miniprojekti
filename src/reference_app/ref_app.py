@@ -1,9 +1,6 @@
+from config import app, db
 from flask import Flask, request, redirect, url_for, render_template
 from repositories.references_repository import get_references, add_new_reference
-
-
-app = Flask(__name__)
-
 
 @app.route("/")
 def index():
