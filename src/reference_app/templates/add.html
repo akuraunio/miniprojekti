@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Lisää uusi kirjaviite</title>
+  </head>
+  <body>
+    <h1>Lisää uusi kirjaviite</h1>		
+	<form method="POST" action="{{ url_for('add_reference') }}">
+	    <label>Otsikko</label><br>
+	    <input type="text" name="title"><br>
+
+	    <label>Kirjailija</label><br>
+	    <input type="text" name="authors"><br>
+	    
+            <label>Vuosi</label><br>
+	    <input type="number" name="year"><br>
+
+	    <label>ISBN</label><br>
+	    <input type="text" name="isbn"><br>
+
+            <label>Julkaisija</label><br>
+	    <input type="text" name="publisher"><br>
+
+	    <button type="submit">Lisää</button>
+	</form>
+	
+	<br><a href="{{ url_for('index') }}">Takaisin</a>
+  </body>
+</html>  
