@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, url_for, render_template, abort
 from config import app, db
 from repositories.references_repository import get_references, add_new_reference, update_reference, get_reference
+from sqlalchemy import text
 
 @app.route('/')
 def index():
@@ -56,6 +57,7 @@ def delete_reference(reference_id):
     sql = text("DELETE FROM citations WHERE id = :id")
     db.session.execute(sql, {"id": reference_id})
     db.session.commit()
+    
     return redirect(url_for("index"))
 
     
