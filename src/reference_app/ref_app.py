@@ -1,6 +1,6 @@
+from flask import Flask, request, redirect, url_for, render_template, abort
 from config import app, db
-from flask import Flask, request, redirect, url_for, render_template
-from repositories.references_repository import get_references, add_new_reference
+from repositories.references_repository import get_references, add_new_reference, update_reference, get_reference
 
 @app.route("/")
 def index():
@@ -18,26 +18,31 @@ def add_reference():
     year = request.form["year"]
     isbn = request.form["isbn"]
     publisher = request.form["publisher"]
-    
+
     add_new_reference(title, authors, year, isbn, publisher)
 
     return redirect(url_for("index"))
 
 
-@app.route('/edit/<int:reference_id>', methods=['POST'])
+@app.route("/edit/<int:reference_id>", methods=["GET","POST"])
 def edit_reference(reference_id):
-    reference = references_repository.get_reference(reference_id)
+    reference = get_reference(reference_id)
 
     if not reference:
         abort(404)
 
-    reference["title"] = request.form["title"]
-    reference["authors"] = request.form["authors"]
-    reference["year"] = request.form["year"]
-    reference["isbn"] = request.form["isbn"]
-    reference["publisher"] = request.form["publisher"]
+    if request.method == "GET":
+        return render_template("edit.html", reference=reference)
 
-    return redirect("/reference/" + str(reference_id))
+    update_reference(reference_id,
+        request.form["title"],
+        request.form["authors"],
+        request.form["year"],
+        request.form["isbn"],
+        request.form["publisher"]
+    )
+
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     app.run(debug=True)
