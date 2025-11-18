@@ -1204,8 +1204,4 @@ h11 = ">=0.16.0,<1"
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-<<<<<<< HEAD
-content-hash = "cb125dcce72a96dd99319db8a1ae8a2e4f9c4d93b3c7d4c6121eb68e57b5fe72"
-=======
 content-hash = "c216481e142bca55a11765d8f51a5b4d255f09e02537cf4dc4e83cf025cd704f"
->>>>>>> 39f517d (lisätty lomakekirjaviitteelle)

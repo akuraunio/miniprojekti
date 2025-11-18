@@ -1,11 +1,10 @@
+from config import app, db
 from flask import Flask, request, redirect, url_for, render_template
-from repositories.references_repository import get_references, add_new_reference
-
 
 app = Flask(__name__)
+references = []
 
-
-@app.route("/")
+@app.route('/')
 def index():
     citations = get_references()
     return render_template("index.html", citations=citations)
@@ -16,28 +15,14 @@ def new_reference():
 
 @app.route("/add", methods=["POST"])
 def add_reference():
-    title = request.form["title"]
-    authors = request.form["authors"]
-    year = request.form["year"]
-    isbn = request.form["isbn"]
-    publisher = request.form["publisher"]
-    
-    add_new_reference(title, authors, year, isbn, publisher)
+    if request.method == 'POST':
 
-    return redirect(url_for("index"))
-
-
-@app.route("/delete/<int:ref_id>", methods=["GET", "POST"])
-def delete_reference(ref_id):
-    reference = references[ref_id]
-
-    if request.method == "GET":
-        return render_template('delete.html', reference=reference, ref_id=ref_id)
-    
-    if request.method == "POST":
-        if "delete" in request.form:
-            references.pop(ref_id)
+        title = request.form['title']
+        author = request.form['author']
+        year = request.form['year']
+        references.append({'title': title, 'author': author, 'year': year})
         return redirect(url_for('index'))
+    return render_template('add.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
