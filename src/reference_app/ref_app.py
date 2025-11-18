@@ -19,8 +19,9 @@ def add_reference():
     year = request.form["year"]
     isbn = request.form["isbn"]
     publisher = request.form["publisher"]
+    type = request.form["type"]
 
-    add_new_reference(title, authors, year, isbn, publisher)
+    add_new_reference(title, authors, year, isbn, publisher, type)
 
     return redirect(url_for("index"))
 

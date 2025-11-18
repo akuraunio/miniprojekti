@@ -4,5 +4,6 @@ CREATE TABLE citations (
   authors TEXT,
   year INT,
   isbn TEXT,
-  publisher TEXT
+  publisher TEXT,
+  type TEXT
 )
