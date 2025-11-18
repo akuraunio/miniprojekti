@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Muokkaa kirjaviitettä</title>
+  </head>
+  <body>
+    <h1>Muokkaa kirjaviitettä</h1>
+	<form method="POST" action="{{ url_for('edit_reference', reference_id=reference.id) }}">
+	    <label>Otsikko</label><br>
+	    <input type="text" name="title" value="{{ reference.title }}" required><br>
+
+	    <label>Kirjailija</label><br>
+	    <input type="text" name="authors" value="{{ reference.authors }}"><br>
+
+        <label>Vuosi</label><br>
+	    <input type="number" name="year" value="{{ reference.year }}"><br>
+
+	    <label>ISBN</label><br>
+	    <input type="text" name="isbn" value="{{ reference.isbn }}"><br>
+
+        <label>Julkaisija</label><br>
+	    <input type="text" name="publisher" value="{{ reference.publisher }}"><br>
+
+	    <button type="submit">Muokkaa</button>
+	</form>
+
+	<br><a href="{{ url_for('index') }}">Takaisin</a>
+  </body>
+</html>
