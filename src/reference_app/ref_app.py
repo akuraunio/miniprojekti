@@ -5,8 +5,8 @@ from sqlalchemy import text
 
 @app.route('/')
 def index():
-    citations = get_references()
-    return render_template("index.html", citations=citations)
+    references = get_references()
+    return render_template("index.html", references=references)
 
 @app.route("/new_reference")
 def new_reference():
