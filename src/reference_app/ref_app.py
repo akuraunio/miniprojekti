@@ -43,5 +43,22 @@ def edit_reference(reference_id):
 
     return redirect(url_for("index"))
 
+@app.route("/delete/<int:reference_id>", methods=["GET", "POST"])
+def delete_reference(reference_id):
+    reference = get_reference(reference_id)
+
+    if not reference:
+        abort(404)
+
+    if request.method == "GET":
+        return render_template("delete.html", reference=reference)
+    
+    sql = text("DELETE FROM citations WHERE id = :id")
+    db.session.execute(sql, {"id": reference_id})
+    db.session.commit()
+    return redirect(url_for("index"))
+
+    
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -38,14 +38,3 @@ if test_env:
         reset_db()
         return jsonify({ 'message': "db reset" })
 
-@app.route("/delete/<int:citations_id>", methods=["GET", "POST"]) #muokkaa lähde.id jos pitää
-def delete(citations_id):
-    citations = todo_repositorys.get_citations(citations_id) #oletus mistä lähde löytyy
-
-    if request.method == "GET":
-        return render_template("poisto.html", citations=citations)
-    
-    if request.method == "POST":
-        if "delete" in request.form:
-            todo_repository.delete(citations["id"])  #oletus miten lähde poistetaan, forum = todo_repository?
-        return redirect("/aloitussivu/" + str(citations["aloitussivu_id"])) #vaihda oletus aloittussivu/thread
