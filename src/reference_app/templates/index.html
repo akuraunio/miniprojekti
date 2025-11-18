@@ -6,8 +6,9 @@
   </head>
   <body>
       <h1>Viitteet</h1>
-      <a href="{{url_for('add_reference') }}">
-      	  <button>Lisää viite</button>
-      </a>
+      <form action="{{url_for('new_reference') }}" mehtod="get">
+      <button>Lisää kirjaviite</button>
+      </form>
+
  </body>
  </html>
