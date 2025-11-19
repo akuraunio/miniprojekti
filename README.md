@@ -4,7 +4,8 @@ Ohjelmistuotanto syksy 2025
 ## Definition of Done
 - Acceptance kriteerit täyttyy
 - Toiminolle on testit, jotka menevät läpi
-- Toiminto on main branchissa
+- Joku on hyväksynyt pull requestin
+- Kaikki tarvittava toiminnan dokumentaatio on kirjoitettu
 
 ## Branchit
  - Branchit nimetään taskin mukaan, siten että tulee selväkisi mihin user storyyn branchi liittyy
