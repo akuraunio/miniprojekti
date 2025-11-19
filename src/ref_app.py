@@ -1,16 +1,24 @@
 from flask import Flask, request, redirect, url_for, render_template, abort
 from config import app, db
-from repositories.references_repository import get_references, add_new_reference, update_reference, get_reference
+from repositories.references_repository import (
+    get_references,
+    add_new_reference,
+    update_reference,
+    get_reference,
+)
 from sqlalchemy import text
 
-@app.route('/')
+
+@app.route("/")
 def index():
     references = get_references()
     return render_template("index.html", references=references)
 
+
 @app.route("/new_reference")
 def new_reference():
     return render_template("add.html")
+
 
 @app.route("/add", methods=["POST"])
 def add_reference():
@@ -25,7 +33,8 @@ def add_reference():
 
     return redirect(url_for("index"))
 
-@app.route("/edit/<int:reference_id>", methods=["GET","POST"])
+
+@app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
 def edit_reference(reference_id):
     reference = get_reference(reference_id)
 
@@ -35,15 +44,17 @@ def edit_reference(reference_id):
     if request.method == "GET":
         return render_template("edit.html", reference=reference)
 
-    update_reference(reference_id,
+    update_reference(
+        reference_id,
         request.form["title"],
         request.form["authors"],
         request.form["year"],
         request.form["isbn"],
-        request.form["publisher"]
+        request.form["publisher"],
     )
 
     return redirect(url_for("index"))
+
 
 @app.route("/delete/<int:reference_id>", methods=["GET", "POST"])
 def delete_reference(reference_id):
@@ -54,14 +65,13 @@ def delete_reference(reference_id):
 
     if request.method == "GET":
         return render_template("delete.html", reference=reference)
-    
+
     sql = text("DELETE FROM citations WHERE id = :id")
     db.session.execute(sql, {"id": reference_id})
     db.session.commit()
-    
+
     return redirect(url_for("index"))
 
-    
 
 if __name__ == "__main__":
     app.run(debug=True)
