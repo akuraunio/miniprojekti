@@ -1,7 +1,11 @@
 from config import db, app
 from sqlalchemy import text
 import os
-from reference_data import reference_data, reference_fields, ReferenceFieldType
+from reference_data import (
+    reference_fields,
+    ReferenceFieldType,
+    ReferenceField,
+)
 
 
 def reset_db():
@@ -44,27 +48,15 @@ def setup_db():
 
     print("Creating database")
 
-    # Read schema from schema.sql file
-    schema_path = os.path.join(os.path.dirname(__file__), "schema.sql")
-    with open(schema_path, "r") as f:
-        schema_sql = f.read().strip()
+    table_column_definitions = []
 
-    additional_sql_parts = []
-
-    for tbl, vals in reference_data.items():
-        table_columns = []
-
-        for field, data in vals["fields"].items():
-            table_columns.append(
-                f"{field.value} {"INT" if reference_fields[field]["type"] == ReferenceFieldType.INT else "TEXT"}{' NOT NULL' if data.get('required') else ''}"
-            )
-
-        additional_sql_parts.append(
-            f"CREATE TABLE {tbl} (id SERIAL PRIMARY KEY, {', '.join(table_columns)});"
+    for f in ReferenceField:
+        sql_type = (
+            "INT" if reference_fields[f]["type"] == ReferenceFieldType.INT else "TEXT"
         )
+        table_column_definitions.append(f"{f.value} {sql_type}")
 
-    if additional_sql_parts:
-        schema_sql = schema_sql + "\n\n" + "\n\n".join(additional_sql_parts)
+    schema_sql = f"CREATE TABLE Reference (id SERIAL PRIMARY KEY, {', '.join(table_column_definitions)});"
 
     sql = text(schema_sql)
     db.session.execute(sql)

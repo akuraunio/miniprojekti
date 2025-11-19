@@ -1,5 +1,0 @@
-CREATE TABLE ids (
-  id SERIAL PRIMARY KEY, 
-  tableName TEXT NOT NULL,
-  atId INTEGER NOT NULL
-);
