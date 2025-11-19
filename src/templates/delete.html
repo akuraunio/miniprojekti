@@ -1,17 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fi">
   <head>
     <meta charset="utf-8" />
     <title>Poista viite</title>
   </head>
   <body>
-    <h1>Poista viite</h1> 
+    <h1>Poista viite</h1>
     <form action="{{ url_for('delete_reference', reference_id=reference.id) }}" method="post">
-        <p><strong>Haluatko varmasti poistaa tämän viitteen?</strong></p>
-        <input type="submit" name="delete" value="Poista"/>
-        <a href="{{ url_for('index') }}">
-            <button type="button" >Peruuta</button>
-        </a>
+      <p><strong>Haluatko varmasti poistaa tämän viitteen?</strong></p>
+      <input type="submit" name="delete" value="Poista" />
+      <a href="{{ url_for('index') }}">
+        <button type="button">Peruuta</button>
+      </a>
     </form>
   </body>
 </html>
