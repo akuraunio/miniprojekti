@@ -1,9 +1,5 @@
-CREATE TABLE citations (
+CREATE TABLE ids (
   id SERIAL PRIMARY KEY, 
-  title TEXT NOT NULL,
-  authors TEXT,
-  year INT,
-  isbn TEXT,
-  publisher TEXT,
-  type TEXT
-)
+  tableName TEXT NOT NULL,
+  atId INTEGER NOT NULL
+);
