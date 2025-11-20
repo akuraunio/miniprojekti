@@ -1,12 +1,14 @@
 from enum import Enum
 
 
+# ReferenceFieldType on kaikki kenttätyypit joita viitekentässä voi olla, määritelty html input elementtien mukaan
 class ReferenceFieldType(Enum):
     TEXT = "text"
-    LONG_TEXT = "long_text"
-    INT = "int"
+    TEXTAREA = "textarea"
+    NUMBER = "number"
 
 
+# ReferenceType on kaikki viitteiden kentät joita voi olla
 class ReferenceField(Enum):
     KEY = "key"
     ADDRESS = "address"
@@ -28,8 +30,8 @@ class ReferenceField(Enum):
     NOTE = "note"
     NUMBER = "number"
     ORGANIZATION = "organization"
-    PAGES_FROM = "pagesFrom"
-    PAGES_TO = "pagesTo"
+    PAGES_FROM = "pages_from"
+    PAGES_TO = "pages_to"
     PUBLISHER = "publisher"
     SCHOOL = "school"
     SERIES = "series"
@@ -39,13 +41,30 @@ class ReferenceField(Enum):
     YEAR = "year"
 
 
+# ReferenceType on kaikki viitetyypit joita voi olla
+class ReferenceType(Enum):
+    ARTICLE = "article"
+    BOOK = "book"
+    BOOKLET = "booklet"
+    INBOOK = "inbook"
+    INPROCEEDINGS = "inproceedings"
+    MANUAL = "manual"
+    MASTERSTHESIS = "mastersthesis"
+    MISC = "misc"
+    PHDTHESIS = "phdthesis"
+    PROCEEDINGS = "proceedings"
+    TECHREPORT = "techreport"
+    UNPUBLISHED = "unpublished"
+
+
+# Määritellään lisätietoja kullekin kentälle, kuten tyyppi ja ui:ssa näkyvä nimi
 reference_fields = {
     ReferenceField.KEY: {"type": ReferenceFieldType.TEXT, "name": "Viiteavain"},
     ReferenceField.ADDRESS: {"type": ReferenceFieldType.TEXT, "name": "Osoite"},
-    ReferenceField.ANNOTE: {"type": ReferenceFieldType.LONG_TEXT, "name": "Huomautus"},
+    ReferenceField.ANNOTE: {"type": ReferenceFieldType.TEXTAREA, "name": "Annotaatio"},
     ReferenceField.AUTHOR: {"type": ReferenceFieldType.TEXT, "name": "Tekijä"},
     ReferenceField.BOOKTITLE: {"type": ReferenceFieldType.TEXT, "name": "Kirjan nimi"},
-    ReferenceField.CHAPTER: {"type": ReferenceFieldType.INT, "name": "Luku"},
+    ReferenceField.CHAPTER: {"type": ReferenceFieldType.NUMBER, "name": "Luku"},
     ReferenceField.CROSSREF: {
         "type": ReferenceFieldType.TEXT,
         "name": "Ristiinviittaus",
@@ -66,25 +85,30 @@ reference_fields = {
     },
     ReferenceField.JOURNAL: {"type": ReferenceFieldType.TEXT, "name": "Lehti"},
     ReferenceField.MONTH: {"type": ReferenceFieldType.TEXT, "name": "Kuukausi"},
-    ReferenceField.NOTE: {"type": ReferenceFieldType.LONG_TEXT, "name": "Huomautus"},
-    ReferenceField.NUMBER: {"type": ReferenceFieldType.INT, "name": "Numero"},
+    ReferenceField.NOTE: {"type": ReferenceFieldType.TEXTAREA, "name": "Merkintä"},
+    ReferenceField.NUMBER: {"type": ReferenceFieldType.NUMBER, "name": "Numero"},
     ReferenceField.ORGANIZATION: {
         "type": ReferenceFieldType.TEXT,
         "name": "Organisaatio",
     },
-    ReferenceField.PAGES_FROM: {"type": ReferenceFieldType.INT, "name": "Sivut alkaen"},
-    ReferenceField.PAGES_TO: {"type": ReferenceFieldType.INT, "name": "Sivut asti"},
+    ReferenceField.PAGES_FROM: {
+        "type": ReferenceFieldType.NUMBER,
+        "name": "Sivut alkaen",
+    },
+    ReferenceField.PAGES_TO: {"type": ReferenceFieldType.NUMBER, "name": "Sivut asti"},
     ReferenceField.PUBLISHER: {"type": ReferenceFieldType.TEXT, "name": "Kustantaja"},
     ReferenceField.SCHOOL: {"type": ReferenceFieldType.TEXT, "name": "Koulu"},
     ReferenceField.SERIES: {"type": ReferenceFieldType.TEXT, "name": "Sarja"},
     ReferenceField.TITLE: {"type": ReferenceFieldType.TEXT, "name": "Otsikko"},
     ReferenceField.TYPE: {"type": ReferenceFieldType.TEXT, "name": "Tyyppi"},
-    ReferenceField.VOLUME: {"type": ReferenceFieldType.INT, "name": "Vuosikerta"},
-    ReferenceField.YEAR: {"type": ReferenceFieldType.INT, "name": "Vuosi"},
+    ReferenceField.VOLUME: {"type": ReferenceFieldType.NUMBER, "name": "Vuosikerta"},
+    ReferenceField.YEAR: {"type": ReferenceFieldType.NUMBER, "name": "Vuosi"},
 }
 
+
+# Määritellään lisätietoja kullekin viitetyypille, kuten ui:ssa näkyvä nimi ja siihen kuuluvat kentät
 reference_data = {
-    "article": {
+    ReferenceType.ARTICLE: {
         "name": "Artikkeli",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -104,7 +128,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "book": {
+    ReferenceType.BOOK: {
         "name": "Kirja",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -125,7 +149,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "booklet": {
+    ReferenceType.BOOKLET: {
         "name": "Kirjanen",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -146,7 +170,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "inbook": {
+    ReferenceType.INBOOK: {
         "name": "Artikkeli kokoomateoksessa",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -170,7 +194,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "inproceedings": {
+    ReferenceType.INPROCEEDINGS: {
         "name": "Artikkeli konferenssijulkaisussa",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -194,7 +218,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "manual": {
+    ReferenceType.MANUAL: {
         "name": "Käsikirja",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -211,7 +235,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "mastersthesis": {
+    ReferenceType.MASTERSTHESIS: {
         "name": "Pro gradu -tutkielma",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -229,7 +253,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "misc": {
+    ReferenceType.MISC: {
         "name": "Muu",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -245,7 +269,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "phdthesis": {
+    ReferenceType.PHDTHESIS: {
         "name": "Väitöskirja",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -263,7 +287,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "proceedings": {
+    ReferenceType.PROCEEDINGS: {
         "name": "Konferenssijulkaisu",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -283,7 +307,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "techreport": {
+    ReferenceType.TECHREPORT: {
         "name": "Tekninen raportti",
         "fields": {
             ReferenceField.KEY: {"required": True},
@@ -302,7 +326,7 @@ reference_data = {
             ReferenceField.ISBN: {"required": False},
         },
     },
-    "unpublished": {
+    ReferenceType.UNPUBLISHED: {
         "name": "Julkaisematon",
         "fields": {
             ReferenceField.KEY: {"required": True},

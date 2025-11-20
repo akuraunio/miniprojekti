@@ -1,8 +1,8 @@
 from config import db, app
 from sqlalchemy import text
-import os
 from reference_data import (
     reference_fields,
+    reference_data,
     ReferenceFieldType,
     ReferenceField,
 )
@@ -52,11 +52,13 @@ def setup_db():
 
     for f in ReferenceField:
         sql_type = (
-            "INT" if reference_fields[f]["type"] == ReferenceFieldType.INT else "TEXT"
+            "INT"
+            if reference_fields[f]["type"] == ReferenceFieldType.NUMBER
+            else "TEXT"
         )
         table_column_definitions.append(f"{f.value} {sql_type}")
 
-    schema_sql = f"CREATE TABLE Reference (id SERIAL PRIMARY KEY, {', '.join(table_column_definitions)});"
+    schema_sql = f"CREATE TABLE Reference (id SERIAL PRIMARY KEY, reference_type TEXT NOT NULL, CHECK (reference_type IN ({', '.join([f"'{t.value}'" for t in reference_data.keys()])})), {', '.join(table_column_definitions)});"
 
     sql = text(schema_sql)
     db.session.execute(sql)

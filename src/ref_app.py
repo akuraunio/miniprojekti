@@ -1,41 +1,51 @@
-from flask import Flask, request, redirect, url_for, render_template, abort
-from config import app, db
+from flask import request, redirect, url_for, render_template, abort
+from config import app
 from repositories.references_repository import (
     get_references,
     add_new_reference,
     update_reference,
     get_reference,
+    delete_reference,
 )
-from sqlalchemy import text
+from reference_data import reference_data, ReferenceType
 
 
 @app.route("/")
 def index():
     references = get_references()
+    print(references)
     return render_template("index.html", references=references)
 
 
-@app.route("/new_reference")
-def new_reference():
-    return render_template("add.html")
+# Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa. Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
+@app.route("/add", methods=["POST", "GET"])
+def add():
+    if request.method == "GET":
+        reference_type = ReferenceType(request.args.get("type"))
 
+        if reference_type not in reference_data:
+            abort(400)
 
-@app.route("/add", methods=["POST"])
-def add_reference():
-    title = request.form["title"]
-    authors = request.form["authors"]
-    year = request.form["year"]
-    isbn = request.form["isbn"]
-    publisher = request.form["publisher"]
-    type = request.form["type"]
+        return render_template("add.html", reference_type=reference_type)
 
-    add_new_reference(title, authors, year, isbn, publisher, type)
+    if request.method == "POST":
+        reference_type = request.form.get("reference_type")
+        if not reference_type or ReferenceType(reference_type) not in reference_data:
+            abort(400)
+
+        fields = {}
+        for field in reference_data[ReferenceType(reference_type)]["fields"]:
+            value = request.form.get(field.value, "")
+
+            fields[field] = value if value else None
+
+        add_new_reference(ReferenceType(reference_type), fields)
 
     return redirect(url_for("index"))
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
-def edit_reference(reference_id):
+def edit(reference_id):
     reference = get_reference(reference_id)
 
     if not reference:
@@ -44,31 +54,29 @@ def edit_reference(reference_id):
     if request.method == "GET":
         return render_template("edit.html", reference=reference)
 
-    update_reference(
-        reference_id,
-        request.form["title"],
-        request.form["authors"],
-        request.form["year"],
-        request.form["isbn"],
-        request.form["publisher"],
-    )
+    if request.method == "POST":
+        fields = {}
+        for field in reference_data[reference.type]["fields"]:
+            value = request.form.get(field.value, "")
+
+            fields[field] = value if value else None
+
+        update_reference(reference_id, fields)
 
     return redirect(url_for("index"))
 
 
 @app.route("/delete/<int:reference_id>", methods=["GET", "POST"])
-def delete_reference(reference_id):
+def delete(reference_id):
     reference = get_reference(reference_id)
-
     if not reference:
         abort(404)
 
     if request.method == "GET":
         return render_template("delete.html", reference=reference)
 
-    sql = text("DELETE FROM citations WHERE id = :id")
-    db.session.execute(sql, {"id": reference_id})
-    db.session.commit()
+    if request.method == "POST":
+        delete_reference(reference_id)
 
     return redirect(url_for("index"))
 

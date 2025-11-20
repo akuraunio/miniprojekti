@@ -2,32 +2,31 @@
 <html lang="fi">
   <head>
     <meta charset="utf-8" />
-    <title>Lisää uusi kirjaviite</title>
+    <title>Lisää {{ reference_data[reference_type]["name"] }}</title>
   </head>
   <body>
-    <h1>Lisää uusi kirjaviite</h1>
-    <form method="POST" action="{{ url_for('add_reference') }}">
-      <label>Viitteen tyyppi</label>
-      <select name="type">
-        <option value="book">Kirja</option>
-      </select>
-      <br /><br />
+    <h1>Lisää {{ reference_data[reference_type]["name"] }}</h1>
+    <form method="POST" action="{{ url_for('add') }}">
+      {% for field, data in reference_data[reference_type]["fields"].items() %} {% if
+      reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
 
-      <label>Otsikko</label><br />
-      <input type="text" name="title" /><br />
+      <label>{{ reference_fields[field]["name"] }}</label><br />
+      <input type="text" name="{{ field.value }}" /><br />
 
-      <label>Kirjailija</label><br />
-      <input type="text" name="authors" /><br />
+      {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
 
-      <label>Vuosi</label><br />
-      <input type="number" name="year" /><br />
+      <label>{{ reference_fields[field]["name"] }}</label><br />
+      <textarea name="{{ field.value }}"></textarea><br />
 
-      <label>ISBN</label><br />
-      <input type="text" name="isbn" /><br />
+      {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
 
-      <label>Julkaisija</label><br />
-      <input type="text" name="publisher" /><br />
+      <label>{{ reference_fields[field]["name"] }}</label><br />
+      <input type="number" name="{{ field.value }}" /><br />
 
+      {% endif %} {% endfor %}
+
+      <input type="hidden" name="reference_type" value="{{ reference_type.value }}" />
+      <br />
       <button type="submit">Lisää</button>
     </form>
 

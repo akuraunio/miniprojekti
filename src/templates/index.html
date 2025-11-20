@@ -6,9 +6,12 @@
   </head>
   <body>
     <h1>Viitteet</h1>
-    <form action="{{url_for('new_reference') }}" mehtod="get">
-      <button>Lisää kirjaviite</button>
+    {% for type in reference_data %}
+    <form action="{{url_for('add')}}" method="get">
+      <input type="hidden" name="type" value="{{ type.value }}" />
+      <button type="submit">Lisää {{ reference_data[type]["name"] }}</button>
     </form>
-    {% include 'reference_list/reference_list.html' %}
+    <br />
+    {% endfor %} {% include 'reference_list.html' %}
   </body>
 </html>

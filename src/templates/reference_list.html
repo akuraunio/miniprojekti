@@ -1,0 +1,14 @@
+<p>Viitteet:</p>
+{% if not references %}
+<p>Ei viitteitä</p>
+{% else %}
+<ul>
+  {% for reference in references %}
+  <li>
+    {{ reference.fields[ReferenceField.TITLE] }} ({{ reference.fields[ReferenceField.YEAR] }})
+    <a href="{{url_for('delete', reference_id=reference.id)}}">Poista</a>
+    <a href="{{url_for('edit', reference_id=reference.id)}}">Muokkaa</a>
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}

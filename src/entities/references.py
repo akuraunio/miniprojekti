@@ -1,11 +1,11 @@
 from typing import Dict
-from reference_data import ReferenceField
+from reference_data import ReferenceField, ReferenceType
 
 
 class Reference:
     def __init__(
         self,
-        type: str,
+        type: ReferenceType,
         id: int,
         fields: Dict[ReferenceField, str],
     ):
