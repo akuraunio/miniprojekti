@@ -1,34 +1,14 @@
-{% extends "layout.html" %}
-
-{% block title %}
-Todo app
-{% endblock %}
-
-{% block body %}
-
-<h2>Todo app</h2>
-
-<div>
-  things still unfinished: {{ unfinished }}
-</div>
-
-<ul>
-  {% for todo in todos %}
-    <li style="display: flex">
-      <div>
-        {{ todo }} 
-      </div>
-      {% if not todo.done %}
-        <form action="/toggle_todo/{{ todo.id }}" method="post" style="margin-left: 10px;">
-          <button type="submit">mark as done</button>
-        </form>
-      {% endif %}
-    </li>
-  {% endfor %}
-</ul>
-
-<div>
-  <a href="/new_todo">Create new todo</a>
-</div>
-
-{% endblock %}
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Viitteet</title>
+  </head>
+  <body>
+      <h1>Viitteet</h1>
+      <form action="{{url_for('new_reference') }}" mehtod="get">
+      <button>Lisää kirjaviite</button>
+      </form>
+      {% include 'reference_list/reference_list.html' %}
+ </body>
+ </html>

@@ -1,0 +1,5 @@
+[MASTER]
+# Ensure pylint can import modules that live under the `src` directory
+# when running pylint from the project root.
+init-hook='import sys; sys.path.insert(0, "src")'
+init-hook='import sys; sys.path.insert(0, "src/reference_app")'

@@ -7,6 +7,12 @@
   <body>
     <h1>Lisää uusi kirjaviite</h1>		
 	<form method="POST" action="{{ url_for('add_reference') }}">
+		<label>Viitteen tyyppi</label>
+		<select name="type">
+			<option value="book">Kirja</option>
+		</select>
+		<br><br>
+
 	    <label>Otsikko</label><br>
 	    <input type="text" name="title"><br>
 
