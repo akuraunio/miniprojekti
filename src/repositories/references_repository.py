@@ -1,76 +1,83 @@
 from config import db
 from sqlalchemy import text
-from entities.references import Citation
+from entities.references import Reference
+from reference_data import reference_data, ReferenceType
 
 
 # Database-based functions for storing and retrieving references
-def get_references():
-    result = db.session.execute(
-        text("SELECT id, title, authors, year, isbn, publisher, type FROM citations")
+
+
+def reference_from_row(row) -> Reference:
+    fields = {}
+    for field in reference_data[ReferenceType(row.reference_type)]["fields"]:
+        fields[field] = row.__getattribute__(field.value)
+
+    reference = Reference(
+        type=ReferenceType(row.reference_type),
+        id=row.id,
+        fields=fields,
     )
+    return reference
+
+
+def get_references() -> list[Reference]:
+    result = db.session.execute(text("SELECT * FROM Reference"))
+
     rows = result.all()
-    return [
-        Citation(
-            row.id, row.title, row.authors, row.year, row.isbn, row.publisher, row.type
-        )
-        for row in rows
-    ]
+    references = []
+    for row in rows:
+        reference = reference_from_row(row)
+        references.append(reference)
+    return references
 
 
 # haetaan tietokannasta viite id:n mukaan
-def get_reference(reference_id):
-    sql = text(
-        "SELECT id, title, authors, year, isbn, publisher, type FROM citations WHERE id = :id"
+def get_reference(reference_id) -> Reference | None:
+    result = db.session.execute(
+        text(f"SELECT * FROM Reference WHERE id = {reference_id}")
     )
-    result = db.session.execute(sql, {"id": reference_id})
+
     row = result.first()
+
     if not row:
         return None
-    return Citation(
-        row.id, row.title, row.authors, row.year, row.isbn, row.publisher, row.type
-    )
+
+    return reference_from_row(row)
 
 
-def add_new_reference(title, authors, year, isbn, publisher, type):
+def add_new_reference(type: ReferenceType, fields: dict):
+
+    field_names = ", ".join([field.value for field in fields.keys()])
+    field_placeholders = ", ".join([f":{field.value}" for field in fields.keys()])
+
     sql = text(
-        "INSERT INTO citations (title, authors, year, isbn, publisher, type) "
-        "VALUES (:title, :authors, :year, :isbn, :publisher, :type)"
+        f"INSERT INTO Reference (reference_type, {field_names}) "
+        f"VALUES (:reference_type, {field_placeholders})"
     )
 
-    db.session.execute(
-        sql,
-        {
-            "title": title,
-            "authors": authors,
-            "year": year,
-            "isbn": isbn,
-            "publisher": publisher,
-            "type": type,
-        },
-    )
+    parameters = {field.value: value for field, value in fields.items()}
+    parameters["reference_type"] = type.value
+
+    db.session.execute(sql, parameters)
     db.session.commit()
 
 
 # viitteiden muokkaus tietokantaan
-def update_reference(reference_id, title, authors, year, isbn, publisher):
-    sql = text(
-        """UPDATE citations SET title = :title,
-                                    authors = :authors,
-                                    year = :year,
-                                    isbn = :isbn,
-                                    publisher = :publisher
-                                    WHERE id = :id """
+def update_reference(reference_id: str, fields: dict):
+    set_clauses = ", ".join(
+        [f"{field.value} = :{field.value}" for field in fields.keys()]
     )
 
-    db.session.execute(
-        sql,
-        {
-            "title": title,
-            "authors": authors,
-            "year": year,
-            "isbn": isbn,
-            "publisher": publisher,
-            "id": reference_id,
-        },
-    )
+    sql = text(f"UPDATE Reference SET {set_clauses} WHERE id = :id")
+
+    parameters = {field.value: value for field, value in fields.items()}
+    parameters["id"] = reference_id
+
+    db.session.execute(sql, parameters)
+    db.session.commit()
+
+
+def delete_reference(reference_id: str):
+    sql = text("DELETE FROM Reference WHERE id = :id")
+    db.session.execute(sql, {"id": reference_id})
     db.session.commit()
