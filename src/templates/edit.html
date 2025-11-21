@@ -22,8 +22,7 @@
 
       <label>{{ reference_fields[field]["name"] }}</label><br />
       <textarea name="{{ field.value }}">
-      {% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}
-      </textarea
+{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}</textarea
       ><br />
 
       {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
