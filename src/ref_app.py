@@ -13,33 +13,27 @@ from reference_data import reference_data, ReferenceType
 @app.route("/")
 def index():
     references = get_references()
-    print(references)
     return render_template("index.html", references=references)
 
 
-# Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa. Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
+# Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa, get metodissa voi myös käyttää url query parametria. Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
 @app.route("/add", methods=["POST", "GET"])
 def add():
     if request.method == "GET":
         reference_type = ReferenceType(request.args.get("type"))
 
-        if reference_type not in reference_data:
-            abort(400)
-
         return render_template("add.html", reference_type=reference_type)
 
     if request.method == "POST":
-        reference_type = request.form.get("reference_type")
-        if not reference_type or ReferenceType(reference_type) not in reference_data:
-            abort(400)
+        reference_type = ReferenceType(request.form.get("reference_type"))
 
         fields = {}
-        for field in reference_data[ReferenceType(reference_type)]["fields"]:
+        for field in reference_data[reference_type]["fields"]:
             value = request.form.get(field.value, "")
 
             fields[field] = value if value else None
 
-        add_new_reference(ReferenceType(reference_type), fields)
+        add_new_reference(reference_type, fields)
 
     return redirect(url_for("index"))
 

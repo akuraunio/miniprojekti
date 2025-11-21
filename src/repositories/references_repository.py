@@ -60,7 +60,6 @@ def add_new_reference(type: ReferenceType, fields: dict):
 
     db.session.execute(sql, parameters)
     db.session.commit()
-    print("Added new reference to database")
 
 
 # viitteiden muokkaus tietokantaan
