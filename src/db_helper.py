@@ -9,15 +9,10 @@ from reference_data import (
 
 
 def reset_db():
-    print(f"Clearing contents from all tables")
-
-    tables_in_db = tables()
-    if len(tables_in_db) > 0:
-        print(f"Tables exist, dropping: {', '.join(tables_in_db)}")
-        for table in tables_in_db:
-            sql = text(f"DROP TABLE {table}")
-            db.session.execute(sql)
-        db.session.commit()
+    print(f"Clearing contents from table Reference")
+    sql = text(f"DELETE FROM Reference")
+    db.session.execute(sql)
+    db.session.commit()
 
 
 def tables():
