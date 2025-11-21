@@ -6,7 +6,6 @@ class Citation:
         self.year = year
         self.isbn = isbn
         self.publisher = publisher
-    
+
     def __rpr__(self):
         return f"Citation(title={self.title}, authors={self.authors}, year={self.year}, isbn={self.isbn}, publisher={self.publisher})"
-    
