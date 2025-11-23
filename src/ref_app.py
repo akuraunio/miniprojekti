@@ -8,6 +8,10 @@ from repositories.references_repository import (
     delete_reference,
 )
 from reference_data import reference_data, ReferenceType
+import os
+from db_helper import reset_db
+
+test_env = os.getenv("TEST_ENV") == "true"
 
 
 @app.route("/")
@@ -73,6 +77,13 @@ def delete(reference_id):
         delete_reference(reference_id)
 
     return redirect(url_for("index"))
+
+
+if test_env:
+
+    @app.route("/reset_db")
+    def reset_database():
+        reset_db()
 
 
 if __name__ == "__main__":
