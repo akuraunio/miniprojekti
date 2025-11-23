@@ -7,13 +7,16 @@ from repositories.references_repository import (
     get_reference,
     delete_reference,
 )
-from reference_data import reference_data, ReferenceType
+from reference_data import reference_data, ReferenceType, ReferenceField, reference_fields
 
 
 @app.route("/")
 def index():
     references = get_references()
-    return render_template("index.html", references=references)
+    return render_template("index.html", references=references, 
+                           ReferenceField=ReferenceField,
+                           reference_data=reference_data,
+                           reference_fields=reference_fields)
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa, get metodissa voi myös käyttää url query parametria. Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
