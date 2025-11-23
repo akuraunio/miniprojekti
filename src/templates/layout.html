@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="fi">
   <head>
-    <title>{% block title %}{% endblock %}</title>
+    <meta charset="utf-8" />
+    <title>{% block title %}Viitteet{% endblock %}</title>
     <link rel="stylesheet" href="/static/main.css" />
   </head>
 
@@ -19,6 +20,8 @@
       </nav>
     </div>
 
-    <div class="content">{% block content %}{% endblock %}</div>
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
   </body>
 </html>
