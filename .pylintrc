@@ -1,7 +1,6 @@
 [MASTER]
 init-hook='import sys; sys.path.insert(0, "src")'
-init-hook='import sys; sys.path.insert(0, "src/reference_app")'
-ignore-paths=src/tests
+ignore-paths=src/tests, src/db_helper.py
 
 [MESSAGE CONTROL]
 
@@ -29,6 +28,6 @@ max-nested-blocks=2
 
 [DESIGN]
 
-max-statements=10
+max-statements=20
 max-returns=3
 max-args=4

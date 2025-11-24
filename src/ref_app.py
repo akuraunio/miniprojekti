@@ -1,3 +1,4 @@
+import os
 from flask import request, redirect, url_for, render_template, abort
 from config import app
 from repositories.references_repository import (
@@ -8,7 +9,6 @@ from repositories.references_repository import (
     delete_reference,
 )
 from reference_data import reference_data, ReferenceType
-import os
 from db_helper import reset_db
 
 test_env = os.getenv("TEST_ENV") == "true"
@@ -20,7 +20,8 @@ def index():
     return render_template("index.html", references=references)
 
 
-# Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa, get metodissa voi myös käyttää url query parametria. Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
+# Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa, get metodissa voi myös käyttää url query parametria
+# Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
 @app.route("/add", methods=["POST", "GET"])
 def add():
     if request.method == "GET":

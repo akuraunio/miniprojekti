@@ -3,7 +3,8 @@ import os
 import sys
 
 
-# ReferenceFieldType on kaikki kenttätyypit joita viitekentässä voi olla, määritelty html input elementtien mukaan
+# ReferenceFieldType on kaikki kenttätyypit joita viitekentässä voi olla
+# Kentät on määritelty html input elementtien mukaan
 class ReferenceFieldType(Enum):
     TEXT = "text"
     TEXTAREA = "textarea"
@@ -108,7 +109,8 @@ reference_fields = {
 }
 
 
-# Määritellään lisätietoja kullekin viitetyypille, kuten ui:ssa näkyvä nimi ja siihen kuuluvat kentät
+# Määritellään lisätietoja kullekin viitetyypille
+# Esimerkiksi ui:ssa näkyvä nimi ja siihen kuuluvat kentät
 reference_data = {
     ReferenceType.ARTICLE: {
         "name": "Artikkeli",
