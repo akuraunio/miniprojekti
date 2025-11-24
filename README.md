@@ -20,3 +20,12 @@ Ohjelmistuotanto syksy 2025
  - Commitit ja branchit suomeksi
  - Koodi englanniksi
  - Koodikommentit suomeksi
+
+## Asennusohjeet
+ - Sovellus tarvitsee PostgreSQL-tietokannan
+ - Luo sovelluksen juureen .env tiedosto tyyliin:
+   DATABASE_URL=postgresql://xxx
+   TEST_ENV=true
+   SECRET_KEY=satunnainen_merkkijono
+ - Ennen sovelluksen käynnistämistä ensimmäistä kertaa suorita komento          "python src/db_helper.py"
+ - Sovellus käynnistetään Poetry-virtuaaliympäristössä antamalla komento        "python src/index.py"
