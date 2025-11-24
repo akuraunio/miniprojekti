@@ -10,7 +10,8 @@ from reference_data import reference_data, ReferenceType
 def reference_from_row(row) -> Reference:
     fields = {}
     for field in reference_data[ReferenceType(row.reference_type)]["fields"]:
-        fields[field] = row.__getattribute__(field.value)
+        fields[field] = row._mapping[field.value]
+        # korjasin fields[field] = row.__getattribute__(field.value) antoi virheen kun yritti näyttää eutsiuvlla viitteet
 
     reference = Reference(
         type=ReferenceType(row.reference_type),
@@ -47,7 +48,7 @@ def get_reference(reference_id) -> Reference | None:
 
 def add_new_reference(type: ReferenceType, fields: dict):
 
-    field_names = ", ".join([field.value for field in fields.keys()])
+    field_names = ", ".join([f'"{field.value}"' for field in fields.keys()])
     field_placeholders = ", ".join([f":{field.value}" for field in fields.keys()])
 
     sql = text(
@@ -65,7 +66,7 @@ def add_new_reference(type: ReferenceType, fields: dict):
 # viitteiden muokkaus tietokantaan
 def update_reference(reference_id: str, fields: dict):
     set_clauses = ", ".join(
-        [f"{field.value} = :{field.value}" for field in fields.keys()]
+        [f'"{field.value} = :{field.value}"' for field in fields.keys()]
     )
 
     sql = text(f"UPDATE Reference SET {set_clauses} WHERE id = :id")

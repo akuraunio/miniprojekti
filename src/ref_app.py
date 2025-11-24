@@ -7,16 +7,17 @@ from repositories.references_repository import (
     get_reference,
     delete_reference,
 )
-from reference_data import reference_data, ReferenceType, ReferenceField, reference_fields
+from reference_data import reference_data, ReferenceType
+import os
+from db_helper import reset_db
+
+test_env = os.getenv("TEST_ENV") == "true"
 
 
 @app.route("/")
 def index():
     references = get_references()
-    return render_template("index.html", references=references, 
-                           ReferenceField=ReferenceField,
-                           reference_data=reference_data,
-                           reference_fields=reference_fields)
+    return render_template("index.html", references=references)
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa, get metodissa voi myös käyttää url query parametria. Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
@@ -76,6 +77,13 @@ def delete(reference_id):
         delete_reference(reference_id)
 
     return redirect(url_for("index"))
+
+
+if test_env:
+
+    @app.route("/reset_db")
+    def reset_database():
+        reset_db()
 
 
 if __name__ == "__main__":

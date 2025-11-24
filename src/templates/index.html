@@ -1,17 +1,23 @@
-<!DOCTYPE html>
-<html lang="fi">
-  <head>
-    <meta charset="utf-8" />
-    <title>Viitteet</title>
-  </head>
-  <body>
-    <h1>Viitteet</h1>
+{% extends "layout.html" %}
+
+{% block title %}Etusivu - Viitteet{% endblock %}
+
+{% block content %}
+<div class="two-column">
+  <div class="column">
+    <h2>Lisää uusi viite</h2>
     {% for type in reference_data %}
-    <form action="{{url_for('add')}}" method="get">
+    <form action="{{ url_for('add') }}" method="get">
       <input type="hidden" name="type" value="{{ type.value }}" />
       <button type="submit">Lisää {{ reference_data[type]["name"] }}</button>
     </form>
     <br />
-    {% endfor %} {% include 'reference_list.html' %}
-  </body>
-</html>
+    {% endfor %}
+  </div>
+
+  <div class="column">
+    <h2>Kaikki viitteet</h2>
+    {% include 'reference_list.html' %}
+  </div>
+</div>
+{% endblock %}

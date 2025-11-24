@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fi">
+  <head>
+    <meta charset="utf-8" />
+    <title>{% block title %}Viitteet{% endblock %}</title>
+    <link rel="stylesheet" href="/static/main.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>Viitteet</h1>
+    </div>
+
+    <div class="nav">
+      <nav>
+        <ul>
+          <li><a href="/">Etusivu</a></li>
+          <li><a href="/add">Lisää viite</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+</html>
