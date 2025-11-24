@@ -1,5 +1,34 @@
 [MASTER]
-# Ensure pylint can import modules that live under the `src` directory
-# when running pylint from the project root.
 init-hook='import sys; sys.path.insert(0, "src")'
 init-hook='import sys; sys.path.insert(0, "src/reference_app")'
+ignore-paths=src/tests
+
+[MESSAGE CONTROL]
+
+disable=raw-checker-failed,
+        bad-inline-option,
+        locally-disabled,
+        file-ignored,
+        suppressed-message,
+        useless-suppression,
+        deprecated-pragma,
+        use-symbolic-message-instead,
+        missing-module-docstring,
+        missing-function-docstring,
+        missing-class-docstring,
+        too-few-public-methods
+
+[FORMAT]
+
+max-line-length=100
+indent-after-paren=4
+
+[REFACTORING]
+
+max-nested-blocks=2
+
+[DESIGN]
+
+max-statements=10
+max-returns=3
+max-args=4
