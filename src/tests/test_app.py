@@ -4,7 +4,7 @@ from repositories.references_repository import reference_from_row
 from entities.references import Reference
 
 
-class TestReferenceAppValidation(unitTest.TestCase):
+class TestReferenceAppValidation(unittest.TestCase):
     def test_reference_from_row(self):
         row = Mock()
 
@@ -17,6 +17,16 @@ class TestReferenceAppValidation(unitTest.TestCase):
             "title": "Agile Manifesto",
             "publisher": "Agile Alliance",
             "year": 2001,
+            "volume": None,
+            "number": None,
+            "pages_from": None,
+            "pages_to": None,
+            "month": None,
+            "note": None,
+            "annote": None,
+            "doi": None,
+            "issn": None,
+            "isbn": None,
         }
 
         ref = reference_from_row(row)
