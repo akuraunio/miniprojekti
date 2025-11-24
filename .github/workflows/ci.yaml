@@ -7,7 +7,9 @@ env:
 
 on:
   push:
-    branches: [main]
+    branches:
+    - main
+    - robot_testit
   pull_request:
     branches: [main]
 
