@@ -7,7 +7,7 @@
   <li>
     <details>
       <summary>
-        {{ reference.fields[ReferenceField.TITLE] }} ({{ reference.fields[ReferenceField.YEAR] }})
+        {{ reference.fields[ReferenceField.AUTHOR] }}: {{ reference.fields[ReferenceField.TITLE] }} ({{ reference.fields[ReferenceField.YEAR] }})
       </summary>
       <p>
         <a href="{{url_for('delete', reference_id=reference.id)}}">Poista</a>

@@ -399,6 +399,10 @@ test_reference_fields = {
         "type": ReferenceFieldType.NUMBER,
         "name": "Vuosi",
     },
+        TestReferenceField.AUTHOR: {
+        "type": ReferenceFieldType.TEXT,
+        "name": "Tekijä",
+    },
 }
 
 test_reference_data = {
