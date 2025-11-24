@@ -7,7 +7,9 @@ env:
 
 on:
   push:
-    branches: [main]
+    branches:
+    - main
+    - robot_testit
   pull_request:
     branches: [main]
 
@@ -39,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: poetry install        
       - name: Run unit tests
-        run: poetry run pytest src/tests
+        run: poetry run pytest src/robot_tests
       - name: Setup chromedriver
         uses: nanasess/setup-chromedriver@master
       - run: |

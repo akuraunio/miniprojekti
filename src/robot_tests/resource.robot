@@ -25,3 +25,17 @@ Close Browser
 Reset Database
     Go To    ${RESET_URL}
 
+Add Reference
+    [Arguments]    ${reference_type}
+    Go To    ${HOME_URL}/add?type=${reference_type}
+
+    ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
+    FOR    ${field}    IN    @{elements}
+        ${type}=    Get Element Attribute    ${field}    type
+        Input Text    ${field}    ${FIELD_VALUES["${type}"]}
+    END
+
+    Click Button    xpath=//button[@type="submit"]
+
+    Page Should Contain    Test Text
+
