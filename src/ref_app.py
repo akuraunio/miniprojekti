@@ -20,7 +20,8 @@ def index():
     return render_template("index.html", references=references)
 
 
-# Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa, get metodissa voi myös käyttää url query parametria
+# Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa
+# get metodissa voi myös käyttää url query parametria
 # Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
 @app.route("/add", methods=["POST", "GET"])
 def add():

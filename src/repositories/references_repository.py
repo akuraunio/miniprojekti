@@ -10,7 +10,7 @@ from reference_data import reference_data, ReferenceType
 def reference_from_row(row) -> Reference:
     fields = {}
     for field in reference_data[ReferenceType(row.reference_type)]["fields"]:
-        fields[field] = row._mapping[field.value]
+        fields[field] = row._mapping[field.value]  # pylint: disable=protected-access
 
     reference = Reference(
         type=ReferenceType(row.reference_type),
