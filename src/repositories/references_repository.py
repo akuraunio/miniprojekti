@@ -66,7 +66,7 @@ def add_new_reference(type: ReferenceType, fields: dict):
 # viitteiden muokkaus tietokantaan
 def update_reference(reference_id: str, fields: dict):
     set_clauses = ", ".join(
-        [f'"{field.value} = :{field.value}"' for field in fields.keys()]
+        [f"{field.value} = :{field.value}" for field in fields.keys()]
     )
 
     sql = text(f"UPDATE Reference SET {set_clauses} WHERE id = :id")
