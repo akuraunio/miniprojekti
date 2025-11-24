@@ -1,4 +1,6 @@
 from enum import Enum
+import os
+import sys
 
 
 # ReferenceFieldType on kaikki kenttätyypit joita viitekentässä voi olla, määritelty html input elementtien mukaan
@@ -342,3 +344,99 @@ reference_data = {
         },
     },
 }
+
+
+# Käytetään testauksessa, ei oikea viitetyyppi
+class TestReferenceType(Enum):
+    TEST = "test"
+
+
+# Käytetään testauksessa, ei oikeita viitekenttiä
+class TestReferenceField(Enum):
+    TEST_TEXT = "test_text"
+    TEST_TEXT_REQUIRED = "test_text_required"
+    TEST_NUMBER = "test_number"
+    TEST_NUMBER_REQUIRED = "test_number_required"
+    TEST_TEXTAREA = "test_textarea"
+    TEST_TEXTAREA_REQUIRED = "test_textarea_required"
+
+    # Etusivun listassa näkyvät kentät
+    TITLE = "title"
+    YEAR = "year"
+    AUTHOR = "author"
+
+
+test_reference_fields = {
+    TestReferenceField.TEST_TEXT: {
+        "type": ReferenceFieldType.TEXT,
+        "name": "Test Text",
+    },
+    TestReferenceField.TEST_TEXT_REQUIRED: {
+        "type": ReferenceFieldType.TEXT,
+        "name": "Test Text Required",
+    },
+    TestReferenceField.TEST_NUMBER: {
+        "type": ReferenceFieldType.NUMBER,
+        "name": "Test Number",
+    },
+    TestReferenceField.TEST_NUMBER_REQUIRED: {
+        "type": ReferenceFieldType.NUMBER,
+        "name": "Test Number Required",
+    },
+    TestReferenceField.TEST_TEXTAREA: {
+        "type": ReferenceFieldType.TEXTAREA,
+        "name": "Test Textarea",
+    },
+    TestReferenceField.TEST_TEXTAREA_REQUIRED: {
+        "type": ReferenceFieldType.TEXTAREA,
+        "name": "Test Textarea Required",
+    },
+    TestReferenceField.TITLE: {
+        "type": ReferenceFieldType.TEXT,
+        "name": "Otsikko",
+    },
+    TestReferenceField.YEAR: {
+        "type": ReferenceFieldType.NUMBER,
+        "name": "Vuosi",
+    },
+}
+
+test_reference_data = {
+    TestReferenceType.TEST: {
+        "name": "Test Reference",
+        "fields": {
+            TestReferenceField.TEST_TEXT: {"required": False},
+            TestReferenceField.TEST_TEXT_REQUIRED: {"required": True},
+            TestReferenceField.TEST_NUMBER: {"required": False},
+            TestReferenceField.TEST_NUMBER_REQUIRED: {"required": True},
+            TestReferenceField.TEST_TEXTAREA: {"required": False},
+            TestReferenceField.TEST_TEXTAREA_REQUIRED: {"required": True},
+            TestReferenceField.TITLE: {"required": False},
+            TestReferenceField.AUTHOR: {"required": False},
+            TestReferenceField.YEAR: {"required": False},
+        },
+    },
+}
+
+
+def set_reference_data(app):
+    if os.getenv("USE_TEST_REFERENCE_DATA") == "true":
+        app.jinja_env.globals["reference_data"] = test_reference_data
+        app.jinja_env.globals["reference_fields"] = test_reference_fields
+        app.jinja_env.globals["ReferenceField"] = TestReferenceField
+        app.jinja_env.globals["ReferenceType"] = TestReferenceType
+        app.jinja_env.globals["ReferenceFieldType"] = ReferenceFieldType
+
+        if "reference_data" in sys.modules:
+            sys.modules["reference_data"].reference_data = test_reference_data
+            sys.modules["reference_data"].reference_fields = test_reference_fields
+            sys.modules["reference_data"].ReferenceField = TestReferenceField
+            sys.modules["reference_data"].ReferenceType = TestReferenceType
+            sys.modules["reference_data"].ReferenceFieldType = ReferenceFieldType
+        return
+
+    app.jinja_env.globals["reference_fields"] = reference_fields
+    app.jinja_env.globals["reference_data"] = reference_data
+    app.jinja_env.globals["ReferenceField"] = ReferenceField
+    app.jinja_env.globals["ReferenceFieldType"] = ReferenceFieldType
+    app.jinja_env.globals["ReferenceType"] = ReferenceType
