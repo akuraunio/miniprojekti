@@ -8,7 +8,7 @@ from repositories.references_repository import (
     get_reference,
     delete_reference,
 )
-from reference_data import reference_data, ReferenceType
+from reference_data import reference_data, ReferenceType, reference_fields
 from db_helper import reset_db
 
 test_env = os.getenv("TEST_ENV") == "true"
@@ -33,6 +33,10 @@ def add():
     if request.method == "POST":
         reference_type = ReferenceType(request.form.get("reference_type"))
 
+        for field, meta in reference_data[reference_type]["fields"].items(): #validointi
+            if meta["required"] and not request.form.get(field.value):
+                abort(400, f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}")
+
         fields = {}
         for field in reference_data[reference_type]["fields"]:
             value = request.form.get(field.value, "")
@@ -55,6 +59,10 @@ def edit(reference_id):
         return render_template("edit.html", reference=reference)
 
     if request.method == "POST":
+        for field, meta in reference_data[reference.type]["fields"].items(): #validointi
+            if meta["required"] and not request.form.get(field.value):
+                abort(400, f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}")
+
         fields = {}
         for field in reference_data[reference.type]["fields"]:
             value = request.form.get(field.value, "")
