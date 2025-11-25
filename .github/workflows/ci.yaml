@@ -4,6 +4,7 @@ env:
   DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
   TEST_ENV: true
   SECRET_KEY: sekret
+  USE_TEST_REFERENCE_DATA: true
 
 on:
   push:
