@@ -1,5 +1,5 @@
-from config import db
 from sqlalchemy import text
+from config import db
 from entities.references import Reference
 from reference_data import reference_data, ReferenceType
 
@@ -10,8 +10,7 @@ from reference_data import reference_data, ReferenceType
 def reference_from_row(row) -> Reference:
     fields = {}
     for field in reference_data[ReferenceType(row.reference_type)]["fields"]:
-        fields[field] = row._mapping[field.value]
-        # korjasin fields[field] = row.__getattribute__(field.value) antoi virheen kun yritti näyttää eutsiuvlla viitteet
+        fields[field] = row._mapping[field.value]  # pylint: disable=protected-access
 
     reference = Reference(
         type=ReferenceType(row.reference_type),
