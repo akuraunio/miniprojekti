@@ -4,7 +4,6 @@ env:
   DATABASE_URL: postgresql://postgres:postgres@localhost:5432/postgres
   TEST_ENV: true
   SECRET_KEY: sekret
-  USE_TEST_REFERENCE_DATA: true
 
 on:
   push:
@@ -42,6 +41,8 @@ jobs:
       - name: Install dependencies
         run: poetry install        
       - name: Run unit tests
+        env:
+          USE_TEST_REFERENCE_DATA: true
         run: poetry run pytest src/tests
       - name: Setup chromedriver
         uses: nanasess/setup-chromedriver@master
