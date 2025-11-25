@@ -33,9 +33,7 @@ def add():
     if request.method == "POST":
         reference_type = ReferenceType(request.form.get("reference_type"))
 
-        for field, meta in reference_data[reference_type]["fields"].items(): #validointi
-            if meta["required"] and not request.form.get(field.value):
-                abort(400, f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}")
+        _validate_required_fields(reference_type, request.form)
 
         fields = {}
         for field in reference_data[reference_type]["fields"]:
@@ -58,10 +56,9 @@ def edit(reference_id):
     if request.method == "GET":
         return render_template("edit.html", reference=reference)
 
+    _validate_required_fields(reference.type, request.form)
+
     if request.method == "POST":
-        for field, meta in reference_data[reference.type]["fields"].items(): #validointi
-            if meta["required"] and not request.form.get(field.value):
-                abort(400, f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}")
 
         fields = {}
         for field in reference_data[reference.type]["fields"]:
@@ -88,6 +85,10 @@ def delete(reference_id):
 
     return redirect(url_for("index"))
 
+def _validate_required_fields(reference_type, form):
+    for field, meta in reference_data[reference_type]["fields"].items(): #validointi
+        if meta["required"] and not form.get(field.value):
+            abort(400, f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}")
 
 if test_env:
 
