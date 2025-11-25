@@ -2,7 +2,7 @@
 
 ## Sprintin 1 retrospektiivi
 
-Ensimmäisessä retrospektiivissä käytettiin Start, Stop, Continue -retrospektiivitekniikkaa. Kaikki tiimin jäsenet käyttivät viisi minuuttia itsenäisesti asioiden kirjaamiseen post-it lapuille, jotka sijoitettiin otsikon mukaisiin kategorioihin. Sen jälkeen retrospektiivin vetäjä ryhmitteli samat huomiot yhteen ja lappujen prioriteetista äänestettiin, kukin tiimin jäsen käytti kahta ääntä.
+Ensimmäisessä retrospektiivissä käytettiin Start, Stop, Continue -retrospektiivitekniikkaa. Kaikki tiimin jäsenet käyttivät viisi minuuttia itsenäisesti asioiden kirjaamiseen post-it lapuille, jotka sijoitettiin otsikon mukaisiin kategorioihin. Sen jälkeen retrospektiivin vetäjä ryhmitteli samat huomiot yhteen ja lappujen prioriteetista äänestettiin, kukin tiimin jäsen käytti kahta ääntä. Tiimi keskusteli yhdessä kaikista post-it lapuista järjestyksessä, aloitettiin eniten ääniä saaneesta. Kokonaisuutena retrospektiiviin kului 45 minuuttia.
 Retrossa eniten mainitut ja äänestetyt asiat liittyivät tiimin yhteistyöhön sekä Scrum-palavereja että GitHubin ominaisuuksia hyödyntämällä, ja koodin yhtenäistämiseen muun muassa formatoinnin ja nimeämisstandardien osalta. Tiimin retrokeskustelun lopputuloksena tehtiin muutostoimenpiteet:
 
 ### Start
