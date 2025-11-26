@@ -24,7 +24,13 @@ def index():
 # get metodissa voi myös käyttää url query parametria
 @app.route("/add", methods=["POST", "GET"])
 def add():
-    reference_type = request.args.get("type")
+    reference_type = None
+
+    if request.method == "GET":
+        reference_type = request.args.get("type")
+    if request.method == "POST":
+        reference_type = request.form.get("reference_type")
+
     if not reference_type or reference_type not in [rt.value for rt in ReferenceType]:
         abort(400, "Virheellinen tai puuttuva viitteen tyyppi")
     reference_type = ReferenceType(reference_type)
