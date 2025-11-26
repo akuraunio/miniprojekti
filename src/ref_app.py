@@ -22,17 +22,17 @@ def index():
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa
 # get metodissa voi myös käyttää url query parametria
-# Jos tyyppi puuttuu tai on virheellinen, sovellus kaatuu, korjataan myöhemmin :D
 @app.route("/add", methods=["POST", "GET"])
 def add():
-    if request.method == "GET":
-        reference_type = ReferenceType(request.args.get("type"))
+    reference_type = request.args.get("type")
+    if not reference_type or reference_type not in [rt.value for rt in ReferenceType]:
+        abort(400, "Virheellinen tai puuttuva viitteen tyyppi")
+    reference_type = ReferenceType(reference_type)
 
+    if request.method == "GET":
         return render_template("add.html", reference_type=reference_type)
 
     if request.method == "POST":
-        reference_type = ReferenceType(request.form.get("reference_type"))
-
         _validate_required_fields(reference_type, request.form)
 
         fields = {}
@@ -85,10 +85,15 @@ def delete(reference_id):
 
     return redirect(url_for("index"))
 
+
 def _validate_required_fields(reference_type, form):
-    for field, meta in reference_data[reference_type]["fields"].items(): #validointi
+    for field, meta in reference_data[reference_type]["fields"].items():  # validointi
         if meta["required"] and not form.get(field.value):
-            abort(400, f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}")
+            abort(
+                400,
+                f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}",
+            )
+
 
 if test_env:
 
@@ -96,6 +101,7 @@ if test_env:
     def reset_database():
         reset_db()
         return "OK"
+
 
 if __name__ == "__main__":
     app.run(debug=True)
