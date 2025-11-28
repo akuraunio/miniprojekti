@@ -81,3 +81,13 @@ def delete_reference(reference_id: str):
     sql = text("DELETE FROM Reference WHERE id = :id")
     db.session.execute(sql, {"id": reference_id})
     db.session.commit()
+
+
+def search_references(query: str) -> list[Reference]:
+    from db_helper import search
+    rows = search(query)
+    references = []
+    for row in rows:
+        reference = reference_from_row(row)
+        references.append(reference)
+    return references

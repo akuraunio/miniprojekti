@@ -7,6 +7,7 @@ from repositories.references_repository import (
     update_reference,
     get_reference,
     delete_reference,
+    search_references,
 )
 from reference_data import reference_data, ReferenceType, reference_fields
 from db_helper import reset_db
@@ -16,8 +17,16 @@ test_env = os.getenv("TEST_ENV") == "true"
 
 @app.route("/")
 def index():
-    references = get_references()
-    return render_template("index.html", references=references)
+    query = request.args.get("query", "").strip()
+
+    if query:
+        search_results = search_references(query)
+        return render_template(
+            "index.html", search_results=search_results, search_query=query
+        )
+    else:
+        references = get_references()
+        return render_template("index.html", references=references)
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa

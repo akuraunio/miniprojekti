@@ -1,8 +1,4 @@
-{% extends "layout.html" %}
-
-{% block title %}Etusivu - Viitteet{% endblock %}
-
-{% block content %}
+{% extends "layout.html" %} {% block title %}Etusivu - Viitteet{% endblock %} {% block content %}
 <div class="two-column">
   <div class="column">
     <h2>Lisää uusi viite</h2>
@@ -16,8 +12,37 @@
   </div>
 
   <div class="column">
+    <h2>Hae viitteitä</h2>
+    <form action="{{ url_for('index') }}" method="get">
+      <input type="text" name="query" placeholder="Hakusana..." value="{{ search_query or '' }}" />
+      <button type="submit">Hae</button>
+      {% if search_query %}
+      <a href="{{ url_for('index') }}">
+        <button type="button">Tyhjennä haku</button>
+      </a>
+      {% endif %}
+    </form>
+    <br />
+    
+    {% if search_query %}
+    <h2>Hakutulokset ({{ search_results|length }} tulosta)</h2>
+    {% if search_results %}
+    <ul>
+      {% for reference in search_results %}
+      <li>
+        {{ reference.fields[ReferenceField.TITLE] }} ({{ reference.fields[ReferenceField.YEAR] }})
+        <a href="{{url_for('delete', reference_id=reference.id)}}">Poista</a>
+        <a href="{{url_for('edit', reference_id=reference.id)}}">Muokkaa</a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>Ei hakutuloksia hakusanalla "{{ search_query }}"</p>
+    {% endif %}
+    {% else %}
     <h2>Kaikki viitteet</h2>
     {% include 'reference_list.html' %}
+    {% endif %}
   </div>
 </div>
 {% endblock %}

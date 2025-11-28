@@ -60,6 +60,25 @@ def setup_db():
     db.session.commit()
 
 
+def search(query):
+    sql = text(
+        """ 
+        SELECT * FROM Reference
+        WHERE title ILIKE :query 
+            OR author ILIKE :query 
+            OR journal ILIKE :query
+            OR booktitle ILIKE :query 
+            OR publisher ILIKE :query 
+            OR note ILIKE :query
+            OR CAST(year AS TEXT) ILIKE :query
+            OR key_field ILIKE :query
+    """
+    )
+    search_query = f"%{query}%"
+    result = db.session.execute(sql, {"query": search_query})
+    return result.fetchall()
+
+
 if __name__ == "__main__":
     with app.app_context():
         setup_db()

@@ -13,7 +13,7 @@ class ReferenceFieldType(Enum):
 
 # ReferenceType on kaikki viitteiden kentät joita voi olla
 class ReferenceField(Enum):
-    KEY = "key"
+    KEY = "key_field"
     ADDRESS = "address"
     ANNOTE = "annote"
     AUTHOR = "author"
