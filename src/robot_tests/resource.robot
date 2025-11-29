@@ -2,7 +2,7 @@
 Library  SeleniumLibrary
 
 *** Variables ***
-${DELAY}     0.5 seconds
+${DELAY}     0.1 seconds
 ${HOME_URL}  http://localhost:5001
 ${RESET_URL}  http://localhost:5001/reset_db
 ${BROWSER}   chrome

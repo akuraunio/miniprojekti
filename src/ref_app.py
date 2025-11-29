@@ -1,5 +1,5 @@
 import os
-from flask import request, redirect, url_for, render_template, abort
+from flask import request, redirect, url_for, render_template, abort, Response
 from config import app
 from repositories.references_repository import (
     get_references,
@@ -10,6 +10,7 @@ from repositories.references_repository import (
 )
 from reference_data import reference_data, ReferenceType, reference_fields
 from db_helper import reset_db
+from bibtex_transform import references_to_bibtex
 
 test_env = os.getenv("TEST_ENV") == "true"
 
@@ -90,6 +91,25 @@ def delete(reference_id):
         delete_reference(reference_id)
 
     return redirect(url_for("index"))
+
+
+# routet bibtex-näkymälle ja lataukselle
+@app.route("/bibtex")
+def bibtex():
+    references = get_references()
+    bibtex_reference = references_to_bibtex(references)
+    return render_template("bibtex.html", bibtex_reference=bibtex_reference)
+
+
+@app.route("/bibtex/download")
+def bibtex_download():
+    references = get_references()
+    bibtex_reference = references_to_bibtex(references)
+    return Response(
+        bibtex_reference,
+        mimetype="text/plain",
+        headers={"Content-Disposition": "attachment; filename=references.bib"},
+    )
 
 
 def _validate_required_fields(reference_type, form):
