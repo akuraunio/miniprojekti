@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}Viitteet{% endblock %}
+
+{% block content %}
+  <h2>Viitteet BibTeX-muodossa</h2>
+  
+  {% if bibtex_reference %}
+    <div class="actions">
+      <button onclick="copy_BibTex()">Kopioi leikepöydälle</button>
+      <a href="/bibtex/download">Lataa .bib tiedosto</a>
+    </div>
+    <pre id="bibtex-refrence"><code>{{ bibtex_reference }}</code></pre>
+  {% else %}
+    <p>Ei viitteitä näytettäväksi.</p>
+  {% endif %}
+  
+
+  <div class="actions">
+    <a href="/">Takaisin etusivulle</a>
+  </div>
+  <script>
+    function copy_BibTex() {
+        const bibtex = document.getElementById('bibtex-refrence').textContent;
+        navigator.clipboard.writeText(bibtex).then(function() {
+            alert('BibTeX-viitteet kopioitu leikepöydälle');
+        });
+    }
+  </script>
+{% endblock %}
