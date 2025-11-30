@@ -13,10 +13,29 @@
 
   <div class="column">
     <h2>Hae viitteitä</h2>
-    <form action="{{ url_for('index') }}" method="get">
-      <input type="text" name="query" placeholder="Hakusana..." value="{{ search_query or '' }}" />
+    <br>
+    <label>Hakusana:</label><br/>
+    <form action="{{ url_for('index') }}" method="get" class="search-form">
+      <input type="text" name="query" placeholder="Hakusana" value="{{ search_query or '' }}" />
+      <br>
+      <label for="field">Hae kentästä:</label><br>
+      <select name="field" id="field">
+        <option value="">Kaikki kentät</option>
+        <option value="title" {% if search_field == 'title' %}selected{% endif %}>Otsikko</option>
+        <option value="author" {% if search_field == 'author' %}selected{% endif %}>Tekijä</option>
+        <option value="year" {% if search_field == 'year' %}selected{% endif %}>Vuosi</option>
+        <option value="journal" {% if search_field == 'journal' %}selected{% endif %}>Lehti</option>
+        <option value="booktitle" {% if search_field == 'booktitle' %}selected{% endif %}>Kirjan nimi</option>
+        <option value="publisher" {% if search_field == 'publisher' %}selected{% endif %}>Kustantaja</option>
+        <option value="editor" {% if search_field == 'editor' %}selected{% endif %}>Toimittaja</option>
+        <option value="school" {% if search_field == 'school' %}selected{% endif %}>Koulu</option>
+        <option value="organization" {% if search_field == 'organization' %}selected{% endif %}>Organisaatio</option>
+        <option value="key" {% if search_field == 'key' %}selected{% endif %}>Viiteavain</option>
+        <option value="note" {% if search_field == 'note' %}selected{% endif %}>Huomautus</option>
+      </select>
+      <br>
       <button type="submit">Hae</button>
-      {% if search_query %}
+      {% if search_query or search_field %}
       <a href="{{ url_for('index') }}">
         <button type="button">Tyhjennä haku</button>
       </a>
@@ -24,8 +43,16 @@
     </form>
     <br />
     
-    {% if search_query %}
+    {% if search_query or search_field %}
     <h2>Hakutulokset ({{ search_results|length }} tulosta)</h2>
+    {% if search_query and search_field %}
+    <p><strong>Hakusana:</strong> "{{ search_query }}" <strong>Kentässä:</strong> {{ search_field_name }}</p>
+    {% elif search_query %}
+    <p><strong>Hakusana:</strong> "{{ search_query }}" <strong>Kentässä:</strong> Kaikki kentät</p>
+    {% elif search_field %}
+    <p><strong>Hakutulos:</strong> Kaikki viitteet joissa kenttä {{ search_field_name }}</p>
+    {% endif %}
+    
     {% if search_results %}
     <ul>
       {% for reference in search_results %}
@@ -37,7 +64,13 @@
       {% endfor %}
     </ul>
     {% else %}
+    {% if search_query and search_field %}
+    <p>Ei hakutuloksia hakusanalla "{{ search_query }}" kentässä "{{ search_field_name }}"</p>
+    {% elif search_query %}
     <p>Ei hakutuloksia hakusanalla "{{ search_query }}"</p>
+    {% elif search_field %}
+    <p>Ei viitteitä joissa olisi kenttä {{ search_field_name }}</p>
+    {% endif %}
     {% endif %}
     {% else %}
     <h2>Kaikki viitteet</h2>

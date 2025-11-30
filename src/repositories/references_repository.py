@@ -83,9 +83,20 @@ def delete_reference(reference_id: str):
     db.session.commit()
 
 
-def search_references(query: str) -> list[Reference]:
-    from db_helper import search
-    rows = search(query)
+def search_references(query: str, field: str = None) -> list[Reference]:
+    if field and not query:
+        from db_helper import search_field_exists
+
+        rows = search_field_exists(field)
+    elif field:
+        from db_helper import search_by_field
+
+        rows = search_by_field(query, field)
+    else:
+        from db_helper import search
+
+        rows = search(query)
+
     references = []
     for row in rows:
         reference = reference_from_row(row)

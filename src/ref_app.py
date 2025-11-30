@@ -18,11 +18,30 @@ test_env = os.getenv("TEST_ENV") == "true"
 @app.route("/")
 def index():
     query = request.args.get("query", "").strip()
+    field = request.args.get("field", "").strip()
 
-    if query:
-        search_results = search_references(query)
+    field_names = {
+        "title": "Otsikko",
+        "author": "Tekijä",
+        "year": "Vuosi",
+        "journal": "Lehti",
+        "booktitle": "Kirjan nimi",
+        "publisher": "Kustantaja",
+        "editor": "Toimittaja",
+        "school": "Koulu",
+        "organization": "Organisaatio",
+        "key": "Viiteavain",
+        "note": "Huomautus",
+    }
+
+    if query or field:
+        search_results = search_references(query, field if field else None)
         return render_template(
-            "index.html", search_results=search_results, search_query=query
+            "index.html",
+            search_results=search_results,
+            search_query=query,
+            search_field=field,
+            search_field_name=field_names.get(field, ""),
         )
     else:
         references = get_references()

@@ -54,3 +54,25 @@ nav li:not(:last-of-type) {
 .column h2 {
   margin-top: 0;
 }
+
+.search-form {
+  text-align: center;
+}
+
+.search-form input[type="text"] {
+  width: 200px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.search-form select {
+  width: 150px;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.search-form button {
+  padding: 4px 8px;
+  margin: 3px;
+  font-size: 12px;
+}

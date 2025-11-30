@@ -71,11 +71,38 @@ def search(query):
             OR publisher ILIKE :query 
             OR note ILIKE :query
             OR CAST(year AS TEXT) ILIKE :query
-            OR key_field ILIKE :query
+            OR key ILIKE :query
     """
     )
     search_query = f"%{query}%"
     result = db.session.execute(sql, {"query": search_query})
+    return result.fetchall()
+
+
+def search_by_field(query, field):
+    """Search in a specific field"""
+    if field == "year":
+        sql = text(
+            "SELECT * FROM Reference WHERE CAST(year AS TEXT) ILIKE :query"
+        )  # numerot pitää käsitellä eri tavalla, kuten def searchissakin
+    else:
+        sql = text(f"SELECT * FROM Reference WHERE {field} ILIKE :query")
+
+    search_query = f"%{query}%"
+    result = db.session.execute(sql, {"query": search_query})
+    return result.fetchall()
+
+
+def search_field_exists(field):
+    """Search for all records where the specified field is used (not null and not empty)"""
+    if field == "year":
+        sql = text("SELECT * FROM Reference WHERE year IS NOT NULL")
+    else:
+        sql = text(
+            f"SELECT * FROM Reference WHERE {field} IS NOT NULL AND {field} != ''"
+        )
+
+    result = db.session.execute(sql)
     return result.fetchall()
 
 
