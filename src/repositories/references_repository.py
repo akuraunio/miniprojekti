@@ -2,6 +2,7 @@ from sqlalchemy import text
 from config import db
 from entities.references import Reference
 from reference_data import reference_data, ReferenceType
+from db_helper import search, search_by_field, search_field_exists
 
 
 def reference_from_row(row) -> Reference:
@@ -81,17 +82,12 @@ def delete_reference(reference_id: str):
 
 
 def search_references(query: str, field: str = None) -> list[Reference]:
+    """Search references with optional field filtering."""
     if field and not query:
-        from db_helper import search_field_exists
-
         rows = search_field_exists(field)
     elif field:
-        from db_helper import search_by_field
-
         rows = search_by_field(query, field)
     else:
-        from db_helper import search
-
         rows = search(query)
 
     references = []

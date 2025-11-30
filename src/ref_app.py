@@ -43,9 +43,9 @@ def index():
             search_field=field,
             search_field_name=field_names.get(field, ""),
         )
-    else:
-        references = get_references()
-        return render_template("index.html", references=references)
+
+    references = get_references()
+    return render_template("index.html", references=references)
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa
