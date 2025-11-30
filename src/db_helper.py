@@ -60,6 +60,53 @@ def setup_db():
     db.session.commit()
 
 
+def search(query):
+    """Search for references across multiple fields."""
+    sql = text(
+        """ 
+        SELECT * FROM Reference
+        WHERE title ILIKE :query 
+            OR author ILIKE :query 
+            OR journal ILIKE :query
+            OR booktitle ILIKE :query 
+            OR publisher ILIKE :query 
+            OR note ILIKE :query
+            OR CAST(year AS TEXT) ILIKE :query
+            OR key ILIKE :query
+    """
+    )
+    search_query = f"%{query}%"
+    result = db.session.execute(sql, {"query": search_query})
+    return result.fetchall()
+
+
+def search_by_field(query, field):
+    """Search in a specific field with proper type handling."""
+    if field == "year":
+        sql = text(
+            "SELECT * FROM Reference WHERE CAST(year AS TEXT) ILIKE :query"
+        )  # numerot pitää käsitellä eri tavalla, kuten def searchissakin
+    else:
+        sql = text(f"SELECT * FROM Reference WHERE {field} ILIKE :query")
+
+    search_query = f"%{query}%"
+    result = db.session.execute(sql, {"query": search_query})
+    return result.fetchall()
+
+
+def search_field_exists(field):
+    """Search for all records where the specified field is not null and not empty."""
+    if field == "year":
+        sql = text("SELECT * FROM Reference WHERE year IS NOT NULL")
+    else:
+        sql = text(
+            f"SELECT * FROM Reference WHERE {field} IS NOT NULL AND {field} != ''"
+        )
+
+    result = db.session.execute(sql)
+    return result.fetchall()
+
+
 if __name__ == "__main__":
     with app.app_context():
         setup_db()

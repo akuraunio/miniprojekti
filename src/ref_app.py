@@ -7,6 +7,7 @@ from repositories.references_repository import (
     update_reference,
     get_reference,
     delete_reference,
+    search_references,
 )
 from reference_data import reference_data, ReferenceType, reference_fields
 from db_helper import reset_db
@@ -17,6 +18,33 @@ test_env = os.getenv("TEST_ENV") == "true"
 
 @app.route("/")
 def index():
+    query = request.args.get("query", "").strip()
+    field = request.args.get("field", "").strip()
+
+    field_names = {
+        "title": "Otsikko",
+        "author": "Tekijä",
+        "year": "Vuosi",
+        "journal": "Lehti",
+        "booktitle": "Kirjan nimi",
+        "publisher": "Kustantaja",
+        "editor": "Toimittaja",
+        "school": "Koulu",
+        "organization": "Organisaatio",
+        "key": "Viiteavain",
+        "note": "Huomautus",
+    }
+
+    if query or field:
+        search_results = search_references(query, field if field else None)
+        return render_template(
+            "index.html",
+            search_results=search_results,
+            search_query=query,
+            search_field=field,
+            search_field_name=field_names.get(field, ""),
+        )
+
     references = get_references()
     return render_template("index.html", references=references)
 

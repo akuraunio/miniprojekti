@@ -2,9 +2,7 @@ from sqlalchemy import text
 from config import db
 from entities.references import Reference
 from reference_data import reference_data, ReferenceType
-
-
-# Database-based functions for storing and retrieving references
+from db_helper import search, search_by_field, search_field_exists
 
 
 def reference_from_row(row) -> Reference:
@@ -81,3 +79,19 @@ def delete_reference(reference_id: str):
     sql = text("DELETE FROM Reference WHERE id = :id")
     db.session.execute(sql, {"id": reference_id})
     db.session.commit()
+
+
+def search_references(query: str, field: str = None) -> list[Reference]:
+    """Search references with optional field filtering."""
+    if field and not query:
+        rows = search_field_exists(field)
+    elif field:
+        rows = search_by_field(query, field)
+    else:
+        rows = search(query)
+
+    references = []
+    for row in rows:
+        reference = reference_from_row(row)
+        references.append(reference)
+    return references
