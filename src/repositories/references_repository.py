@@ -4,9 +4,6 @@ from entities.references import Reference
 from reference_data import reference_data, ReferenceType
 
 
-# Database-based functions for storing and retrieving references
-
-
 def reference_from_row(row) -> Reference:
     fields = {}
     for field in reference_data[ReferenceType(row.reference_type)]["fields"]:

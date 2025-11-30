@@ -61,6 +61,7 @@ def setup_db():
 
 
 def search(query):
+    """Search for references across multiple fields."""
     sql = text(
         """ 
         SELECT * FROM Reference
@@ -80,7 +81,7 @@ def search(query):
 
 
 def search_by_field(query, field):
-    """Search in a specific field"""
+    """Search in a specific field with proper type handling."""
     if field == "year":
         sql = text(
             "SELECT * FROM Reference WHERE CAST(year AS TEXT) ILIKE :query"
@@ -94,7 +95,7 @@ def search_by_field(query, field):
 
 
 def search_field_exists(field):
-    """Search for all records where the specified field is used (not null and not empty)"""
+    """Search for all records where the specified field is not null and not empty."""
     if field == "year":
         sql = text("SELECT * FROM Reference WHERE year IS NOT NULL")
     else:
