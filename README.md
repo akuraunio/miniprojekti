@@ -1,4 +1,6 @@
 # Miniprojekti
+
+![GHA workflow badge](https://github.com/akuraunio/miniprojekti/actions/workflows/ci.yaml/badge.svg)
 Ohjelmistuotanto syksy 2025
 
 ## Definition of Done
