@@ -54,9 +54,11 @@ jobs:
         run: bash run_robot_tests.sh
       - name: Run pylint analysis
         run: poetry run pylint src
-      - name: Run coverage report
+      - name: Run coverage
         env:
           USE_TEST_REFERENCE_DATA: true
+        run: poetry run coverage run --branch -m pytest
+      - name: Coverage report
         run: poetry run coverage xml
       - name: Coverage report to Codecov
         uses: codecov/codecov-action@v5
