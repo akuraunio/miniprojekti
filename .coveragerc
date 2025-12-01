@@ -1,0 +1,24 @@
+[run]
+source = src
+omit = 
+    src/tests/**
+    src/config.py
+    src/db_helper.py
+    src/index.py
+    src/reference_data.py
+
+[report]
+exclude_lines = 
+    def get_references
+    def get_reference
+    def add_new_reference
+    def update_reference
+    def delete_reference
+    def search_references
+    def edit
+    def delete
+    def bibtex
+    def bibtex_download
+    def index
+    def add
+    def reset_database
