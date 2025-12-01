@@ -1,5 +1,5 @@
-from reference_data import ReferenceField, TestReferenceField
 import os
+from reference_data import ReferenceField, TestReferenceField
 
 
 # Palauttaa yhden reference objektin tiedot stringinä joka on BibTex formaatissa
