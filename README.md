@@ -1,6 +1,8 @@
 # Miniprojekti
 
 ![GHA workflow badge](https://github.com/akuraunio/miniprojekti/actions/workflows/ci.yaml/badge.svg)
+![codecov](https://codecov.io/gh/akuraunio/miniprojekti/graph/badge.svg?token=URKILIPGIB)](https://codecov.io/gh/akuraunio/miniprojekti)
+
 Ohjelmistuotanto syksy 2025
 
 ## Definition of Done
