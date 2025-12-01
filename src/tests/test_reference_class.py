@@ -5,12 +5,13 @@ from entities.references import Reference
 
 
 class TestReferenceCreation(unittest.TestCase):
-    def test_reference_from_row_creates_reference_object(self):
-        row = Mock()
+    def setUp(self):
+        self.row = Mock()
 
-        row.reference_type = "test"
-        row.id = 100
-        row._mapping = {
+        self.row.reference_type = "test"
+        self.row.id = 100
+        self.row._mapping = {
+            "key": "testiviite1",
             "test_text": None,
             "test_text_required": "Jim Highsmith",
             "test_number": None,
@@ -20,8 +21,19 @@ class TestReferenceCreation(unittest.TestCase):
             "title": None,
             "author": None,
             "year": None,
+            "pages_from": None,
+            "pages_to": None,
         }
 
-        ref = reference_from_row(row)
+    def test_reference_from_row_creates_reference_object(self):
+        ref = reference_from_row(self.row)
 
         self.assertIsInstance(ref, Reference)
+
+    def test_reference_repr(self):
+        ref = reference_from_row(self.row)
+        repr_actual = repr(ref)
+
+        # testaa että repr palauttaa oikean viite tyypin ja id:n
+        self.assertIn("TestReferenceType.TEST", repr_actual)
+        self.assertIn("id=100", repr_actual)

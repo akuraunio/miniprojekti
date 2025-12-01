@@ -8,6 +8,7 @@ class TestUserInputFormValidation(unittest.TestCase):
     def test_validate_required_fields_is_passed_with_correct_input(self):
         ref_type = TestReferenceType.TEST
         form_input = {
+            "key": "testikey1",
             "test_text_required": "teksti",
             "test_number_required": 3,
             "test_textarea_required": "tekstikenttä",
