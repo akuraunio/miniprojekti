@@ -164,13 +164,9 @@ def _validate_text(field_value, field_name):
     if not any(char.isalnum()for char in field_value):
         abort(400,f"{field_name} ei voi sisältää vain erikoismerkkejä")
 
-def _validate_single_field(field_key, field_name, field_type, field_value):
+def _validate_single_field(field_name, field_type, field_value):
     if field_type == ReferenceFieldType.NUMBER:
         _validate_number(field_name, field_value)
-
-    if field_key == "key":
-        if not field_value.isdigit():
-            abort(400, "Viiteavaimen täytyy olla numero")
 
     if field_type in (ReferenceFieldType.TEXT, ReferenceFieldType.TEXTAREA):
         _validate_text(field_value, field_name)
@@ -185,8 +181,7 @@ def _validate_required_fields(reference_type, form):
         fields_dict = reference_fields
   
     for field, meta in data_dict[reference_type]["fields"].items():
-        field_key = field.value
-        field_value = form.get(field_key)
+        field_value = form.get(field.value)
         field_name = fields_dict[field]["name"]
         field_type = fields_dict[field]["type"]
 
@@ -195,7 +190,7 @@ def _validate_required_fields(reference_type, form):
         if not field_value:
             continue
 
-        _validate_single_field(field_key, field_name, field_type, field_value)
+        _validate_single_field(field_name, field_type, field_value)
 
 if test_env:
 
