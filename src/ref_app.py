@@ -9,7 +9,7 @@ from repositories.references_repository import (
     delete_reference,
     search_references,
 )
-from reference_data import reference_data, ReferenceType, reference_fields
+from reference_data import reference_data, ReferenceType, reference_fields, ReferenceFieldType
 from db_helper import reset_db
 from bibtex_transform import references_to_bibtex
 
@@ -139,15 +139,47 @@ def bibtex_download():
         headers={"Content-Disposition": "attachment; filename=references.bib"},
     )
 
+# validointien apufunktiot
+def _validate_required(field_name, field_value, required):
+    if required and not field_value:
+        abort(400, f"Täytä kaikki pakolliset kentät: {field_name}")
 
+def _validate_number(field_name, field_value):
+    if not field_value.lstrip("-").isdigit():
+        abort(400,f"{field_name} täytyy olla numero")
+
+    if int(field_value) < 0:
+        abort(400, "Vuosi ei voi olla negatiivinen")
+
+def _validate_text(field_value, field_name):
+    if not any(char.isalnum()for char in field_value):
+        abort(400,f"{field_name} ei voi sisältää vain erikoismerkkejä")
+
+def _validate_single_field(field_name, field_type, field_value):
+    if field_type == ReferenceFieldType.NUMBER:
+        _validate_number(field_name, field_value)
+
+    if field_name == "key":
+        if not field_value.isdigit():
+            abort(400, "Viiteavaimen täytyy olla numero")
+
+    if field_type in (ReferenceFieldType.TEXT, ReferenceFieldType.TEXTAREA):
+        _validate_text(field_value, field_name)
+
+# viitteiden kenttien validointi
 def _validate_required_fields(reference_type, form):
-    for field, meta in reference_data[reference_type]["fields"].items():  # validointi
-        if meta["required"] and not form.get(field.value):
-            abort(
-                400,
-                f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}",
-            )
+    for field, meta in reference_data[reference_type]["fields"].items():
 
+        field_value = form.get(field.value)
+        field_name = reference_fields[field]["name"]
+        field_type = reference_fields[field]["type"]
+
+        _validate_required(field_name, field_value, meta["required"])
+
+        if not field_value:
+            continue
+
+        _validate_single_field(field_name, field_type, field_value)
 
 if test_env:
 

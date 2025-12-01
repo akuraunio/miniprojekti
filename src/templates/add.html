@@ -6,7 +6,16 @@ Viitteet{% endblock %} {% block content %}
   reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
 
   <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <input type="text" name="{{ field.value }}" {% if data["required"] %}required{% endif %}/><br />
+  <input type="text" name="{{ field.value }}" 
+    {% if data["required"] %}required{% endif %}
+    {% if field.value == "key" %}
+      pattern="\d+"
+      title="Syötä vain numeroita"
+    {% else %}
+      pattern=".*[0-9A-Za-zÄÖÅäöå].*"
+      title="Syötä ainakin yksi kirjain tai numero"
+    {% endif %}
+  /><br />
 
   {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
 
@@ -16,7 +25,7 @@ Viitteet{% endblock %} {% block content %}
   {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
 
   <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <input type="number" name="{{ field.value }}" {% if data["required"] %}required{% endif %}/><br />
+  <input type="number" name="{{ field.value }}" {% if data["required"] %}required{% endif %}min="0"/><br />
 
   {% endif %} {% endfor %}
 
