@@ -1,4 +1,5 @@
-from reference_data import ReferenceField
+from reference_data import ReferenceField, TestReferenceField
+import os
 
 
 # Palauttaa yhden reference objektin tiedot stringinä joka on BibTex formaatissa
@@ -21,14 +22,20 @@ def reference_to_bibtex(ref):
         else:
             _add_field("pages", f"{pages_from}--{pages_to}")
 
-    _pages(
-        ref.fields.get(ReferenceField.PAGES_FROM),
-        ref.fields.get(ReferenceField.PAGES_TO),
-    )
-
     for field_enum, field_value in ref.fields.items():
         if field_enum.value not in ["key", "pages_from", "pages_to"]:
             _add_field(field_enum.value, field_value)
+
+    if os.getenv("USE_TEST_REFERENCE_DATA") == "true":
+        _pages(
+            ref.fields.get(TestReferenceField.PAGES_FROM),
+            ref.fields.get(TestReferenceField.PAGES_TO),
+        )
+    else:
+        _pages(
+            ref.fields.get(ReferenceField.PAGES_FROM),
+            ref.fields.get(ReferenceField.PAGES_TO),
+        )
 
     field_block = "".join(field_lines)
     return f"@{ref.type.value}{{{ref.fields.get(ReferenceField.KEY)},\n{field_block}}}"

@@ -366,12 +366,15 @@ class TestReferenceField(Enum):
     TITLE = "title"
     YEAR = "year"
     AUTHOR = "author"
+    PAGES_FROM = "pages_from"
+    PAGES_TO = "pages_to"
+    KEY = "key"
 
 
 test_reference_fields = {
-    TestReferenceField.TEST_TEXT: {
+    TestReferenceField.KEY: {
         "type": ReferenceFieldType.TEXT,
-        "name": "Test Text",
+        "name": "Test Key",
     },
     TestReferenceField.TEST_TEXT_REQUIRED: {
         "type": ReferenceFieldType.TEXT,
@@ -405,12 +408,21 @@ test_reference_fields = {
         "type": ReferenceFieldType.TEXT,
         "name": "Tekijä",
     },
+    TestReferenceField.PAGES_FROM: {
+        "type": ReferenceFieldType.NUMBER,
+        "name": "Test pages from",
+    },
+    TestReferenceField.PAGES_TO: {
+        "type": ReferenceFieldType.NUMBER,
+        "name": "Test pages to",
+    },
 }
 
 test_reference_data = {
     TestReferenceType.TEST: {
         "name": "Test Reference",
         "fields": {
+            TestReferenceField.KEY: {"required": True},
             TestReferenceField.TEST_TEXT: {"required": False},
             TestReferenceField.TEST_TEXT_REQUIRED: {"required": True},
             TestReferenceField.TEST_NUMBER: {"required": False},
@@ -420,6 +432,8 @@ test_reference_data = {
             TestReferenceField.TITLE: {"required": False},
             TestReferenceField.AUTHOR: {"required": False},
             TestReferenceField.YEAR: {"required": False},
+            TestReferenceField.PAGES_FROM: {"required": False},
+            TestReferenceField.PAGES_TO: {"required": False},
         },
     },
 }

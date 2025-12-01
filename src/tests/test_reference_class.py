@@ -11,6 +11,7 @@ class TestReferenceCreation(unittest.TestCase):
         self.row.reference_type = "test"
         self.row.id = 100
         self.row._mapping = {
+            "key": "testiviite1",
             "test_text": None,
             "test_text_required": "Jim Highsmith",
             "test_number": None,
@@ -20,6 +21,8 @@ class TestReferenceCreation(unittest.TestCase):
             "title": None,
             "author": None,
             "year": None,
+            "pages_from": None,
+            "pages_to": None,
         }
 
     def test_reference_from_row_creates_reference_object(self):
