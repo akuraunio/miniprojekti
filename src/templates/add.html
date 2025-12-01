@@ -25,7 +25,7 @@ Viitteet{% endblock %} {% block content %}
   {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
 
   <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <input type="number" name="{{ field.value }}" {% if data["required"] %}required{% endif %}min="0"/><br />
+  <input type="number" name="{{ field.value }}" {% if data["required"] %}required{% endif %} min="0"/><br />
 
   {% endif %} {% endfor %}
 

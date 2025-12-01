@@ -9,9 +9,17 @@ from repositories.references_repository import (
     delete_reference,
     search_references,
 )
-from reference_data import reference_data, ReferenceType, reference_fields, ReferenceFieldType
 from db_helper import reset_db
 from bibtex_transform import references_to_bibtex
+from reference_data import (
+    reference_data,
+    reference_fields,
+    ReferenceType,
+    ReferenceFieldType,
+    TestReferenceType,
+    test_reference_data,
+    test_reference_fields,
+)
 
 test_env = os.getenv("TEST_ENV") == "true"
 
@@ -145,21 +153,22 @@ def _validate_required(field_name, field_value, required):
         abort(400, f"Täytä kaikki pakolliset kentät: {field_name}")
 
 def _validate_number(field_name, field_value):
-    if not field_value.lstrip("-").isdigit():
+    value = str(field_value).strip()
+    if not value.lstrip("-").isdigit():
         abort(400,f"{field_name} täytyy olla numero")
 
-    if int(field_value) < 0:
+    if int(value) < 0:
         abort(400, "Vuosi ei voi olla negatiivinen")
 
 def _validate_text(field_value, field_name):
     if not any(char.isalnum()for char in field_value):
         abort(400,f"{field_name} ei voi sisältää vain erikoismerkkejä")
 
-def _validate_single_field(field_name, field_type, field_value):
+def _validate_single_field(field_key, field_name, field_type, field_value):
     if field_type == ReferenceFieldType.NUMBER:
         _validate_number(field_name, field_value)
 
-    if field_name == "key":
+    if field_key == "key":
         if not field_value.isdigit():
             abort(400, "Viiteavaimen täytyy olla numero")
 
@@ -168,18 +177,25 @@ def _validate_single_field(field_name, field_type, field_value):
 
 # viitteiden kenttien validointi
 def _validate_required_fields(reference_type, form):
-    for field, meta in reference_data[reference_type]["fields"].items():
-
-        field_value = form.get(field.value)
-        field_name = reference_fields[field]["name"]
-        field_type = reference_fields[field]["type"]
+    if isinstance(reference_type, TestReferenceType):
+        data_dict = test_reference_data
+        fields_dict = test_reference_fields
+    else:
+        data_dict = reference_data
+        fields_dict = reference_fields
+  
+    for field, meta in data_dict[reference_type]["fields"].items():
+        field_key = field.value
+        field_value = form.get(field_key)
+        field_name = fields_dict[field]["name"]
+        field_type = fields_dict[field]["type"]
 
         _validate_required(field_name, field_value, meta["required"])
 
         if not field_value:
             continue
 
-        _validate_single_field(field_name, field_type, field_value)
+        _validate_single_field(field_key, field_name, field_type, field_value)
 
 if test_env:
 
