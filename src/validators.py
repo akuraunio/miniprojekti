@@ -1,6 +1,6 @@
 from flask import abort
 from reference_data import (
-    ReferenceFieldType, 
+    ReferenceFieldType,
     TestReferenceType,
     reference_fields,
     reference_data,
@@ -40,7 +40,7 @@ def _validate_required_fields(reference_type, form):
     else:
         data_dict = reference_data
         fields_dict = reference_fields
-  
+
     for field, meta in data_dict[reference_type]["fields"].items():
         field_value = form.get(field.value)
 
