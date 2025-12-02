@@ -14,8 +14,9 @@
     type="text"
     name="{{ field.value }}"
     {% if data["required"] %}required{% endif %}
-    value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}" />
-  <br />
+    value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"
+    pattern=".*[0-9A-Za-zÄÖÅäöå].*" title="Syötä ainakin yksi kirjain tai numero"
+  /><br />
   
   {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
   
@@ -30,7 +31,7 @@
     type="number"
     name="{{ field.value }}"
     {% if data["required"] %}required{% endif %}
-    value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}" />
+    value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"min="0"/>
   <br />
   
   {% endif %}

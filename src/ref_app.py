@@ -9,9 +9,10 @@ from repositories.references_repository import (
     delete_reference,
     search_references,
 )
-from reference_data import reference_data, ReferenceType, reference_fields
 from db_helper import reset_db
 from bibtex_transform import references_to_bibtex
+from reference_data import reference_data, ReferenceType
+from validators import _validate_required_fields
 
 test_env = os.getenv("TEST_ENV") == "true"
 
@@ -138,16 +139,6 @@ def bibtex_download():
         mimetype="text/plain",
         headers={"Content-Disposition": "attachment; filename=references.bib"},
     )
-
-
-def _validate_required_fields(reference_type, form):
-    for field, meta in reference_data[reference_type]["fields"].items():  # validointi
-        if meta["required"] and not form.get(field.value):
-            abort(
-                400,
-                f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}",
-            )
-
 
 if test_env:
 
