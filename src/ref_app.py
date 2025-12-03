@@ -106,17 +106,13 @@ def edit(reference_id):
     return redirect(url_for("index"))
 
 
-@app.route("/delete/<int:reference_id>", methods=["GET", "POST"])
+@app.route("/delete/<int:reference_id>", methods=["POST"])
 def delete(reference_id):
     reference = get_reference(reference_id)
     if not reference:
         abort(404)
 
-    if request.method == "GET":
-        return render_template("delete.html", reference=reference)
-
-    if request.method == "POST":
-        delete_reference(reference_id)
+    delete_reference(reference_id)
 
     return redirect(url_for("index"))
 
