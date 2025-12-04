@@ -21,6 +21,8 @@ from db_helper import reset_db
 from bibtex_transform import ReferenceToBibtex
 from reference_data import reference_data, ReferenceType, ReferenceField
 from validators import _validate_required_fields
+import requests
+from requests.utils import quote
 
 test_env = os.getenv("TEST_ENV") == "true"
 
@@ -215,10 +217,8 @@ def add():
         return render_template(
             "add.html", reference_type=reference_type, prefill_data=prefill_data
         )
-
     if request.method == "POST":
         _validate_required_fields(reference_type, request.form)
-
         fields = {}
         for field in reference_data[reference_type]["fields"]:
             if field.value != "tag":
@@ -234,14 +234,6 @@ def add():
                 add_new_referencetaglink(reference_id, tag.id)
 
         return redirect(url_for("index"))
-
-
-def collect_fields(reference_type, form):
-    fields = {}
-    for field in reference_data[reference_type]["fields"]:
-        value = form.get(field.value, "")
-        fields[field] = value if value else None
-    return fields
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
