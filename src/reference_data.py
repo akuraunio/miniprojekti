@@ -140,7 +140,7 @@ reference_data = {
         "fields": {
             ReferenceField.KEY: {"required": True},
             ReferenceField.AUTHOR: {"required": True},
-            ReferenceField.EDITOR: {"required": True},
+            ReferenceField.EDITOR: {"required": False},
             ReferenceField.TITLE: {"required": True},
             ReferenceField.PUBLISHER: {"required": True},
             ReferenceField.YEAR: {"required": True},
