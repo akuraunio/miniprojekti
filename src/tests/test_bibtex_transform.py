@@ -1,10 +1,13 @@
 import unittest
-from bibtex_transform import reference_to_bibtex, references_to_bibtex
+from bibtex_transform import ReferenceToBibtex
 from entities import references
 from reference_data import TestReferenceType, TestReferenceField
 
 
 class TestTransformReferencesToBibtex(unittest.TestCase):
+    def setUp(self):
+        self.bibtex_exporter = ReferenceToBibtex()
+
     def test_reference_to_bibtex_returns_correct_string(self):
         ref = references.Reference(
             TestReferenceType.TEST,
@@ -19,7 +22,7 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
 
         # BibTexin viitteen avain on None koska testi reference datassa ei ole KEY kenttää
         self.assertEqual(
-            reference_to_bibtex(ref),
+            self.bibtex_exporter.reference_to_bibtex(ref),
             "@test{None,\ntitle = {Raamattu},\nauthor = {Jeesus},\nyear = {1},\n}",
         )
 
@@ -47,7 +50,7 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
         refs = [ref1, ref2]
 
         self.assertEqual(
-            references_to_bibtex(refs),
+            self.bibtex_exporter.references_to_bibtex(refs),
             "@test{None,\ntitle = {Raamattu},\nauthor = {Jeesus},\nyear = {1},\n}\n\n@test{None,\ntitle = {Aapinen},\nauthor = {Mikael Agricola},\nyear = {1700},\n}",
         )
 
@@ -65,7 +68,7 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
         )
 
         self.assertEqual(
-            reference_to_bibtex(ref),
+            self.bibtex_exporter.reference_to_bibtex(ref),
             "@test{None,\ntitle = {Raamattu},\nauthor = {Jeesus},\nyear = {1},\npages = {20--30},\n}",
         )
 
@@ -82,7 +85,7 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
         )
 
         self.assertEqual(
-            reference_to_bibtex(ref),
+            self.bibtex_exporter.reference_to_bibtex(ref),
             "@test{None,\ntitle = {Raamattu},\nauthor = {Jeesus},\nyear = {1},\npages = {20},\n}",
         )
 
@@ -99,6 +102,6 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
         )
 
         self.assertEqual(
-            reference_to_bibtex(ref),
+            self.bibtex_exporter.reference_to_bibtex(ref),
             "@test{None,\ntitle = {Raamattu},\nauthor = {Jeesus},\nyear = {1},\npages = {30},\n}",
         )
