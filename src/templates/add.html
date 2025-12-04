@@ -1,16 +1,13 @@
 {% extends "layout.html" %} {% block title %}Lisää {{ reference_data[reference_type]["name"] }} -
 Viitteet{% endblock %} {% block content %}
-<h2>Hae viite DOI:lla</h2>
 <form method="GET" action="{{ url_for('add') }}">
   <label>DOI</label>
   <input type="text" name="doi" />
   <input type="hidden" name="type" value="{{ reference_type.value }}" />
   <button type="submit">Hae DOI</button>
 </form>
-<br />
-<br />
+<br>
 
-<h2>Täytä viitteen tiedot</h2>
 <form method="POST" action="{{ url_for('add') }}">
   {% for field, data in reference_data[reference_type]["fields"].items() %}
   {% if field != ReferenceField.TAG and data["required"] %}
