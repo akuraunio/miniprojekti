@@ -1,7 +1,7 @@
-from sqlalchemy import text
-from config import db
 from references_repository import reference_from_row
 from tags_repository import tag_from_row
+from sqlalchemy import text
+from config import db
 
 
 def add_new_referencetaglink(reference_id: str, tag_id: str):

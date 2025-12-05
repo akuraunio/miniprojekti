@@ -32,3 +32,7 @@ max-nested-blocks=2
 max-statements=20
 max-returns=3
 max-args=4
+
+[SIMILARITIES]
+
+min-similarity-lines=4
