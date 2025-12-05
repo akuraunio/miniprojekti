@@ -56,12 +56,12 @@ Edit Reference
     ${inputs}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"]
     FOR    ${field}    IN    @{inputs}
         ${type}=    Get Element Attribute    ${field}    type
-        Input Text    ${field}    ${FIELD_VALUES[${type}]}
+        Input Text    ${field}    ${FIELD_VALUES}[${type}]
     END
 
     ${areas}=    Get WebElements    xpath=//textarea
     FOR    ${field}    IN    @{areas}
-        Input Text    ${field}    ${FIELD_VALUES[textarea]}
+        Input Text    ${field}    ${FIELD_VALUES}[textarea]
     END
 
     Click Button    xpath=//button[@type="submit"]
