@@ -12,6 +12,7 @@ class ReferenceToBibtex:
     def reference_to_bibtex(self, ref):
         field_lines = []
 
+        key = None
         pages_from = None
         pages_to = None
 
@@ -25,11 +26,14 @@ class ReferenceToBibtex:
                 pages_to = field_value
             elif field_enum.value == "pages_from":
                 pages_from = field_value
+            elif field_enum.value == "key":
+                key = field_value
 
         self._pages(field_lines, pages_from, pages_to)
 
         field_block = "".join(field_lines)
-        return f"@{ref.type.value}{{{ref.fields.get("key")},\n{field_block}}}"
+        print(ref.fields.get("key"))
+        return f"@{ref.type.value}{{{key},\n{field_block}}}"
 
     def _add_field(self, field_lines, name, value):
         if value is None or value == "":
@@ -37,6 +41,8 @@ class ReferenceToBibtex:
         field_lines.append(f"{name} = {{{value}}},\n")
 
     def _pages(self, field_lines, pages_from, pages_to):
+        # Alku- ja loppusivu yhdeksi sivuväli kentäksi, jossa sivujen välillä "--""
+        # tai pelkästään yksi sivunumero jos toista arvoa ei ole
         if pages_from is None and pages_to is None:
             return
 
