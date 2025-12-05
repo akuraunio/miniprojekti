@@ -42,7 +42,7 @@ Add Reference
         Input Text    ${field}    ${FIELD_VALUES["${type}"]}
     END
 
-    Click Button    xpath=//button[@type="submit"]
+    Click Button    xpath=//button[@type="submit" and @value="lisää"]
 
     Page Should Contain    Test Text
 
