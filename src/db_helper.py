@@ -107,6 +107,14 @@ def search_field_exists(field):
     return result.fetchall()
 
 
+def search_by_tag(tag):
+    """Search for references by tag."""
+    sql = text("SELECT * FROM Reference WHERE tag ILIKE :tag")
+    search_tag = f"%{tag}%"
+    result = db.session.execute(sql, {"tag": search_tag})
+    return result.fetchall()
+
+
 if __name__ == "__main__":
     with app.app_context():
         setup_db()

@@ -22,6 +22,14 @@ Viitteet{% endblock %} {% block content %}
   <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
   <input type="number" name="{{ field.value }}" {% if data["required"] %}required{% endif %} min="0"/><br />
 
+  <label>Tagi:</label><br/>
+  <select name="tag">
+    <option value="">Ei tagia</option>
+    <option value="tärkeä">Kandidaatintutkielma</option>
+    <option value="luettu">Pro gradu -tutkielma</option>
+    <option value="myöhemmin">Väitöskirja</option>
+  </select><br />
+
   {% endif %} {% endfor %}
 
   <input type="hidden" name="reference_type" value="{{ reference_type.value }}" />

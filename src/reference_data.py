@@ -38,6 +38,7 @@ class ReferenceField(Enum):
     PUBLISHER = "publisher"
     SCHOOL = "school"
     SERIES = "series"
+    TAG = "tag"
     TITLE = "title"
     TYPE = "type"
     VOLUME = "volume"
@@ -102,6 +103,7 @@ reference_fields = {
     ReferenceField.PUBLISHER: {"type": ReferenceFieldType.TEXT, "name": "Kustantaja"},
     ReferenceField.SCHOOL: {"type": ReferenceFieldType.TEXT, "name": "Koulu"},
     ReferenceField.SERIES: {"type": ReferenceFieldType.TEXT, "name": "Sarja"},
+    ReferenceField.TAG: {"type": ReferenceFieldType.TEXT, "name": "Tagi"},
     ReferenceField.TITLE: {"type": ReferenceFieldType.TEXT, "name": "Otsikko"},
     ReferenceField.TYPE: {"type": ReferenceFieldType.TEXT, "name": "Tyyppi"},
     ReferenceField.VOLUME: {"type": ReferenceFieldType.NUMBER, "name": "Vuosikerta"},
@@ -130,6 +132,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.BOOK: {
@@ -151,6 +154,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.BOOKLET: {
@@ -172,6 +176,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.INBOOK: {
@@ -196,6 +201,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.INPROCEEDINGS: {
@@ -220,6 +226,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.MANUAL: {
@@ -237,6 +244,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.MASTERSTHESIS: {
@@ -255,6 +263,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.MISC: {
@@ -271,6 +280,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.PHDTHESIS: {
@@ -289,6 +299,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.PROCEEDINGS: {
@@ -309,6 +320,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.TECHREPORT: {
@@ -328,6 +340,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.UNPUBLISHED: {
@@ -343,6 +356,7 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
+            ReferenceField.TAG: {"required": False},
         },
     },
 }
