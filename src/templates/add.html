@@ -35,6 +35,7 @@ Viitteet{% endblock %} {% block content %}
   <label>{{ reference_fields[field]["name"] }}*</label><br />
   <input type="number" name="{{ field.value }}" value="{{ value }}" required min="0" /><br />
 
+<<<<<<< HEAD
   {% endif %} {% endif %} {% endfor %}
 
   <label>Tagi*</label><br />
@@ -67,6 +68,17 @@ Viitteet{% endblock %} {% block content %}
   <input type="number" name="{{ field.value }}" min="0" /><br />
 
   {% endif %} {% endif %} {% endfor %}
+=======
+  <label>Tagi:</label><br/>
+  <select name="tag">
+    <option value="">Ei tagia</option>
+    <option value="tärkeä">Kandidaatintutkielma</option>
+    <option value="luettu">Pro gradu -tutkielma</option>
+    <option value="myöhemmin">Väitöskirja</option>
+  </select><br />
+
+  {% endif %} {% endfor %}
+>>>>>>> c4a8387 (alustava tagin lisäys ja suodatus)
 
   <input type="hidden" name="reference_type" value="{{ reference_type.value }}" />
   <br />

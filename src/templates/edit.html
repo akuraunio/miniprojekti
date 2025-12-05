@@ -34,6 +34,14 @@
     required
     value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"min="0"/>
   <br />
+
+  <label>Tagi:</label><br/>
+  <select name="tag">
+    <option value="">Ei tagia</option>
+    <option value="tärkeä">Kandidaatintutkielma</option>
+    <option value="luettu">Pro gradu -tutkielma</option>
+    <option value="myöhemmin">Väitöskirja</option>
+  </select><br />
   
   {% endif %}
   {% endif %}
