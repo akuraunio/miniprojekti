@@ -29,6 +29,7 @@ def reference_from_row(row) -> Reference:
     )
     return reference
 
+
 def get_references() -> list[Reference]:
     result = db.session.execute(text("SELECT * FROM Reference"))
 

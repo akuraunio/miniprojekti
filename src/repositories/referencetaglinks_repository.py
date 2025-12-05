@@ -1,6 +1,6 @@
-from references_repository import reference_from_row
-from tags_repository import tag_from_row
 from sqlalchemy import text
+from repositories.references_repository import reference_from_row
+from repositories.tags_repository import tag_from_row
 from config import db
 
 
