@@ -1,13 +1,16 @@
 {% extends "layout.html" %} {% block title %}Lisää {{ reference_data[reference_type]["name"] }} -
 Viitteet{% endblock %} {% block content %}
+<h2>Hae viite DOI:lla</h2>
 <form method="GET" action="{{ url_for('add') }}">
   <label>DOI</label>
   <input type="text" name="doi">
   <input type="hidden" name="type" value="{{ reference_type.value }}">
-  <button type="submit">Hae DOI</button>
+  <button type="submit" value="doi">Hae DOI</button>
 </form>
 <br>
+<br>
 
+<h2>Täytä viitteen tiedot</h2>
 <form method="POST" action="{{ url_for('add') }}">
 <<<<<<< HEAD
   {% for field, data in reference_data[reference_type]["fields"].items() %} {% if field !=
@@ -90,7 +93,7 @@ Viitteet{% endblock %} {% block content %}
 
   <input type="hidden" name="reference_type" value="{{ reference_type.value }}" />
   <br />
-  <button type="submit">Lisää</button>
+  <button type="submit" value="lisää">Lisää</button>
 </form>
 
 <br /><a href="{{ url_for('index') }}">Takaisin</a>

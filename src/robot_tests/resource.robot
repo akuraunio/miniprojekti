@@ -44,7 +44,7 @@ Add Reference
     
     Select From List By Value    xpath=//select[@name="tag"]    kandityö
 
-    Click Button    xpath=//button[@type="submit"]
+    Click Button    xpath=//button[@type="submit" and @value="lisää"]
 
     Page Should Contain    Test Text
 
