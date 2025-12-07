@@ -11,6 +11,7 @@ on:
     - main
     - robot_testit
     - doi-tunniste
+    - tägi_suodatus
   pull_request:
     branches: [main]
 
