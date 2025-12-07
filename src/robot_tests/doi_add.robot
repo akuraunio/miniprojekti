@@ -17,7 +17,7 @@ Add DOI Reference Test
     
     Input Text    name=key    123
     
-    Click Button    xpath=//button[@type="submit" and @value="lisää"]
+    Click Button    xpath=//button[@type="submit" and text()="Lisää"]
     
     Page Should Contain    ${title_value}
     
