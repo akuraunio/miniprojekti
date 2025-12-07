@@ -2,7 +2,7 @@
 Library  SeleniumLibrary
 
 *** Variables ***
-${DELAY}     0 seconds
+${DELAY}     0.1 seconds
 ${HOME_URL}  http://localhost:5001
 ${RESET_URL}  http://localhost:5001/reset_db
 ${BROWSER}   chrome
@@ -42,6 +42,7 @@ Add Reference
         Input Text    ${field}    ${FIELD_VALUES["${type}"]}
     END
     
+<<<<<<< HEAD
     Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
     
     Scroll Element Into View    xpath=//button[@type="submit" and @value="lisää"]
@@ -69,6 +70,10 @@ Edit Reference
     
     Select From List By Value    xpath=//select[@name="tag"]    gradu
 
+=======
+    Wait Until Element Is Visible    xpath=//button[@type="submit" and text()="Lisää"]    timeout=5s
+    Scroll Element Into View    xpath=//button[@type="submit" and text()="Lisää"]
+>>>>>>> 0d53f35 (korjaus yritys)
     Click Button    xpath=//button[@type="submit" and text()="Lisää"]
 
     Page Should Contain    Test Text
