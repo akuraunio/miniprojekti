@@ -1,5 +1,7 @@
 import os
 from flask import request, redirect, url_for, render_template, abort, Response
+import requests
+from requests.utils import quote
 from config import app
 from repositories.references_repository import (
     get_references,
@@ -13,8 +15,6 @@ from db_helper import reset_db
 from bibtex_transform import references_to_bibtex
 from reference_data import reference_data, ReferenceType, ReferenceField
 from validators import _validate_required_fields
-import requests
-from requests.utils import quote
 
 test_env = os.getenv("TEST_ENV") == "true"
 
@@ -56,6 +56,16 @@ def doi_data(doi):
     return {}
 
 
+def process_field(data, key, field, prefill_data):
+    if key not in data:
+        return
+    value = data[key]
+    if isinstance(value, list) and len(value) > 0:
+        value = value[0]
+    if value:
+        prefill_data[str(field.value)] = str(value)
+
+
 def crossref_data(data):
     prefill_data = {}
 
@@ -71,12 +81,7 @@ def crossref_data(data):
     }
 
     for key, field in crossref_to_fields.items():
-        if key in data:
-            value = data[key]
-            if isinstance(value, list) and len(value) > 0:
-                value = value[0]
-            if value:
-                prefill_data[str(field.value)] = str(value)
+        process_field(data, key, field, prefill_data)
 
     author = crossref_author_or_editor(data, "author")
     if author:
@@ -164,12 +169,17 @@ def add():
         )
 
     _validate_required_fields(reference_type, request.form)
-    fields = {}
-    for field in reference_data[reference_type]["fields"]:
-        value = request.form.get(field.value, "")
-        fields[field] = value if value else None
+    fields = collect_fields(reference_type, request.form)
     add_new_reference(reference_type, fields)
     return redirect(url_for("index"))
+
+
+def collect_fields(reference_type, form):
+    fields = {}
+    for field in reference_data[reference_type]["fields"]:
+        value = form.get(field.value, "")
+        fields[field] = value if value else None
+    return fields
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
@@ -183,17 +193,8 @@ def edit(reference_id):
         return render_template("edit.html", reference=reference)
 
     _validate_required_fields(reference.type, request.form)
-
-    if request.method == "POST":
-
-        fields = {}
-        for field in reference_data[reference.type]["fields"]:
-            value = request.form.get(field.value, "")
-
-            fields[field] = value if value else None
-
-        update_reference(reference_id, fields)
-
+    fields = collect_fields(reference.type, request.form)
+    update_reference(reference_id, fields)
     return redirect(url_for("index"))
 
 
