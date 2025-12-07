@@ -4,24 +4,47 @@
     <meta charset="utf-8" />
     <title>{% block title %}Viitteet{% endblock %}</title>
     <link rel="stylesheet" href="/static/main.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.0.0/dist-cdn/styles/webawesome.css" />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.0.0/dist-cdn/webawesome.loader.js"></script>
   </head>
 
   <body>
-    <div class="header">
-      <h1>Viitteet</h1>
-    </div>
+    <nav class="nav">
+      <div class="nav-content">
+        <div>
+          <a href="{{ url_for('index') }}">Etusivu</a>
+          <wa-divider orientation="vertical"></wa-divider>
+          <a href="{{ url_for('bibtex') }}">BibTeX</a>
+        </div>
+        <div>
+          <wa-dropdown>
+            <wa-button appearance="plain" variant="brand" slot="trigger" with-caret
+              >Lisää Viite</wa-button
+            >
+            {% for type in reference_data %}
+            <wa-dropdown-item
+              type="button"
+              onclick='location.href=`{{ url_for("add") }}?type={{ type.value }}`'>
+              {{ reference_data[type]["name"] }}
+            </wa-dropdown-item>
+            {% endfor %}
+          </wa-dropdown>
+        </div>
+      </div>
+    </nav>
+    <div class="page-content">{% block content %}{% endblock %}</div>
 
-    <div class="nav">
-      <nav>
-        <ul>
-          <li><a href="/">Etusivu</a></li>
-          <li><a href="/add">Lisää viite</a></li>
-        </ul>
-      </nav>
-    </div>
-
-    <div class="content">
-      {% block content %}{% endblock %}
-    </div>
+    <script type="module">
+      import { allDefined } from "https://cdn.jsdelivr.net/npm/@awesome.me/webawesome@3.0.0/dist-cdn/webawesome.loader.js"
+      ;(async () => {
+        await allDefined()
+        document.querySelector("html").style.visibility = "visible"
+      })()
+    </script>
   </body>
 </html>

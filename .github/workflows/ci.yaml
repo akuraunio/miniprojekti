@@ -10,6 +10,7 @@ on:
     branches:
     - main
     - robot_testit
+    - doi-tunniste
   pull_request:
     branches: [main]
 

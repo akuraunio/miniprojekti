@@ -8,7 +8,7 @@ ${RESET_URL}  http://localhost:5001/reset_db
 ${BROWSER}   chrome
 @{REFERENCE_TYPES}    BOOK    ARTICLE    THESIS  
 ${TEST_VALUE}    Test Value
-${HEADLESS}   false
+${HEADLESS}   true
 &{FIELD_VALUES}
 ...    text=Test Text
 ...    number=123
@@ -41,9 +41,12 @@ Add Reference
         ${type}=    Get Element Attribute    ${field}    type
         Input Text    ${field}    ${FIELD_VALUES["${type}"]}
     END
+    
+    Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
+    
+    Scroll Element Into View    xpath=//button[@type="submit" and @value="lisää"]
 
-    Click Button    xpath=//button[@type="submit"]
-
+    Click Button    xpath=//button[@type="submit" and @value="lisää"]
     Page Should Contain    Test Text
 
 Edit Reference

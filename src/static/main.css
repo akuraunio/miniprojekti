@@ -1,28 +1,42 @@
-body {
-  margin: auto;
-  max-width: 50em;
-  font-family: sans-serif;
-}
-.header {
-  text-align: center;
-  border: 2px solid lightskyblue;
-  margin: 1em 5em;
-}
-.nav {
-  text-align: center;
-  background-color: lightblue;
-  padding: 0.5em 0;
-  margin: 0.5em 5em;
-}
-.content {
-  margin-top: 2em;
-  padding: 1em;
-  margin: 0.5em 0;
-  text-align: center;
+html {
+  visibility: hidden; /* Estetään FOUC (Flash of Unstyled Content), näykyvyys palautetaan layout.html:ssä olevassa scriptissä kun kaikki webawesome-komponentit on ladattu */
 }
 
-nav {
-  text-align: center;
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: white;
+  border-bottom: 1px solid lightgray;
+  padding: 0.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 1rem;
+  width: 100%;
+  max-width: 60rem;
+}
+
+.nav-content * {
+  display: flex;
+}
+
+.page-content {
+  max-width: 60rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 nav ul {
