@@ -2,7 +2,7 @@
 Library  SeleniumLibrary
 
 *** Variables ***
-${DELAY}     0.1 seconds
+${DELAY}     0 seconds
 ${HOME_URL}  http://localhost:5001
 ${RESET_URL}  http://localhost:5001/reset_db
 ${BROWSER}   chrome
@@ -44,7 +44,7 @@ Add Reference
     
     Select From List By Value    xpath=//select[@name="tag"]    kandityö
 
-    Click Button    xpath=//button[@type="submit" and @value="lisää"]
+    Click Button    xpath=//button[@type="submit" and text()="Lisää"]
 
     Page Should Contain    Test Text
 

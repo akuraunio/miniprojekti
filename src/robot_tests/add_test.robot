@@ -19,6 +19,4 @@ ARTICLE Test          article
 #PROCEEDINGS Test      PROCEEDINGS
 #TECHREPORT Test       TECHREPORT
 #UNPUBLISHED Test      UNPUBLISHED
-
-
     
