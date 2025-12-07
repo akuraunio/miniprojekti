@@ -16,17 +16,94 @@ from repositories.referencetaglinks_repository import (
     delete_referencetaglink,
 )
 from db_helper import reset_db
-<<<<<<< HEAD
 from bibtex_transform import ReferenceToBibtex
-=======
-from bibtex_transform import references_to_bibtex
->>>>>>> 217cbb4 (DOI täyttää osan viitteen kenistä ja editor muutettu e ivälttämättömäksi kentäksi (DOI datasta ei löydy monesta viitteestä editoria))
 from reference_data import reference_data, ReferenceType, ReferenceField
 from validators import _validate_required_fields
 import requests
 from requests.utils import quote
 
 test_env = os.getenv("TEST_ENV") == "true"
+
+
+def crossref_author_or_editor(data, key):
+    if key not in data:
+        return ""
+    persons = [
+        f"{person.get('given', '')} {person.get('family', '')}".strip()
+        for person in data[key]
+    ]
+    return " and ".join(persons) if persons else None
+
+
+def crossref_pages(page_string):
+    pages = page_string.split("-")
+    pages_from = pages[0].strip() if len(pages) >= 1 else None
+    pages_to = pages[1].strip() if len(pages) >= 2 else None
+    return pages_from, pages_to
+
+
+def crossref_year(data):
+    date_fields = ["published-print", "published-online", "published"]
+    for field in date_fields:
+        if field in data and data[field].get("date-parts"):
+            return str(data[field]["date-parts"][0][0])
+    return ""
+
+
+def doi_data(doi):
+    """Fetch reference data from Crossref API using DOI."""
+    url = f"https://api.crossref.org/works/{quote(doi)}"
+    try:
+        r = requests.get(url, timeout=5)
+        if r.status_code == 200:
+            return r.json()["message"]
+    except (requests.RequestException, KeyError):
+        pass
+    return {}
+
+
+def crossref_data(data):
+    prefill_data = {}
+
+    crossref_to_fields = {
+        "title": ReferenceField.TITLE,
+        "publisher": ReferenceField.PUBLISHER,
+        "container-title": ReferenceField.JOURNAL,
+        "volume": ReferenceField.VOLUME,
+        "issue": ReferenceField.NUMBER,
+        "DOI": ReferenceField.DOI,
+        "ISSN": ReferenceField.ISSN,
+        "ISBN": ReferenceField.ISBN,
+    }
+
+    for key, field in crossref_to_fields.items():
+        if key in data:
+            value = data[key]
+            if isinstance(value, list) and len(value) > 0:
+                value = value[0]
+            if value:
+                prefill_data[str(field.value)] = str(value)
+
+    author = crossref_author_or_editor(data, "author")
+    if author:
+        prefill_data[str(ReferenceField.AUTHOR.value)] = author
+
+    editor = crossref_author_or_editor(data, "editor")
+    if editor:
+        prefill_data[str(ReferenceField.EDITOR.value)] = editor
+
+    if "page" in data:
+        pages_from, pages_to = crossref_pages(data["page"])
+        if pages_from:
+            prefill_data[str(ReferenceField.PAGES_FROM.value)] = pages_from
+        if pages_to:
+            prefill_data[str(ReferenceField.PAGES_TO.value)] = pages_to
+
+    year = crossref_year(data)
+    if year:
+        prefill_data[str(ReferenceField.YEAR.value)] = year
+
+    return prefill_data
 
 
 @app.route("/")
@@ -125,77 +202,19 @@ def add():
     prefill_data = {}
 
     if doi:
-        url = f"https://api.crossref.org/works/{quote(doi)}"
-        r = requests.get(url)
-        if r.status_code == 200:
-            data = r.json()["message"]
-
-            crossref_to_fields = {
-                "title": ReferenceField.TITLE,
-                "author": ReferenceField.AUTHOR,
-                "publisher": ReferenceField.PUBLISHER,
-                "container-title": ReferenceField.JOURNAL,
-                "volume": ReferenceField.VOLUME,
-                "issue": ReferenceField.NUMBER,
-                "page": (ReferenceField.PAGES_FROM, ReferenceField.PAGES_TO),
-                "DOI": ReferenceField.DOI,
-                "ISSN": ReferenceField.ISSN,
-                "ISBN": ReferenceField.ISBN,
-                "editor": ReferenceField.EDITOR,
-            }
-
-            for key, field in crossref_to_fields.items():
-                if key in data:
-
-                    if key == "author":
-                        authors = [
-                            f"{a.get('given', '')} {a.get('family', '')}".strip()
-                            for a in data["author"]
-                        ]
-                        prefill_data[str(field.value)] = " and ".join(authors)
-
-                    elif key == "editor":
-                        editors = [
-                            f"{e.get('given', '')} {e.get('family', '')}".strip()
-                            for e in data["editor"]
-                        ]
-                        prefill_data[str(field.value)] = " and ".join(editors)
-
-                    elif key == "page" and isinstance(field, tuple):
-                        pages = data["page"].split("-")
-                        if len(pages) >= 1:
-                            prefill_data[str(field[0].value)] = pages[0].strip()
-                        if len(pages) >= 2:
-                            prefill_data[str(field[1].value)] = pages[1].strip()
-
-                    else:
-                        value = data[key]
-                        if isinstance(value, list) and len(value) > 0:
-                            value = value[0]
-                        prefill_data[str(field.value)] = str(value) if value else ""
-
-            year = None
-            if "published-print" in data and data["published-print"].get("date-parts"):
-                year = data["published-print"]["date-parts"][0][0]
-            elif "published-online" in data and data["published-online"].get(
-                "date-parts"
-            ):
-                year = data["published-online"]["date-parts"][0][0]
-            elif "published" in data and data["published"].get("date-parts"):
-                year = data["published"]["date-parts"][0][0]
-
-            if year:
-                prefill_data[str(ReferenceField.YEAR.value)] = str(year)
+        data = doi_data(doi)
+        if data:
+            prefill_data = crossref_data(data)
 
     if request.method == "GET":
         return render_template(
             "add.html", reference_type=reference_type, prefill_data=prefill_data
         )
+
     if request.method == "POST":
         _validate_required_fields(reference_type, request.form)
         fields = {}
         for field in reference_data[reference_type]["fields"]:
-<<<<<<< HEAD
             if field.value != "tag":
                 value = request.form.get(field.value, "")
                 fields[field] = value if value else None
@@ -208,13 +227,7 @@ def add():
             if tag:
                 add_new_referencetaglink(reference_id, tag.id)
 
-    return redirect(url_for("index"))
-=======
-            value = request.form.get(field.value, "")
-            fields[field] = value if value else None
-        add_new_reference(reference_type, fields)
         return redirect(url_for("index"))
->>>>>>> 217cbb4 (DOI täyttää osan viitteen kenistä ja editor muutettu e ivälttämättömäksi kentäksi (DOI datasta ei löydy monesta viitteestä editoria))
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])

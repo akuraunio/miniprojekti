@@ -3,60 +3,37 @@ Viitteet{% endblock %} {% block content %}
 <h2>Hae viite DOI:lla</h2>
 <form method="GET" action="{{ url_for('add') }}">
   <label>DOI</label>
-  <input type="text" name="doi">
-  <input type="hidden" name="type" value="{{ reference_type.value }}">
+  <input type="text" name="doi" />
+  <input type="hidden" name="type" value="{{ reference_type.value }}" />
   <button type="submit" value="doi">Hae DOI</button>
 </form>
-<br>
-<br>
+<br />
+<br />
 
 <h2>Täytä viitteen tiedot</h2>
 <form method="POST" action="{{ url_for('add') }}">
-<<<<<<< HEAD
-  {% for field, data in reference_data[reference_type]["fields"].items() %} {% if field !=
-  ReferenceField.TAG and data["required"] %} {% if reference_fields[field]["type"] ==
-  ReferenceFieldType.TEXT %}
+  {% for field, data in reference_data[reference_type]["fields"].items %} {% if field !=
+  ReferenceField.TAG and data["required"] %} {% set value = prefill_data.get(field.value, "") %} {%
+  if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
 
   <label>{{ reference_fields[field]["name"] }}*</label><br />
   <input
     type="text"
     name="{{ field.value }}"
-    required
-=======
-  {% for field, data in reference_data[reference_type]["fields"].items() %}
-  
-  {% set value = prefill_data.get(field.value, "") %}
-
-  
-  {% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
-
-  <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <input type="text" name="{{ field.value }}" 
     value="{{ value }}"
-    {% if data["required"] %}required{% endif %}
->>>>>>> 217cbb4 (DOI täyttää osan viitteen kenistä ja editor muutettu e ivälttämättömäksi kentäksi (DOI datasta ei löydy monesta viitteestä editoria))
+    required
     pattern=".*[0-9A-Za-zÄÖÅäöå].*"
     title="Syötä ainakin yksi kirjain tai numero" /><br />
 
   {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
 
-<<<<<<< HEAD
   <label>{{ reference_fields[field]["name"] }}*</label><br />
-  <textarea name="{{ field.value }}" required></textarea><br />
+  <textarea name="{{ field.value }}" required>{{ value }}</textarea><br />
 
   {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
 
   <label>{{ reference_fields[field]["name"] }}*</label><br />
-  <input type="number" name="{{ field.value }}" required min="0" /><br />
-=======
-  <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <textarea name="{{ field.value }}"{% if data["required"] %}required{% endif %}>{{ value }}</textarea><br />
-
-  {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
-
-  <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <input type="number" name="{{ field.value }}" value="{{ value }}" {% if data["required"] %}required{% endif %} min="0"/><br />
->>>>>>> 217cbb4 (DOI täyttää osan viitteen kenistä ja editor muutettu e ivälttämättömäksi kentäksi (DOI datasta ei löydy monesta viitteestä editoria))
+  <input type="number" name="{{ field.value }}" value="{{ value }}" required min="0" /><br />
 
   {% endif %} {% endif %} {% endfor %}
 
