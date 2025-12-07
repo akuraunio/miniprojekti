@@ -1,17 +1,29 @@
 from sqlalchemy import text
 from config import db
 from entities.references import Reference
-from reference_data import reference_data, ReferenceType
+from reference_data import (
+    reference_data,
+    ReferenceType,
+    TestReferenceType,
+    test_reference_data,
+)
 from db_helper import search, search_by_field, search_field_exists
 
 
 def reference_from_row(row) -> Reference:
+    try:
+        ref_type = ReferenceType(row.reference_type)
+        data = reference_data
+    except ValueError:
+        ref_type = TestReferenceType(row.reference_type)
+        data = test_reference_data
+
     fields = {}
-    for field in reference_data[ReferenceType(row.reference_type)]["fields"]:
+    for field in data[ref_type]["fields"]:
         fields[field] = row._mapping[field.value]  # pylint: disable=protected-access
 
     reference = Reference(
-        type=ReferenceType(row.reference_type),
+        type=ref_type,
         id=row.id,
         fields=fields,
     )

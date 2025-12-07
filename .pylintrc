@@ -16,7 +16,8 @@ disable=raw-checker-failed,
         missing-function-docstring,
         missing-class-docstring,
         too-few-public-methods,
-        redefined-builtin
+        redefined-builtin,
+        duplicate-code
 
 [FORMAT]
 
@@ -32,3 +33,7 @@ max-nested-blocks=2
 max-statements=20
 max-returns=3
 max-args=4
+
+[SIMILARITIES]
+
+min-similarity-lines=4

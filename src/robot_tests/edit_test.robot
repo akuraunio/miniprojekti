@@ -2,9 +2,8 @@
 Resource         resource.robot
 Suite Setup      Open And Configure Browser
 Suite Teardown   Close Browser
-Test Template    Add Reference
+Test Template    Edit Reference
 Test Setup       Reset Database
-
 
 *** Test Cases ***
 ARTICLE Test          article
@@ -19,4 +18,3 @@ ARTICLE Test          article
 #PROCEEDINGS Test      PROCEEDINGS
 #TECHREPORT Test       TECHREPORT
 #UNPUBLISHED Test      UNPUBLISHED
-    

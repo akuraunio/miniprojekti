@@ -23,14 +23,14 @@ Retrossa eniten mainitut ja äänestetyt asiat liittyivät tiimin yhteistyöhön
 
 ## Sprintin 2 retrospektiivi
 
-Toisessa retrospektiivissa käytimme Mad, Sad, Glad -tekniikkaa Retrotoolissa. Vaihdoimme tekniikkaa testataksemme, mikä menetelmistä voisi toimia meille parhaiten. Tiimin jäsenet käyttivät 5 minuuttia itsenäisesti asioiden pohtimiseen ja kirjaamiseen post-it lapuille omiin kategorioihin. Tämän jälkeen jokainen sai kaksi ääntä tärkeimpien nostojen priorisoimiseen. Keskustelimme aiheista yhdessä kategorioittain aloittaen Glad-osiosta ja eniten ääniä saaneista lapuista. Tavoitteenamme oli pitää mahdollisimman tehokas, mutta kattava retrospektiivi, ja tässä me onnistuimme: Aikaa meillä meni 25 minuuttia. 
+Toisessa retrospektiivissa käytimme Mad, Sad, Glad -tekniikkaa Retrotoolissa. Vaihdoimme tekniikkaa testataksemme, mikä menetelmistä voisi toimia meille parhaiten. Tiimin jäsenet käyttivät 5 minuuttia itsenäisesti asioiden pohtimiseen ja kirjaamiseen post-it lapuille omiin kategorioihin. Tämän jälkeen jokainen sai kaksi ääntä tärkeimpien nostojen priorisoimiseen. Keskustelimme aiheista yhdessä kategorioittain aloittaen Glad-osiosta, ja eniten ääniä saaneista lapuista. Tavoitteenamme oli pitää mahdollisimman tehokas, mutta kattava retrospektiivi, ja tässä me onnistuimme: Aikaa meillä meni 25 minuuttia. 
 
 ### Glad
 
 Eniten nostoja kertyi Glad-osioon: 
 - Tiimimme on kehittynyt kommunikaatiossa, nopeassa integroinnissa ja yhteistyössä.
 - Suunnittelu-kokoukset, dailyt ja retrospektiivit ovat tehostuneet ja parantuneet.
-- Sprint 2 alussa tehdyt parannukset ovat parantaneet yleistä flow'ta.
+- Sprintin 2 alussa tehdyt parannukset toimintaan ovat parantaneet yleistä flow'ta.
 - Arvosteluperusteiden lisääminen Sprint Backlogin taskeihin on auttanut töiden kohdistamisessa.
 
 ### Sad
@@ -42,11 +42,35 @@ Eniten nostoja kertyi Glad-osioon:
 - Pylintin käyttö ei ollut täysin selkeää.
 
 ### Kehitystoimenpiteet
-Tiimin tärkein yhteinen kehityskohde on Backlogin ja taskien selkeyden parantaminen. Lisäksi listasimme seuraavat kehityskohteet Sprint 3 varten:
+Tiimin tärkein yhteinen kehityskohde on Backlogin ja taskien selkeyden parantaminen. Lisäksi listasimme seuraavat kehityskohteet Sprintti 3 varten:
 
 - Taskeista selvemmät ja niiden jakaminen pienempiin osiin.
 - Nopeutetaan testien ajamista.
 - Varmistetaan testien (Robot ja Pylint) meneminen läpi, ennen Pull Requestia.
 - Releasin ja Backlogin rakenteen parantaminen ja selkeyttäminen.
+
+  ## Sprintin 3 retrospektiivi
+
+Kolmannessa retrospekitiivissä palasimme Start, Stop, Continue -tekniikkaan Retrotoolissa. Palasimme tähän tekniikkaan, koska se toimi paremmin konkreettisten ideoiden keksimisessä. Tiimin jäsenet käyttivät 5 minuuttia itsenäisesti asioiden pohtimiseen ja kirjaamiseen post-it lapuille omiin kategorioihin. Tämän jälkeen jokainen sai kaksi ääntä tärkeimpien nostojen priorisoimiseen. Keskustelimme aiheista yhdessä kategorioittain aloittaen Start-osiosta, ja eniten ääniä saaneista lapuista. Tavoitteenamme oli pitää mahdollisimman tehokas, mutta kattava retrospektiivi. Retrospektiivin kesto oli noin 20 minuuttia. 
+
+### Start
+
+Eniten ääniä kertyi Start-osioon: 
+- Tiiminä haluamme vielä parantaa taskien muotoilua sekä jakamista.
+
+### Stop
+- Eniten ääniä saanut ehdotus liittyi myös taskeihin ja että joitakin taskeja ei jätetä juuri edelliseen iltaan ennen asiakastapaamista.
+
+### Continue
+- Palaverit halutaan pitää jatkossakin tehokkaana.
+- Hyvän kommunikaation jatkaminen myös palavereiden ulkopuolella.
+
+### Kehitystoimenpiteet
+Tiimin tärkein yhteinen kehityskohde on taskien selkeyden ja jakamisen parantaminen. Listasimme seuraavat kehityskohteet Sprinttiä 4 varten:
+
+- Taskeista selvemmät ja niiden jakaminen paremmin.
+- Maksetaan teknistä velkaa enemmän.
+- Backlogin rakenteen parantaminen ja selkeyttäminen.
+
 
 

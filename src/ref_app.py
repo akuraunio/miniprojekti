@@ -1,5 +1,7 @@
 import os
 from flask import request, redirect, url_for, render_template, abort, Response
+import requests
+from requests.utils import quote
 from config import app
 from repositories.references_repository import (
     get_references,
@@ -9,11 +11,98 @@ from repositories.references_repository import (
     delete_reference,
     search_references,
 )
-from reference_data import reference_data, ReferenceType, reference_fields
 from db_helper import reset_db
-from bibtex_transform import references_to_bibtex
+from bibtex_transform import ReferenceToBibtex
+from reference_data import reference_data, ReferenceType, ReferenceField
+from validators import _validate_required_fields
 
 test_env = os.getenv("TEST_ENV") == "true"
+
+
+def crossref_author_or_editor(data, key):
+    if key not in data:
+        return ""
+    persons = [
+        f"{person.get('given', '')} {person.get('family', '')}".strip()
+        for person in data[key]
+    ]
+    return " and ".join(persons) if persons else None
+
+
+def crossref_pages(page_string):
+    pages = page_string.split("-")
+    pages_from = pages[0].strip() if len(pages) >= 1 else None
+    pages_to = pages[1].strip() if len(pages) >= 2 else None
+    return pages_from, pages_to
+
+
+def crossref_year(data):
+    date_fields = ["published-print", "published-online", "published"]
+    for field in date_fields:
+        if field in data and data[field].get("date-parts"):
+            return str(data[field]["date-parts"][0][0])
+    return ""
+
+
+def doi_data(doi):
+    """Fetch reference data from Crossref API using DOI."""
+    url = f"https://api.crossref.org/works/{quote(doi)}"
+    try:
+        r = requests.get(url, timeout=5)
+        if r.status_code == 200:
+            return r.json()["message"]
+    except (requests.RequestException, KeyError):
+        pass
+    return {}
+
+
+def process_field(data, key, field, prefill_data):
+    if key not in data:
+        return
+    value = data[key]
+    if isinstance(value, list) and len(value) > 0:
+        value = value[0]
+    if value:
+        prefill_data[str(field.value)] = str(value)
+
+
+def crossref_data(data):
+    prefill_data = {}
+
+    crossref_to_fields = {
+        "title": ReferenceField.TITLE,
+        "publisher": ReferenceField.PUBLISHER,
+        "container-title": ReferenceField.JOURNAL,
+        "volume": ReferenceField.VOLUME,
+        "issue": ReferenceField.NUMBER,
+        "DOI": ReferenceField.DOI,
+        "ISSN": ReferenceField.ISSN,
+        "ISBN": ReferenceField.ISBN,
+    }
+
+    for key, field in crossref_to_fields.items():
+        process_field(data, key, field, prefill_data)
+
+    author = crossref_author_or_editor(data, "author")
+    if author:
+        prefill_data[str(ReferenceField.AUTHOR.value)] = author
+
+    editor = crossref_author_or_editor(data, "editor")
+    if editor:
+        prefill_data[str(ReferenceField.EDITOR.value)] = editor
+
+    if "page" in data:
+        pages_from, pages_to = crossref_pages(data["page"])
+        if pages_from:
+            prefill_data[str(ReferenceField.PAGES_FROM.value)] = pages_from
+        if pages_to:
+            prefill_data[str(ReferenceField.PAGES_TO.value)] = pages_to
+
+    year = crossref_year(data)
+    if year:
+        prefill_data[str(ReferenceField.YEAR.value)] = year
+
+    return prefill_data
 
 
 @app.route("/")
@@ -51,10 +140,10 @@ def index():
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa
 # get metodissa voi myös käyttää url query parametria
-@app.route("/add", methods=["POST", "GET"])
+@app.route("/add", methods=["GET", "POST"])
 def add():
-    reference_type = None
 
+    reference_type = None
     if request.method == "GET":
         reference_type = request.args.get("type")
     if request.method == "POST":
@@ -62,23 +151,35 @@ def add():
 
     if not reference_type or reference_type not in [rt.value for rt in ReferenceType]:
         abort(400, "Virheellinen tai puuttuva viitteen tyyppi")
+
     reference_type = ReferenceType(reference_type)
 
+    # DOI-haku Crossrefista
+    doi = request.args.get("doi")
+    prefill_data = {}
+
+    if doi:
+        data = doi_data(doi)
+        if data:
+            prefill_data = crossref_data(data)
+
     if request.method == "GET":
-        return render_template("add.html", reference_type=reference_type)
+        return render_template(
+            "add.html", reference_type=reference_type, prefill_data=prefill_data
+        )
 
-    if request.method == "POST":
-        _validate_required_fields(reference_type, request.form)
-
-        fields = {}
-        for field in reference_data[reference_type]["fields"]:
-            value = request.form.get(field.value, "")
-
-            fields[field] = value if value else None
-
-        add_new_reference(reference_type, fields)
-
+    _validate_required_fields(reference_type, request.form)
+    fields = collect_fields(reference_type, request.form)
+    add_new_reference(reference_type, fields)
     return redirect(url_for("index"))
+
+
+def collect_fields(reference_type, form):
+    fields = {}
+    for field in reference_data[reference_type]["fields"]:
+        value = form.get(field.value, "")
+        fields[field] = value if value else None
+    return fields
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
@@ -92,17 +193,8 @@ def edit(reference_id):
         return render_template("edit.html", reference=reference)
 
     _validate_required_fields(reference.type, request.form)
-
-    if request.method == "POST":
-
-        fields = {}
-        for field in reference_data[reference.type]["fields"]:
-            value = request.form.get(field.value, "")
-
-            fields[field] = value if value else None
-
-        update_reference(reference_id, fields)
-
+    fields = collect_fields(reference.type, request.form)
+    update_reference(reference_id, fields)
     return redirect(url_for("index"))
 
 
@@ -121,28 +213,21 @@ def delete(reference_id):
 @app.route("/bibtex")
 def bibtex():
     references = get_references()
-    bibtex_reference = references_to_bibtex(references)
+    bibtex_exporter = ReferenceToBibtex()
+    bibtex_reference = bibtex_exporter.references_to_bibtex(references)
     return render_template("bibtex.html", bibtex_reference=bibtex_reference)
 
 
 @app.route("/bibtex/download")
 def bibtex_download():
     references = get_references()
-    bibtex_reference = references_to_bibtex(references)
+    bibtex_exporter = ReferenceToBibtex()
+    bibtex_reference = bibtex_exporter.references_to_bibtex(references)
     return Response(
         bibtex_reference,
         mimetype="text/plain",
         headers={"Content-Disposition": "attachment; filename=references.bib"},
     )
-
-
-def _validate_required_fields(reference_type, form):
-    for field, meta in reference_data[reference_type]["fields"].items():  # validointi
-        if meta["required"] and not form.get(field.value):
-            abort(
-                400,
-                f"Täytä kaikki pakolliset kentät: {reference_fields[field]["name"]}",
-            )
 
 
 if test_env:
