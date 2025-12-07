@@ -36,17 +36,12 @@
       <br>
       <label for="tag">Hae tagilla:</label><br>
       <select name="tag" id="tag">
-<<<<<<< HEAD
+
         <option value="">Kaikki tagit</option>
         <option value="kandityö" {% if search_tag == 'kandityö' %}selected{% endif %}>Kandidaatintutkielma</option>
         <option value="gradu" {% if search_tag == 'gradu' %}selected{% endif %}>Pro gradu -tutkielma</option>
         <option value="väitöskirja" {% if search_tag == 'väitöskirja' %}selected{% endif %}>Väitöskirja</option>
-=======
-        <option value="">Ei tagia</option>
-        <option value="Kandidaatintutkielma" {% if search_tag == 'Kandidaatintutkielma' %}selected{% endif %}>Kandidaatintutkielma</option>
-        <option value="Pro gradu -tutkielma" {% if search_tag == 'Pro gradu -tutkielma' %}selected{% endif %}>Pro gradu -tutkielma</option>
-        <option value="Väitöskirja" {% if search_tag == 'Väitöskirja' %}selected{% endif %}>Väitöskirja</option>
->>>>>>> c4a8387 (alustava tagin lisäys ja suodatus)
+    
       </select>
       <br>  
       <button type="submit">Hae</button>

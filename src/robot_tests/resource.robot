@@ -73,8 +73,8 @@ Edit Reference
 
     Page Should Contain    Test Text
 
-Add Tag
-    [Arguments]    ${reference_type}
+Add Tag Reference
+    [Arguments]    ${reference_type}    ${tag}
     Go To    ${HOME_URL}/add?type=${reference_type}
 
     ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
@@ -83,13 +83,21 @@ Add Tag
         Input Text    ${field}    ${FIELD_VALUES["${type}"]}
     END
     
-    Select From List By Value    xpath=//select[@name="tag"]    kandityö
-
-    Click Button    xpath=//button[@type="submit"]
-
-    Go To    ${HOME_URL}
-    Select From List By Value    xpath=//select[@name="tag"]    kandityö
-    Click Button    xpath=//button[text()="Hae"]
+    Select From List By Value    xpath=//select[@name='tag']    ${tag}
     
-    Page Should Contain    Test Text
-    Page Should Contain    Hakutulokset
+    Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
+    
+    Scroll Element Into View    xpath=//button[@type="submit" and @value="lisää"]
+
+    Click Button    xpath=//button[@type="submit" and @value="lisää"]
+
+Clear Contents From Table Reference
+    Reset Database
+
+Go To Home Page
+    Go To    ${HOME_URL}
+
+Search With Tag
+    [Arguments]    ${tag}
+    Select From List By Value    xpath=//select[@name='tag']    ${tag}
+    Click Button    xpath=//button[text()='Hae']

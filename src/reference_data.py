@@ -133,7 +133,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.BOOK: {
@@ -156,7 +155,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.BOOKLET: {
@@ -179,7 +177,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.INBOOK: {
@@ -205,7 +202,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.INPROCEEDINGS: {
@@ -231,7 +227,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.MANUAL: {
@@ -250,7 +245,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.MASTERSTHESIS: {
@@ -270,7 +264,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.MISC: {
@@ -288,7 +281,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.PHDTHESIS: {
@@ -308,7 +300,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.PROCEEDINGS: {
@@ -330,7 +321,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.TECHREPORT: {
@@ -351,7 +341,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
     ReferenceType.UNPUBLISHED: {
@@ -368,7 +357,6 @@ reference_data = {
             ReferenceField.DOI: {"required": False},
             ReferenceField.ISSN: {"required": False},
             ReferenceField.ISBN: {"required": False},
-            ReferenceField.TAG: {"required": False},
         },
     },
 }
