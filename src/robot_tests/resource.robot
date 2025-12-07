@@ -49,3 +49,24 @@ Add Reference
     Click Button    xpath=//button[@type="submit" and @value="lisää"]
     Page Should Contain    Test Text
 
+Edit Reference
+    [Arguments]    ${reference_type}
+    Add Reference    ${reference_type}
+
+    Go To   ${HOME_URL}
+    Click Link    xpath=(//a[contains(@href, "/edit/")])[1]
+
+    ${inputs}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"]
+    FOR    ${field}    IN    @{inputs}
+        ${type}=    Get Element Attribute    ${field}    type
+        Input Text    ${field}    ${FIELD_VALUES}[${type}]
+    END
+
+    ${areas}=    Get WebElements    xpath=//textarea
+    FOR    ${field}    IN    @{areas}
+        Input Text    ${field}    ${FIELD_VALUES}[textarea]
+    END
+
+    Click Button    xpath=//button[@type="submit"]
+
+    Page Should Contain    Test Text
