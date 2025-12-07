@@ -18,7 +18,7 @@ from repositories.referencetaglinks_repository import (
     delete_referencetaglink,
 )
 from db_helper import reset_db
-from bibtex_transform import references_to_bibtex
+from bibtex_transform import ReferenceToBibtex
 from reference_data import reference_data, ReferenceType, ReferenceField
 from validators import _validate_required_fields
 import requests
@@ -64,16 +64,6 @@ def doi_data(doi):
     return {}
 
 
-def process_field(data, key, field, prefill_data):
-    if key not in data:
-        return
-    value = data[key]
-    if isinstance(value, list) and len(value) > 0:
-        value = value[0]
-    if value:
-        prefill_data[str(field.value)] = str(value)
-
-
 def crossref_data(data):
     prefill_data = {}
 
@@ -89,7 +79,12 @@ def crossref_data(data):
     }
 
     for key, field in crossref_to_fields.items():
-        process_field(data, key, field, prefill_data)
+        if key in data:
+            value = data[key]
+            if isinstance(value, list) and len(value) > 0:
+                value = value[0]
+            if value:
+                prefill_data[str(field.value)] = str(value)
 
     author = crossref_author_or_editor(data, "author")
     if author:
@@ -212,72 +207,12 @@ def add():
         data = doi_data(doi)
         if data:
             prefill_data = crossref_data(data)
-        url = f"https://api.crossref.org/works/{quote(doi)}"
-        r = requests.get(url)
-        if r.status_code == 200:
-            data = r.json()["message"]
-
-            crossref_to_fields = {
-                "title": ReferenceField.TITLE,
-                "author": ReferenceField.AUTHOR,
-                "publisher": ReferenceField.PUBLISHER,
-                "container-title": ReferenceField.JOURNAL,
-                "volume": ReferenceField.VOLUME,
-                "issue": ReferenceField.NUMBER,
-                "page": (ReferenceField.PAGES_FROM, ReferenceField.PAGES_TO),
-                "DOI": ReferenceField.DOI,
-                "ISSN": ReferenceField.ISSN,
-                "ISBN": ReferenceField.ISBN,
-                "editor": ReferenceField.EDITOR,
-            }
-
-            for key, field in crossref_to_fields.items():
-                if key in data:
-
-                    if key == "author":
-                        authors = [
-                            f"{a.get('given', '')} {a.get('family', '')}".strip()
-                            for a in data["author"]
-                        ]
-                        prefill_data[str(field.value)] = " and ".join(authors)
-
-                    elif key == "editor":
-                        editors = [
-                            f"{e.get('given', '')} {e.get('family', '')}".strip()
-                            for e in data["editor"]
-                        ]
-                        prefill_data[str(field.value)] = " and ".join(editors)
-
-                    elif key == "page" and isinstance(field, tuple):
-                        pages = data["page"].split("-")
-                        if len(pages) >= 1:
-                            prefill_data[str(field[0].value)] = pages[0].strip()
-                        if len(pages) >= 2:
-                            prefill_data[str(field[1].value)] = pages[1].strip()
-
-                    else:
-                        value = data[key]
-                        if isinstance(value, list) and len(value) > 0:
-                            value = value[0]
-                        prefill_data[str(field.value)] = str(value) if value else ""
-
-            year = None
-            if "published-print" in data and data["published-print"].get("date-parts"):
-                year = data["published-print"]["date-parts"][0][0]
-            elif "published-online" in data and data["published-online"].get(
-                "date-parts"
-            ):
-                year = data["published-online"]["date-parts"][0][0]
-            elif "published" in data and data["published"].get("date-parts"):
-                year = data["published"]["date-parts"][0][0]
-
-            if year:
-                prefill_data[str(ReferenceField.YEAR.value)] = str(year)
 
     if request.method == "GET":
         return render_template(
             "add.html", reference_type=reference_type, prefill_data=prefill_data
         )
+
     if request.method == "POST":
         _validate_required_fields(reference_type, request.form)
         fields = {}
@@ -294,29 +229,7 @@ def add():
             if tag:
                 add_new_referencetaglink(reference_id, tag.id)
 
-    _validate_required_fields(reference_type, request.form)
-    fields = {}
-    for field in reference_data[reference_type]["fields"]:
-        if field.value != "tag":
-            value = request.form.get(field.value, "")
-            fields[field] = value if value else None
-
-    reference_id = add_new_reference(reference_type, fields)
-
-    tag_name = request.form.get("tag")
-    if tag_name:
-        tag = get_tag_by_name(tag_name)
-        if tag:
-            add_new_referencetaglink(reference_id, tag.id)
-    return redirect(url_for("index"))
-
-
-def collect_fields(reference_type, form):
-    fields = {}
-    for field in reference_data[reference_type]["fields"]:
-        value = form.get(field.value, "")
-        fields[field] = value if value else None
-    return fields
+        return redirect(url_for("index"))
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])

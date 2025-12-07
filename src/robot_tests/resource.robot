@@ -42,10 +42,11 @@ Add Reference
         Input Text    ${field}    ${FIELD_VALUES["${type}"]}
     END
     
-    Wait Until Element Is Visible    xpath=//button[@type="submit" and text()="Lisää"]    timeout=5s
-    Scroll Element Into View    xpath=//button[@type="submit" and text()="Lisää"]
-    Click Button    xpath=//button[@type="submit" and text()="Lisää"]
+    Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
+    
+    Scroll Element Into View    xpath=//button[@type="submit" and @value="lisää"]
 
+    Click Button    xpath=//button[@type="submit" and @value="lisää"]
     Page Should Contain    Test Text
 
 Edit Reference
