@@ -23,8 +23,7 @@ def reference_from_row(row) -> Reference:
 
     fields = {}
     for field in data[ref_type]["fields"]:
-        # Only skip TAG field for real data, not test data
-        if not is_test_data and field == ReferenceField.TAG:
+        if not is_test_data and field.value == "tag":
             continue
         fields[field] = getattr(row, field.value)
 
