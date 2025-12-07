@@ -57,6 +57,19 @@ def setup_db():
 
     sql = text(schema_sql)
     db.session.execute(sql)
+
+    # Lisää tägitaulu ja tägiviitelinkkitaulu ja placeholder tägit
+    tag_sql = "CREATE TABLE Tag (id SERIAL PRIMARY KEY, name TEXT UNIQUE NOT NULL);"
+    referencetaglink_sql = "CREATE TABLE ReferenceTagLink (reference_id INTEGER NOT NULL REFERENCES Reference(id) ON DELETE CASCADE, tag_id INTEGER NOT NULL REFERENCES Tag(id) ON DELETE CASCADE, PRIMARY KEY (reference_id, tag_id));"
+    db.session.execute(text(tag_sql))
+    db.session.execute(text(referencetaglink_sql))
+
+    placeholder_tags = ["kandityö", "gradu", "väitöskirja"]
+    for tag_name in placeholder_tags:
+        db.session.execute(
+            text("INSERT INTO Tag (name) VALUES (:name)"), {"name": tag_name}
+        )
+
     db.session.commit()
 
 

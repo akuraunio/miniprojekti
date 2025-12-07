@@ -10,7 +10,7 @@ from repositories.references_repository import (
     search_references,
 )
 from db_helper import reset_db
-from bibtex_transform import references_to_bibtex
+from bibtex_transform import ReferenceToBibtex
 from reference_data import reference_data, ReferenceType
 from validators import _validate_required_fields
 
@@ -126,19 +126,22 @@ def delete(reference_id):
 @app.route("/bibtex")
 def bibtex():
     references = get_references()
-    bibtex_reference = references_to_bibtex(references)
+    bibtex_exporter = ReferenceToBibtex()
+    bibtex_reference = bibtex_exporter.references_to_bibtex(references)
     return render_template("bibtex.html", bibtex_reference=bibtex_reference)
 
 
 @app.route("/bibtex/download")
 def bibtex_download():
     references = get_references()
-    bibtex_reference = references_to_bibtex(references)
+    bibtex_exporter = ReferenceToBibtex()
+    bibtex_reference = bibtex_exporter.references_to_bibtex(references)
     return Response(
         bibtex_reference,
         mimetype="text/plain",
         headers={"Content-Disposition": "attachment; filename=references.bib"},
     )
+
 
 if test_env:
 
