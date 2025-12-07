@@ -1,5 +1,7 @@
 import os
 from flask import request, redirect, url_for, render_template, abort, Response
+import requests
+from requests.utils import quote
 from config import app
 from repositories.references_repository import (
     get_references,
@@ -19,8 +21,6 @@ from db_helper import reset_db
 from bibtex_transform import ReferenceToBibtex
 from reference_data import reference_data, ReferenceType, ReferenceField
 from validators import _validate_required_fields
-import requests
-from requests.utils import quote
 
 test_env = os.getenv("TEST_ENV") == "true"
 
@@ -62,6 +62,16 @@ def doi_data(doi):
     return {}
 
 
+def process_field(data, key, field, prefill_data):
+    if key not in data:
+        return
+    value = data[key]
+    if isinstance(value, list) and len(value) > 0:
+        value = value[0]
+    if value:
+        prefill_data[str(field.value)] = str(value)
+
+
 def crossref_data(data):
     prefill_data = {}
 
@@ -77,12 +87,7 @@ def crossref_data(data):
     }
 
     for key, field in crossref_to_fields.items():
-        if key in data:
-            value = data[key]
-            if isinstance(value, list) and len(value) > 0:
-                value = value[0]
-            if value:
-                prefill_data[str(field.value)] = str(value)
+        process_field(data, key, field, prefill_data)
 
     author = crossref_author_or_editor(data, "author")
     if author:
@@ -213,6 +218,7 @@ def add():
 
     if request.method == "POST":
         _validate_required_fields(reference_type, request.form)
+
         fields = {}
         for field in reference_data[reference_type]["fields"]:
             if field.value != "tag":
@@ -230,6 +236,14 @@ def add():
         return redirect(url_for("index"))
 
 
+def collect_fields(reference_type, form):
+    fields = {}
+    for field in reference_data[reference_type]["fields"]:
+        value = form.get(field.value, "")
+        fields[field] = value if value else None
+    return fields
+
+
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
 def edit(reference_id):
     reference = get_reference(reference_id)
@@ -244,26 +258,23 @@ def edit(reference_id):
 
     _validate_required_fields(reference.type, request.form)
 
-    if request.method == "POST":
+    fields = {}
+    for field in reference_data[reference.type]["fields"]:
+        if field.value != "tag":
+            value = request.form.get(field.value, "")
+            fields[field] = value if value else None
 
-        fields = {}
-        for field in reference_data[reference.type]["fields"]:
-            if field.value != "tag":
-                value = request.form.get(field.value, "")
-                fields[field] = value if value else None
+    update_reference(reference_id, fields)
 
-        update_reference(reference_id, fields)
+    current_tags = get_tags_for_reference(reference_id)
+    for tag in current_tags:
+        delete_referencetaglink(reference_id, tag.id)
 
-        current_tags = get_tags_for_reference(reference_id)
-        for tag in current_tags:
-            delete_referencetaglink(reference_id, tag.id)
-
-        tag_name = request.form.get("tag")
-        if tag_name:
-            tag = get_tag_by_name(tag_name)
-            if tag:
-                add_new_referencetaglink(reference_id, tag.id)
-
+    tag_name = request.form.get("tag")
+    if tag_name:
+        tag = get_tag_by_name(tag_name)
+        if tag:
+            add_new_referencetaglink(reference_id, tag.id)
     return redirect(url_for("index"))
 
 
