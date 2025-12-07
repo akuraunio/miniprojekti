@@ -41,6 +41,8 @@ Add Reference
         ${type}=    Get Element Attribute    ${field}    type
         Input Text    ${field}    ${FIELD_VALUES["${type}"]}
     END
+    
+    Select From List By Value    xpath=//select[@name="tag"]    kandityö
 
     Click Button    xpath=//button[@type="submit"]
 
@@ -63,7 +65,30 @@ Edit Reference
     FOR    ${field}    IN    @{areas}
         Input Text    ${field}    ${FIELD_VALUES}[textarea]
     END
+    
+    Select From List By Value    xpath=//select[@name="tag"]    gradu
 
     Click Button    xpath=//button[@type="submit"]
 
     Page Should Contain    Test Text
+
+Add Tag
+    [Arguments]    ${reference_type}
+    Go To    ${HOME_URL}/add?type=${reference_type}
+
+    ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
+    FOR    ${field}    IN    @{elements}
+        ${type}=    Get Element Attribute    ${field}    type
+        Input Text    ${field}    ${FIELD_VALUES["${type}"]}
+    END
+    
+    Select From List By Value    xpath=//select[@name="tag"]    kandityö
+
+    Click Button    xpath=//button[@type="submit"]
+
+    Go To    ${HOME_URL}
+    Select From List By Value    xpath=//select[@name="tag"]    kandityö
+    Click Button    xpath=//button[text()="Hae"]
+    
+    Page Should Contain    Test Text
+    Page Should Contain    Hakutulokset
