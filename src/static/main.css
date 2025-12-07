@@ -209,3 +209,23 @@ body {
   display: inline-block;
   margin-inline: 1rem;
 }
+
+.reference-item-action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.reference-item-action-buttons wa-button {
+  flex-shrink: 1;
+  flex-grow: 0;
+}
+
+.wa-dialog-footer-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.wa-dialog-footer-actions wa-button {
+  flex-shrink: 1;
+  flex-grow: 0;
+}

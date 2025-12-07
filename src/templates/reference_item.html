@@ -30,24 +30,28 @@
           action="{{ url_for('delete', reference_id=reference.id) }}"
           method="post"
           slot="footer">
-          <wa-button type="submit" variant="danger">Kyllä, poista</wa-button>
-          <wa-button appearance="plain" variant="brand" data-dialog="close">Peruuta</wa-button>
+          <div class="wa-dialog-footer-actions">
+            <wa-button type="submit" variant="danger">Kyllä, poista</wa-button>
+            <wa-button appearance="plain" variant="brand" data-dialog="close">Peruuta</wa-button>
+          </div>
         </form>
       </wa-dialog>
-      <wa-button
-        appearance="filled"
-        variant="danger"
-        size="small"
-        data-dialog="open delete-dialog{{ reference.id }}"
-        >Poista</wa-button
-      >
-      <wa-button
-        appearance="filled"
-        variant="brand"
-        size="small"
-        onclick='location.href=`{{ url_for("edit", reference_id=reference.id) }}`'
-        >Muokkaa</wa-button
-      >
+      <div class="reference-item-action-buttons">
+        <wa-button
+          appearance="filled"
+          variant="danger"
+          size="small"
+          data-dialog="open delete-dialog{{ reference.id }}"
+          >Poista</wa-button
+        >
+        <wa-button
+          appearance="filled"
+          variant="brand"
+          size="small"
+          onclick='location.href=`{{ url_for("edit", reference_id=reference.id) }}`'
+          >Muokkaa</wa-button
+        >
+      </div>
     </div>
 
     <div>
