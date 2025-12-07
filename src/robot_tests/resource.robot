@@ -45,6 +45,7 @@ Add Reference
     Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
     
     Scroll Element Into View    xpath=//button[@type="submit" and @value="lisää"]
+    Select From List By Value    xpath=//select[@name="tag"]    kandityö
 
     Click Button    xpath=//button[@type="submit" and @value="lisää"]
     Page Should Contain    Test Text
@@ -73,7 +74,6 @@ Edit Reference
 Add Tag Reference
     [Arguments]    ${reference_type}    ${tag}
     Go To    ${HOME_URL}/add?type=${reference_type}
-
     ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
     FOR    ${field}    IN    @{elements}
         ${type}=    Get Element Attribute    ${field}    type
