@@ -4,6 +4,7 @@ from entities.references import Reference
 from reference_data import (
     reference_data,
     ReferenceType,
+    ReferenceField,
     TestReferenceType,
     test_reference_data,
 )
@@ -20,7 +21,8 @@ def reference_from_row(row) -> Reference:
 
     fields = {}
     for field in data[ref_type]["fields"]:
-        fields[field] = row._mapping[field.value]  # pylint: disable=protected-access
+        if field != ReferenceField.TAG:
+            fields[field] = row._mapping[field.value]
 
     reference = Reference(
         type=ref_type,
@@ -62,14 +64,16 @@ def add_new_reference(type: ReferenceType, fields: dict):
 
     sql = text(
         f"INSERT INTO Reference (reference_type, {field_names}) "
-        f"VALUES (:reference_type, {field_placeholders})"
+        f"VALUES (:reference_type, {field_placeholders}) RETURNING id"
     )
 
     parameters = {field.value: value for field, value in fields.items()}
     parameters["reference_type"] = type.value
 
-    db.session.execute(sql, parameters)
+    result = db.session.execute(sql, parameters)
+    reference_id = result.fetchone()[0]
     db.session.commit()
+    return reference_id
 
 
 # viitteiden muokkaus tietokantaan

@@ -9,9 +9,15 @@ from repositories.references_repository import (
     delete_reference,
     search_references,
 )
+from repositories.tags_repository import get_tag_by_name
+from repositories.referencetaglinks_repository import (
+    add_new_referencetaglink,
+    get_tags_for_reference,
+    delete_referencetaglink,
+)
 from db_helper import reset_db
 from bibtex_transform import ReferenceToBibtex
-from reference_data import reference_data, ReferenceType
+from reference_data import reference_data, ReferenceType, ReferenceField
 from validators import _validate_required_fields
 
 test_env = os.getenv("TEST_ENV") == "true"
@@ -21,6 +27,7 @@ test_env = os.getenv("TEST_ENV") == "true"
 def index():
     query = request.args.get("query", "").strip()
     field = request.args.get("field", "").strip()
+    tag = request.args.get("tag", "").strip()
 
     field_names = {
         "title": "Otsikko",
@@ -36,18 +43,59 @@ def index():
         "note": "Huomautus",
     }
 
-    if query or field:
-        search_results = search_references(query, field if field else None)
+    tag_names = {
+        "kandityö": "Kandidaatintutkielma",
+        "gradu": "Pro gradu -tutkielma",
+        "väitöskirja": "Väitöskirja",
+    }
+
+    if query or field or tag:
+        search_results = []
+
+        if tag:
+            tag_obj = get_tag_by_name(tag)
+            if tag_obj:
+                from repositories.referencetaglinks_repository import (
+                    get_references_with_tag,
+                )
+
+                tag_results = get_references_with_tag(tag_obj.id)
+            else:
+                tag_results = []
+        else:
+            tag_results = None
+
+        if query or field:
+            text_results = search_references(query, field if field else None)
+        else:
+            text_results = None
+
+        if tag_results is not None and text_results is not None:
+            search_results = [
+                ref
+                for ref in text_results
+                if any(tr.id == ref.id for tr in tag_results)
+            ]
+        elif tag_results is not None:
+            search_results = tag_results
+        elif text_results is not None:
+            search_results = text_results
+
         return render_template(
             "index.html",
             search_results=search_results,
             search_query=query,
             search_field=field,
             search_field_name=field_names.get(field, ""),
+            search_tag=tag,
+            search_tag_name=tag_names.get(tag, ""),
+            ReferenceField=ReferenceField,
         )
 
     references = get_references()
-    return render_template("index.html", references=references)
+    return render_template(
+        "index.html", references=references, ReferenceField=ReferenceField
+    )
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa
@@ -73,11 +121,17 @@ def add():
 
         fields = {}
         for field in reference_data[reference_type]["fields"]:
-            value = request.form.get(field.value, "")
+            if field.value != "tag":
+                value = request.form.get(field.value, "")
+                fields[field] = value if value else None
 
-            fields[field] = value if value else None
+        reference_id = add_new_reference(reference_type, fields)
 
-        add_new_reference(reference_type, fields)
+        tag_name = request.form.get("tag")
+        if tag_name:
+            tag = get_tag_by_name(tag_name)
+            if tag:
+                add_new_referencetaglink(reference_id, tag.id)
 
     return redirect(url_for("index"))
 
@@ -90,6 +144,8 @@ def edit(reference_id):
         abort(404)
 
     if request.method == "GET":
+        current_tags = get_tags_for_reference(reference_id)
+        reference.current_tag = current_tags[0] if current_tags else None
         return render_template("edit.html", reference=reference)
 
     _validate_required_fields(reference.type, request.form)
@@ -98,11 +154,21 @@ def edit(reference_id):
 
         fields = {}
         for field in reference_data[reference.type]["fields"]:
-            value = request.form.get(field.value, "")
-
-            fields[field] = value if value else None
+            if field.value != "tag":
+                value = request.form.get(field.value, "")
+                fields[field] = value if value else None
 
         update_reference(reference_id, fields)
+
+        current_tags = get_tags_for_reference(reference_id)
+        for tag in current_tags:
+            delete_referencetaglink(reference_id, tag.id)
+
+        tag_name = request.form.get("tag")
+        if tag_name:
+            tag = get_tag_by_name(tag_name)
+            if tag:
+                add_new_referencetaglink(reference_id, tag.id)
 
     return redirect(url_for("index"))
 
