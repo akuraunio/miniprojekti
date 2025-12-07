@@ -1,8 +1,5 @@
-{% extends "layout.html" %}
-
-{% block title %}Lisää {{ reference_data[reference_type]["name"] }} - Viitteet{% endblock %}
-
-{% block content %}
+{% extends "layout.html" %} {% block title %}Lisää {{ reference_data[reference_type]["name"] }} -
+Viitteet{% endblock %} {% block content %}
 <h2>Hae viite DOI:lla</h2>
 <form method="GET" action="{{ url_for('add') }}">
   <label>DOI</label>

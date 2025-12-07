@@ -215,6 +215,22 @@ def add():
         return render_template(
             "add.html", reference_type=reference_type, prefill_data=prefill_data
         )
+    if request.method == "POST":
+        _validate_required_fields(reference_type, request.form)
+
+        fields = {}
+        for field in reference_data[reference_type]["fields"]:
+            if field.value != "tag":
+                value = request.form.get(field.value, "")
+                fields[field] = value if value else None
+
+        reference_id = add_new_reference(reference_type, fields)
+
+        tag_name = request.form.get("tag")
+        if tag_name:
+            tag = get_tag_by_name(tag_name)
+            if tag:
+                add_new_referencetaglink(reference_id, tag.id)
 
     _validate_required_fields(reference_type, request.form)
     fields = {}
