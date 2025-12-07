@@ -217,23 +217,23 @@ def add():
         return render_template(
             "add.html", reference_type=reference_type, prefill_data=prefill_data
         )
-    if request.method == "POST":
-        _validate_required_fields(reference_type, request.form)
-        fields = {}
-        for field in reference_data[reference_type]["fields"]:
-            if field.value != "tag":
-                value = request.form.get(field.value, "")
-                fields[field] = value if value else None
 
-        reference_id = add_new_reference(reference_type, fields)
+    _validate_required_fields(reference_type, request.form)
+    fields = {}
+    for field in reference_data[reference_type]["fields"]:
+        if field.value != "tag":
+            value = request.form.get(field.value, "")
+            fields[field] = value if value else None
 
-        tag_name = request.form.get("tag")
-        if tag_name:
-            tag = get_tag_by_name(tag_name)
-            if tag:
-                add_new_referencetaglink(reference_id, tag.id)
+    reference_id = add_new_reference(reference_type, fields)
 
-        return redirect(url_for("index"))
+    tag_name = request.form.get("tag")
+    if tag_name:
+        tag = get_tag_by_name(tag_name)
+        if tag:
+            add_new_referencetaglink(reference_id, tag.id)
+
+    return redirect(url_for("index"))
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
