@@ -363,12 +363,12 @@ reference_data = {
 
 
 # Käytetään testauksessa, ei oikea viitetyyppi
-class TestReferenceType(Enum):
+class MockReferenceType(Enum):
     TEST = "test"
 
 
 # Käytetään testauksessa, ei oikeita viitekenttiä
-class TestReferenceField(Enum):
+class MockReferenceField(Enum):
     TEST_TEXT = "test_text"
     TEST_TEXT_REQUIRED = "test_text_required"
     TEST_NUMBER = "test_number"
@@ -386,68 +386,68 @@ class TestReferenceField(Enum):
 
 
 test_reference_fields = {
-    TestReferenceField.KEY: {
+    MockReferenceField.KEY: {
         "type": ReferenceFieldType.TEXT,
         "name": "Test Key",
     },
-    TestReferenceField.TEST_TEXT_REQUIRED: {
+    MockReferenceField.TEST_TEXT_REQUIRED: {
         "type": ReferenceFieldType.TEXT,
         "name": "Test Text Required",
     },
-    TestReferenceField.TEST_NUMBER: {
+    MockReferenceField.TEST_NUMBER: {
         "type": ReferenceFieldType.NUMBER,
         "name": "Test Number",
     },
-    TestReferenceField.TEST_NUMBER_REQUIRED: {
+    MockReferenceField.TEST_NUMBER_REQUIRED: {
         "type": ReferenceFieldType.NUMBER,
         "name": "Test Number Required",
     },
-    TestReferenceField.TEST_TEXTAREA: {
+    MockReferenceField.TEST_TEXTAREA: {
         "type": ReferenceFieldType.TEXTAREA,
         "name": "Test Textarea",
     },
-    TestReferenceField.TEST_TEXTAREA_REQUIRED: {
+    MockReferenceField.TEST_TEXTAREA_REQUIRED: {
         "type": ReferenceFieldType.TEXTAREA,
         "name": "Test Textarea Required",
     },
-    TestReferenceField.TITLE: {
+    MockReferenceField.TITLE: {
         "type": ReferenceFieldType.TEXT,
         "name": "Otsikko",
     },
-    TestReferenceField.YEAR: {
+    MockReferenceField.YEAR: {
         "type": ReferenceFieldType.NUMBER,
         "name": "Vuosi",
     },
-    TestReferenceField.AUTHOR: {
+    MockReferenceField.AUTHOR: {
         "type": ReferenceFieldType.TEXT,
         "name": "Tekijä",
     },
-    TestReferenceField.PAGES_FROM: {
+    MockReferenceField.PAGES_FROM: {
         "type": ReferenceFieldType.NUMBER,
         "name": "Test pages from",
     },
-    TestReferenceField.PAGES_TO: {
+    MockReferenceField.PAGES_TO: {
         "type": ReferenceFieldType.NUMBER,
         "name": "Test pages to",
     },
 }
 
 test_reference_data = {
-    TestReferenceType.TEST: {
+    MockReferenceType.TEST: {
         "name": "Test Reference",
         "fields": {
-            TestReferenceField.KEY: {"required": True},
-            TestReferenceField.TEST_TEXT: {"required": False},
-            TestReferenceField.TEST_TEXT_REQUIRED: {"required": True},
-            TestReferenceField.TEST_NUMBER: {"required": False},
-            TestReferenceField.TEST_NUMBER_REQUIRED: {"required": True},
-            TestReferenceField.TEST_TEXTAREA: {"required": False},
-            TestReferenceField.TEST_TEXTAREA_REQUIRED: {"required": True},
-            TestReferenceField.TITLE: {"required": False},
-            TestReferenceField.AUTHOR: {"required": False},
-            TestReferenceField.YEAR: {"required": False},
-            TestReferenceField.PAGES_FROM: {"required": False},
-            TestReferenceField.PAGES_TO: {"required": False},
+            MockReferenceField.KEY: {"required": True},
+            MockReferenceField.TEST_TEXT: {"required": False},
+            MockReferenceField.TEST_TEXT_REQUIRED: {"required": True},
+            MockReferenceField.TEST_NUMBER: {"required": False},
+            MockReferenceField.TEST_NUMBER_REQUIRED: {"required": True},
+            MockReferenceField.TEST_TEXTAREA: {"required": False},
+            MockReferenceField.TEST_TEXTAREA_REQUIRED: {"required": True},
+            MockReferenceField.TITLE: {"required": False},
+            MockReferenceField.AUTHOR: {"required": False},
+            MockReferenceField.YEAR: {"required": False},
+            MockReferenceField.PAGES_FROM: {"required": False},
+            MockReferenceField.PAGES_TO: {"required": False},
         },
     },
 }
@@ -457,15 +457,15 @@ def set_reference_data(app):
     if os.getenv("USE_TEST_REFERENCE_DATA") == "true":
         app.jinja_env.globals["reference_data"] = test_reference_data
         app.jinja_env.globals["reference_fields"] = test_reference_fields
-        app.jinja_env.globals["ReferenceField"] = TestReferenceField
-        app.jinja_env.globals["ReferenceType"] = TestReferenceType
+        app.jinja_env.globals["ReferenceField"] = MockReferenceField
+        app.jinja_env.globals["ReferenceType"] = MockReferenceType
         app.jinja_env.globals["ReferenceFieldType"] = ReferenceFieldType
 
         if "reference_data" in sys.modules:
             sys.modules["reference_data"].reference_data = test_reference_data
             sys.modules["reference_data"].reference_fields = test_reference_fields
-            sys.modules["reference_data"].ReferenceField = TestReferenceField
-            sys.modules["reference_data"].ReferenceType = TestReferenceType
+            sys.modules["reference_data"].ReferenceField = MockReferenceField
+            sys.modules["reference_data"].ReferenceType = MockReferenceType
             sys.modules["reference_data"].ReferenceFieldType = ReferenceFieldType
         return
 

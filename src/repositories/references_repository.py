@@ -5,7 +5,7 @@ from reference_data import (
     reference_data,
     ReferenceType,
     ReferenceField,
-    TestReferenceType,
+    MockReferenceType,
     test_reference_data,
 )
 from db_helper import search, search_by_field, search_field_exists
@@ -15,14 +15,18 @@ def reference_from_row(row) -> Reference:
     try:
         ref_type = ReferenceType(row.reference_type)
         data = reference_data
+        is_test_data = False
     except ValueError:
-        ref_type = TestReferenceType(row.reference_type)
+        ref_type = MockReferenceType(row.reference_type)
         data = test_reference_data
+        is_test_data = True
 
     fields = {}
     for field in data[ref_type]["fields"]:
-        if field != ReferenceField.TAG:
-            fields[field] = row._mapping[field.value]
+        # Only skip TAG field for real data, not test data
+        if not is_test_data and field == ReferenceField.TAG:
+            continue
+        fields[field] = row._mapping[field.value]
 
     reference = Reference(
         type=ref_type,
