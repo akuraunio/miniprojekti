@@ -2,13 +2,13 @@
 Library  SeleniumLibrary
 
 *** Variables ***
-${DELAY}     0 seconds
+${DELAY}     0.1 seconds
 ${HOME_URL}  http://localhost:5001
 ${RESET_URL}  http://localhost:5001/reset_db
 ${BROWSER}   chrome
 @{REFERENCE_TYPES}    BOOK    ARTICLE    THESIS  
 ${TEST_VALUE}    Test Value
-${HEADLESS}   false
+${HEADLESS}   true
 &{FIELD_VALUES}
 ...    text=Test Text
 ...    number=123
@@ -42,8 +42,8 @@ Add Reference
         Input Text    ${field}    ${FIELD_VALUES["${type}"]}
     END
     
-    Select From List By Value    xpath=//select[@name="tag"]    kandityö
-
+    Wait Until Element Is Visible    xpath=//button[@type="submit" and text()="Lisää"]    timeout=5s
+    Scroll Element Into View    xpath=//button[@type="submit" and text()="Lisää"]
     Click Button    xpath=//button[@type="submit" and text()="Lisää"]
 
     Page Should Contain    Test Text
