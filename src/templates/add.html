@@ -1,11 +1,10 @@
 {% extends "layout.html" %} {% block title %}Lisää {{ reference_data[reference_type]["name"] }} -
 Viitteet{% endblock %} {% block content %}
 <h2>Hae viite DOI:lla</h2>
-<form method="GET" action="{{ url_for('add') }}">
-  <label>DOI</label>
-  <input type="text" name="doi">
+<form class="form" method="GET" action="{{ url_for('add') }}">
+  <wa-input label="DOI" type="text" name="doi" value="{{ request.args.get('doi', '') }}"></wa-input>
   <input type="hidden" name="type" value="{{ reference_type.value }}">
-  <button type="submit" value="doi">Hae DOI</button>
+  <wa-button class="form-submit-button" variant="brand" type="submit" value="doi">Hae</wa-button>
 </form>
 <br>
 <br>

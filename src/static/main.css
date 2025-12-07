@@ -229,3 +229,16 @@ body {
   flex-shrink: 1;
   flex-grow: 0;
 }
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 30rem;
+}
+
+.form-submit-button {
+  align-self: start;
+  flex-shrink: 1;
+  flex-grow: 0;
+}
