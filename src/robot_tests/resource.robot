@@ -36,11 +36,19 @@ Add Reference
     [Arguments]    ${reference_type}
     Go To    ${HOME_URL}/add?type=${reference_type}
 
+    Input Text    name=key    TestKey123
+
     ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
     FOR    ${field}    IN    @{elements}
         ${type}=    Get Element Attribute    ${field}    type
-        Input Text    ${field}    ${FIELD_VALUES["${type}"]}
+        ${name}=    Get Element Attribute    ${field}    name
+        IF    "${name}" != "doi" and "${name}" != "key"
+            Input Text    ${field}    ${FIELD_VALUES["${type}"]}
+        END
     END
+
+
+    Select From List By Value    name=tag    kandityö
     
     Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
     
@@ -66,8 +74,11 @@ Edit Reference
     FOR    ${field}    IN    @{areas}
         Input Text    ${field}    ${FIELD_VALUES}[textarea]
     END
-    
-    Select From List By Value    xpath=//select[@name="tag"]    gradu
+
+    Select From List By Value    name=tag    gradu
+
+    Click Button    xpath=//button[@type="submit"]
+
     Page Should Contain    Test Text
 
 Add Tag Reference

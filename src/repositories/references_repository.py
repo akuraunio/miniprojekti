@@ -26,7 +26,7 @@ def reference_from_row(row) -> Reference:
         # Only skip TAG field for real data, not test data
         if not is_test_data and field == ReferenceField.TAG:
             continue
-        fields[field] = row._mapping[field.value]
+        fields[field] = getattr(row, field.value)
 
     reference = Reference(
         type=ref_type,

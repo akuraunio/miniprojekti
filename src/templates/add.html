@@ -35,19 +35,10 @@ Viitteet{% endblock %} {% block content %}
   <label>{{ reference_fields[field]["name"] }}*</label><br />
   <input type="number" name="{{ field.value }}" value="{{ value }}" required min="0" /><br />
 
-  {% endif %} {% endif %} {% endfor %}
-
-  <label>Tagi</label><br />
-  <select name="tag">
-    <option value="">Ei tagia</option>
-    <option value="kandityö">Kandidaatintutkielma</option>
-    <option value="gradu">Pro gradu -tutkielma</option>
-    <option value="väitöskirja">Väitöskirja</option></select
-  ><br />
-
-  {% for field, data in reference_data[reference_type]["fields"].items() %} {% if field !=
-  ReferenceField.TAG and not data["required"] %} {% set value = prefill_data.get(field.value, "") %}
-  {% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
+  {% endif %} {% endif %} {% endfor %} {% for field, data in
+  reference_data[reference_type]["fields"].items() %} {% if field != ReferenceField.TAG and not
+  data["required"] %} {% set value = prefill_data.get(field.value, "") %} {% if
+  reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
 
   <label>{{ reference_fields[field]["name"] }}</label><br />
   <input
@@ -66,6 +57,16 @@ Viitteet{% endblock %} {% block content %}
 
   <label>{{ reference_fields[field]["name"] }}</label><br />
   <input type="number" name="{{ field.value }}" value="{{ value }}" min="0" /><br />
+
+  {% endif %} {% endif %} {% endfor %}
+
+  <label>Tagi</label><br />
+  <select name="tag">
+    <option value="">Ei tagia</option>
+    <option value="kandityö">Kandidaatintutkielma</option>
+    <option value="gradu">Pro gradu -tutkielma</option>
+    <option value="väitöskirja">Väitöskirja</option></select
+  ><br />
 
   {% endif %} {% endif %} {% endfor %}
 
