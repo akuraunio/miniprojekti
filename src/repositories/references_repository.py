@@ -4,7 +4,6 @@ from entities.references import Reference
 from reference_data import (
     reference_data,
     ReferenceType,
-    ReferenceField,
     MockReferenceType,
     test_reference_data,
 )

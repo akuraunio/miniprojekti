@@ -76,12 +76,11 @@
   
   {% endif %}
   {% endif %}
-  {% endif %}
   {% endfor %}
   
-  <label>Tagi*</label><br/>
-  <select name="tag" required>
-    <option value="">Valitse tagi</option>
+  <label>Tagi</label><br/>
+  <select name="tag">
+    <option value="">Ei tagia</option>
     <option value="kandityö" {% if reference.current_tag and reference.current_tag.name == 'kandityö' %}selected{% endif %}>Kandidaatintutkielma</option>
     <option value="gradu" {% if reference.current_tag and reference.current_tag.name == 'gradu' %}selected{% endif %}>Pro gradu -tutkielma</option>
     <option value="väitöskirja" {% if reference.current_tag and reference.current_tag.name == 'väitöskirja' %}selected{% endif %}>Väitöskirja</option>

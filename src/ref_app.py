@@ -249,6 +249,8 @@ def add():
         _process_add_form(reference_type)
         return redirect(url_for("index"))
 
+    return redirect(url_for("index"))
+
 
 def collect_fields(reference_type, form):
     fields = {}
