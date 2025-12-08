@@ -11,7 +11,14 @@ from repositories.references_repository import (
     delete_reference,
     search_references,
 )
-from repositories.referencetaglinks_repository import get_tags_for_reference
+from repositories.referencetaglinks_repository import (
+    get_tags_for_reference,
+    get_references_with_tag,
+)
+from repositories.tags_repository import (
+    get_tag_by_name,
+    get_tags,
+)
 from db_helper import reset_db
 from bibtex_transform import ReferenceToBibtex
 from reference_data import reference_data, ReferenceType, ReferenceField
@@ -223,15 +230,36 @@ def delete(reference_id):
 # routet bibtex-näkymälle ja lataukselle
 @app.route("/bibtex")
 def bibtex():
-    references = get_references()
+    filter_tag = request.args.get("tag", "").strip()
+
+    if filter_tag:
+        tag_object = get_tag_by_name(filter_tag)
+        references = get_references_with_tag(tag_object.id)
+    else:
+        references = get_references()
+
+    all_tags = get_tags()
+
     bibtex_exporter = ReferenceToBibtex()
     bibtex_reference = bibtex_exporter.references_to_bibtex(references)
-    return render_template("bibtex.html", bibtex_reference=bibtex_reference)
+    return render_template(
+        "bibtex.html",
+        bibtex_reference=bibtex_reference,
+        tags=all_tags,
+        filter_tag=filter_tag,
+    )
 
 
 @app.route("/bibtex/download")
 def bibtex_download():
-    references = get_references()
+    filter_tag = request.args.get("tag", "").strip()
+
+    if filter_tag:
+        tag_object = get_tag_by_name(filter_tag)
+        references = get_references_with_tag(tag_object.id)
+    else:
+        references = get_references()
+
     bibtex_exporter = ReferenceToBibtex()
     bibtex_reference = bibtex_exporter.references_to_bibtex(references)
     return Response(
