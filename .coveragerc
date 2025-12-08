@@ -6,6 +6,10 @@ omit =
     src/db_helper.py
     src/index.py
     src/reference_data.py
+    src/seed.py
+    src/repositories/tags_repository.py
+    src/repositories/referencetaglinks_repository.py
+    src/entities/tags.py
 
 [report]
 exclude_lines = 
@@ -23,3 +27,17 @@ exclude_lines =
     def add
     def reset_database
     if __name__ == "__main__":
+    def crossref_pages
+    def crossref_year
+    def doi_data
+    def process_field
+    def crossref_data
+    def _get_field_names
+    def _get_tag_names
+    def _perform_search
+    def _get_reference_type
+    def _get_prefill_data
+    def _process_add_form
+    def collect_fields
+    def _process_edit_form
+    def crossref_author_or_editor
