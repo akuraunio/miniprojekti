@@ -67,6 +67,17 @@ def doi_data(doi):
     return {}
 
 
+def edit_data(reference_id):
+    reference = get_reference(reference_id)
+    if reference:
+        prefill_data = {}
+        for field, value in reference.fields.items():
+            if value is not None:
+                prefill_data[str(field.value)] = str(value)
+        return prefill_data
+    return {}
+
+
 def process_field(data, key, field, prefill_data):
     if key not in data:
         return
@@ -214,13 +225,14 @@ def _get_reference_type():
     return ReferenceType(reference_type)
 
 
-def _get_prefill_data():
-    """Get prefill data from DOI if provided."""
-    doi = request.args.get("doi")
+def _get_prefill_data(reference_id=None, doi=None):
+    """Get prefill data from DOI or reference ID."""
     if doi:
         data = doi_data(doi)
         if data:
             return crossref_data(data)
+    elif reference_id:
+        return edit_data(reference_id)
     return {}
 
 
@@ -248,11 +260,15 @@ def _process_add_form(reference_type):
 @app.route("/add", methods=["GET", "POST"])
 def add():
     reference_type = _get_reference_type()
-    prefill_data = _get_prefill_data()
+    prefill_data = _get_prefill_data(doi=request.args.get("doi"))
+    tag_names = _get_tag_names()
 
     if request.method == "GET":
         return render_template(
-            "add.html", reference_type=reference_type, prefill_data=prefill_data
+            "add.html",
+            reference_type=reference_type,
+            prefill_data=prefill_data,
+            tag_names=tag_names,
         )
 
     if request.method == "POST":
@@ -300,10 +316,18 @@ def edit(reference_id):
     if not reference:
         abort(404)
 
+    tag_names = _get_tag_names()
+
     if request.method == "GET":
         current_tags = get_tags_for_reference(reference_id)
         reference.current_tag = current_tags[0] if current_tags else None
-        return render_template("edit.html", reference=reference)
+        prefill_data = _get_prefill_data(reference_id=reference_id)
+        return render_template(
+            "edit.html",
+            reference=reference,
+            prefill_data=prefill_data,
+            tag_names=tag_names,
+        )
 
     _process_edit_form(reference_id, reference)
     return redirect(url_for("index"))

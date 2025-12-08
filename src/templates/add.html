@@ -19,9 +19,9 @@ Viitteet{% endblock %} {% block content %}
 <form class="reference-form" method="POST" action="{{ url_for('add') }}">
   <wa-select label="Tagi" appearance="filled" name="tag">
     <wa-option selected value="">Ei tagia</wa-option>
-    <wa-option value="kandityö">Kandidaatintutkielma</wa-option>
-    <wa-option value="gradu">Pro gradu -tutkielma</wa-option>
-    <wa-option value="väitöskirja">Väitöskirja</wa-option>
+    {% for tag, tag_name in tag_names.items() %}
+    <wa-option value="{{ tag }}">{{ tag_name }}</wa-option>
+    {% endfor %}
   </wa-select>
   <wa-divider></wa-divider>
   {% for field, data in reference_data[reference_type]["fields"].items() %} {% if data["required"]
