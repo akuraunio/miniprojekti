@@ -36,10 +36,15 @@ Add Reference
     [Arguments]    ${reference_type}
     Go To    ${HOME_URL}/add?type=${reference_type}
 
+    Input Text    name=key    TestKey123
+
     ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
     FOR    ${field}    IN    @{elements}
         ${type}=    Get Element Attribute    ${field}    type
-        Input Text    ${field}    ${FIELD_VALUES["${type}"]}
+        ${name}=    Get Element Attribute    ${field}    name
+        IF    "${name}" != "doi" and "${name}" != "key"
+            Input Text    ${field}    ${FIELD_VALUES["${type}"]}
+        END
     END
     
     Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
@@ -67,6 +72,36 @@ Edit Reference
         Input Text    ${field}    ${FIELD_VALUES}[textarea]
     END
 
+    Select From List By Value    name=tag    gradu
+
     Click Button    xpath=//button[@type="submit"]
 
     Page Should Contain    Test Text
+
+Add Tag Reference
+    [Arguments]    ${reference_type}    ${tag}
+    Go To    ${HOME_URL}/add?type=${reference_type}
+    ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
+    FOR    ${field}    IN    @{elements}
+        ${type}=    Get Element Attribute    ${field}    type
+        Input Text    ${field}    ${FIELD_VALUES["${type}"]}
+    END
+    
+    Select From List By Value    xpath=//select[@name='tag']    ${tag}
+    
+    Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
+    
+    Scroll Element Into View    xpath=//button[@type="submit" and @value="lisää"]
+
+    Click Button    xpath=//button[@type="submit" and @value="lisää"]
+
+Clear Contents From Table Reference
+    Reset Database
+
+Go To Home Page
+    Go To    ${HOME_URL}
+
+Search With Tag
+    [Arguments]    ${tag}
+    Select From List By Value    xpath=//select[@name='tag']    ${tag}
+    Click Button    xpath=//button[text()='Hae']

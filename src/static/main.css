@@ -264,3 +264,8 @@ body {
 wa-details.reference-form-optional-fields::part(content) {
   padding: 0;
 }
+
+select[name="tag"] {
+  padding: 5px;
+  margin-bottom: 10px;
+}

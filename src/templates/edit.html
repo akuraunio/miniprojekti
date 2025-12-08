@@ -6,37 +6,73 @@
 <h2>Muokkaa viitettä {{ reference.fields[ReferenceField.KEY] }}</h2>
 
 <form method="POST" action="{{ url_for('edit', reference_id=reference.id) }}">
+  {# Required fields (excluding TAG) #}
   {% for field, data in reference_data[reference.type]["fields"].items() %}
-  {% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
-  
-  <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <input
-    type="text"
-    name="{{ field.value }}"
-    {% if data["required"] %}required{% endif %}
-    value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"
-    pattern=".*[0-9A-Za-zÄÖÅäöå].*" title="Syötä ainakin yksi kirjain tai numero"
-  /><br />
-  
-  {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
-  
-  <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <textarea name="{{ field.value }}"{% if data["required"] %}required{% endif %}
-  >{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}</textarea><br />
-  
-  {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
-  
-  <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-  <input
-    type="number"
-    name="{{ field.value }}"
-    {% if data["required"] %}required{% endif %}
-    value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"min="0"/>
-  <br />
-  
-  {% endif %}
+    {% if field != ReferenceField.TAG and data["required"] %}
+      {% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
+        <label>{{ reference_fields[field]["name"] }}*</label><br />
+        <input
+          type="text"
+          name="{{ field.value }}"
+          required
+          value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"
+          pattern=".*[0-9A-Za-zÄÖÅäöå].*"
+          title="Syötä ainakin yksi kirjain tai numero"
+        /><br />
+      {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
+        <label>{{ reference_fields[field]["name"] }}*</label><br />
+        <textarea name="{{ field.value }}" required>{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}</textarea><br />
+      {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
+        <label>{{ reference_fields[field]["name"] }}*</label><br />
+        <input
+          type="number"
+          name="{{ field.value }}"
+          required
+          value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"
+          min="0"
+        />
+        <br />
+      {% endif %}
+    {% endif %}
   {% endfor %}
-  
+
+  {# Optional fields (excluding TAG) #}
+  {% for field, data in reference_data[reference.type]["fields"].items() %}
+    {% if field != ReferenceField.TAG and not data["required"] %}
+      {% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
+        <label>{{ reference_fields[field]["name"] }}</label><br />
+        <input
+          type="text"
+          name="{{ field.value }}"
+          value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"
+          pattern=".*[0-9A-Za-zÄÖÅäöå].*"
+          title="Syötä ainakin yksi kirjain tai numero"
+        /><br />
+      {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
+        <label>{{ reference_fields[field]["name"] }}</label><br />
+        <textarea name="{{ field.value }}">{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}</textarea><br />
+      {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
+        <label>{{ reference_fields[field]["name"] }}</label><br />
+        <input
+          type="number"
+          name="{{ field.value }}"
+          value="{% if reference.fields[field] %}{{ reference.fields[field] }}{% endif %}"
+          min="0"
+        />
+        <br />
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+
+  {# Tag dropdown (single) #}
+  <label>Tagi</label><br/>
+  <select name="tag">
+    <option value="">Ei tagia</option>
+    <option value="kandityö" {% if reference.current_tag and reference.current_tag.name == 'kandityö' %}selected{% endif %}>Kandidaatintutkielma</option>
+    <option value="gradu" {% if reference.current_tag and reference.current_tag.name == 'gradu' %}selected{% endif %}>Pro gradu -tutkielma</option>
+    <option value="väitöskirja" {% if reference.current_tag and reference.current_tag.name == 'väitöskirja' %}selected{% endif %}>Väitöskirja</option>
+  </select><br />
+
   <button type="submit">Muokkaa</button>
 </form>
 

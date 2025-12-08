@@ -1,7 +1,7 @@
 import unittest
 from bibtex_transform import ReferenceToBibtex
 from entities import references
-from reference_data import TestReferenceType, TestReferenceField
+from reference_data import MockReferenceType, MockReferenceField
 
 
 class TestTransformReferencesToBibtex(unittest.TestCase):
@@ -10,13 +10,13 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
 
     def test_reference_to_bibtex_returns_correct_string(self):
         ref = references.Reference(
-            TestReferenceType.TEST,
+            MockReferenceType.TEST,
             1,
             {
-                TestReferenceField.TITLE: "Raamattu",
-                TestReferenceField.AUTHOR: "Jeesus",
-                TestReferenceField.YEAR: 1,
-                TestReferenceField.TEST_TEXTAREA: "",  # testaa että tyhjä arvo jää pois bibtexistä
+                MockReferenceField.TITLE: "Raamattu",
+                MockReferenceField.AUTHOR: "Jeesus",
+                MockReferenceField.YEAR: 1,
+                MockReferenceField.TEST_TEXTAREA: "",  # testaa että tyhjä arvo jää pois bibtexistä
             },
         )
 
@@ -28,22 +28,22 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
 
     def test_get_multiple_references_to_bibtex(self):
         ref1 = references.Reference(
-            TestReferenceType.TEST,
+            MockReferenceType.TEST,
             1,
             {
-                TestReferenceField.TITLE: "Raamattu",
-                TestReferenceField.AUTHOR: "Jeesus",
-                TestReferenceField.YEAR: 1,
+                MockReferenceField.TITLE: "Raamattu",
+                MockReferenceField.AUTHOR: "Jeesus",
+                MockReferenceField.YEAR: 1,
             },
         )
 
         ref2 = references.Reference(
-            TestReferenceType.TEST,
+            MockReferenceType.TEST,
             1,
             {
-                TestReferenceField.TITLE: "Aapinen",
-                TestReferenceField.AUTHOR: "Mikael Agricola",
-                TestReferenceField.YEAR: 1700,
+                MockReferenceField.TITLE: "Aapinen",
+                MockReferenceField.AUTHOR: "Mikael Agricola",
+                MockReferenceField.YEAR: 1700,
             },
         )
 
@@ -56,14 +56,14 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
 
     def test_reference_to_bibtex_pages_both_is_correct(self):
         ref = references.Reference(
-            TestReferenceType.TEST,
+            MockReferenceType.TEST,
             1,
             {
-                TestReferenceField.TITLE: "Raamattu",
-                TestReferenceField.AUTHOR: "Jeesus",
-                TestReferenceField.YEAR: 1,
-                TestReferenceField.PAGES_FROM: 20,
-                TestReferenceField.PAGES_TO: 30,
+                MockReferenceField.TITLE: "Raamattu",
+                MockReferenceField.AUTHOR: "Jeesus",
+                MockReferenceField.YEAR: 1,
+                MockReferenceField.PAGES_FROM: 20,
+                MockReferenceField.PAGES_TO: 30,
             },
         )
 
@@ -74,13 +74,13 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
 
     def test_reference_to_bibtex_page_from_only(self):
         ref = references.Reference(
-            TestReferenceType.TEST,
+            MockReferenceType.TEST,
             1,
             {
-                TestReferenceField.TITLE: "Raamattu",
-                TestReferenceField.AUTHOR: "Jeesus",
-                TestReferenceField.YEAR: 1,
-                TestReferenceField.PAGES_FROM: 20,
+                MockReferenceField.TITLE: "Raamattu",
+                MockReferenceField.AUTHOR: "Jeesus",
+                MockReferenceField.YEAR: 1,
+                MockReferenceField.PAGES_FROM: 20,
             },
         )
 
@@ -91,13 +91,13 @@ class TestTransformReferencesToBibtex(unittest.TestCase):
 
     def test_reference_to_bibtex_page_to_only(self):
         ref = references.Reference(
-            TestReferenceType.TEST,
+            MockReferenceType.TEST,
             1,
             {
-                TestReferenceField.TITLE: "Raamattu",
-                TestReferenceField.AUTHOR: "Jeesus",
-                TestReferenceField.YEAR: 1,
-                TestReferenceField.PAGES_TO: 30,
+                MockReferenceField.TITLE: "Raamattu",
+                MockReferenceField.AUTHOR: "Jeesus",
+                MockReferenceField.YEAR: 1,
+                MockReferenceField.PAGES_TO: 30,
             },
         )
 

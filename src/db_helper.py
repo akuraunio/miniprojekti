@@ -37,7 +37,7 @@ def setup_db():
     if len(tables_in_db) > 0:
         print(f"Tables exist, dropping: {', '.join(tables_in_db)}")
         for table in tables_in_db:
-            sql = text(f"DROP TABLE {table}")
+            sql = text(f"DROP TABLE {table} CASCADE")
             db.session.execute(sql)
         db.session.commit()
 
@@ -117,6 +117,14 @@ def search_field_exists(field):
         )
 
     result = db.session.execute(sql)
+    return result.fetchall()
+
+
+def search_by_tag(tag):
+    """Search for references by tag."""
+    sql = text("SELECT * FROM Reference WHERE tag ILIKE :tag")
+    search_tag = f"%{tag}%"
+    result = db.session.execute(sql, {"tag": search_tag})
     return result.fetchall()
 
 
