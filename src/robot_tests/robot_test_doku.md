@@ -3,3 +3,5 @@ Robot testit:
 - viitteen poisto
 - viitteen muokkaus
 - viitteen validointi
+- viitteen suodatus
+- doi lisäys viitteeseen
