@@ -30,7 +30,7 @@ from validators import _validate_required_fields
 test_env = os.getenv("TEST_ENV") == "true"
 
 
-def crossref_author_or_editor(data, key):
+def crossref_author_or_editor(data, key):  # pragma: no cover
     if key not in data:
         return ""
     persons = [

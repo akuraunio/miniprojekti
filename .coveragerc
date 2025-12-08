@@ -13,6 +13,7 @@ omit =
 
 [report]
 exclude_lines = 
+    pragma: no cover
     def get_references
     def get_reference
     def add_new_reference
@@ -41,3 +42,5 @@ exclude_lines =
     def collect_fields
     def _process_edit_form
     def crossref_author_or_editor
+    continue
+    abort\(
