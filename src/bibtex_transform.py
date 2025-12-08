@@ -1,9 +1,6 @@
 class ReferenceToBibtex:
     # Palauttaa yhden stringin jossa kaikki viittaukset ovat BibTex formaatissa
-    def references_to_bibtex(self, references, tag=None):
-        if tag:
-            references = [ref for ref in references if ref.fields.get("tag") == tag]
-
+    def references_to_bibtex(self, references):
         return "\n\n".join(
             self.reference_to_bibtex(reference) for reference in references
         )
