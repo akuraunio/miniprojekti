@@ -192,6 +192,7 @@ def index():
     references = get_references()
     for reference in references:
         reference.tags = get_tags_for_reference(reference.id)
+
     return render_template(
         "index.html",
         references=references,

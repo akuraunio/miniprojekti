@@ -56,7 +56,7 @@
     {% if reference.tags %}
     <div class="reference-item-tags">
       {% for tag in reference.tags %}<wa-badge variant="neutral" appearance="filled"
-        >{{ tag.name }}</wa-badge
+        >{{ tag_names[tag.name] }}</wa-badge
       >
       {% endfor %}
     </div>
