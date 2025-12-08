@@ -185,17 +185,17 @@ def index():
             search_field_name=field_names.get(field, ""),
             search_tag=tag,
             search_tag_name=tag_names.get(tag, ""),
-            ReferenceField=ReferenceField,
+            tag_names=tag_names,
         )
 
     # Lisätään viitelistaan tägit
-    references_tags = []
     references = get_references()
     for reference in references:
-        tags = get_tags_for_reference(reference.id)
-        references_tags.append((reference, tags))
+        reference.tags = get_tags_for_reference(reference.id)
     return render_template(
-        "index.html", references=references_tags, ReferenceField=ReferenceField
+        "index.html",
+        references=references,
+        tag_names=tag_names,
     )
 
 

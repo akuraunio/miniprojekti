@@ -1,42 +1,16 @@
-{% if search_query or search_field %} {% if search_query and search_field %}
+{% if search_query or search_field or search_tag %}
 <div class="divider-with-text">
   <wa-divider></wa-divider>
-  <p class="text-note">
-    Viitteet, jotka sisältävät "{{search_query}}" kentässä "{{search_field_name}}"
-    ({{search_results|length}} kpl)
-  </p>
+  <p class="text-note">Hakutulokset ({{search_results|length}} kpl)</p>
   <wa-divider></wa-divider>
 </div>
-{% elif search_query %}
-<div class="divider-with-text">
-  <wa-divider></wa-divider>
-  <p class="text-note">
-    Viitteet, jotka sisältävät "{{search_query}}" kentässä "Kaikki kentät"
-    ({{search_results|length}} kpl)
-  </p>
-  <wa-divider></wa-divider>
-</div>
-{% elif search_field %}
-<div class="divider-with-text">
-  <wa-divider></wa-divider>
-  <p class="text-note">
-    Viitteet, jotka sisältävät kentän "{{search_field_name}}" ({{search_results|length}} kpl)
-  </p>
-  <wa-divider></wa-divider>
-</div>
-{% endif %} {% if search_results %}
+{% if search_results %}
 <ul class="reference-list">
   {% for reference in search_results %} {% include 'reference_item.html' %} {% endfor %}
 </ul>
-{% else %} {% if search_query and search_field %}
-<p class="text-note">
-  Ei tuloksia hakusanalla "{{ search_query }}" kentässä "{{ search_field_name }}"
-</p>
-{% elif search_query %}
-<p class="text-note">Ei tuloksia hakusanalla "{{ search_query }}"</p>
-{% elif search_field %}
-<p class="text-note">Ei viitteitä, joilla on arvo kentässä "{{ search_field_name }}"</p>
-{% endif %} {% endif %} {% else %}
+{% else %}
+<p class="text-note">Ei tuloksia.</p>
+{% endif %} {% else %}
 <div class="divider-with-text">
   <wa-divider></wa-divider>
   <p class="text-note">Kaikki viitteet ({{ references|length }} kpl)</p>

@@ -1,5 +1,11 @@
 {% extends "layout.html" %} {% block title %}Etusivu - Viitteet{% endblock %} {% block content %}
     <form action="{{ url_for('index') }}" method="get" class="search-form">
+      <wa-select name="tag" appearance="filled">
+        <wa-option value="" {% if not search_tag %}selected{% endif %}>Kaikki tagit</wa-option>
+        {% for tag, tag_name in tag_names.items() %}
+        <wa-option value="{{ tag }}" {% if search_tag == tag %}selected{% endif %}>{{ tag_name }}</wa-option>
+        {% endfor %}
+      </wa-select>
       <wa-select name="field" id="field" appearance="filled" hint="Kenttä, johon hakusana kohdistuu">
         <wa-option value="" {% if not search_field %}selected{% endif %}>Kaikki kentät</wa-option>
         <wa-option value="title" {% if search_field == 'title' %}selected{% endif %}>Otsikko</wa-option>

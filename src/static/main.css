@@ -115,6 +115,7 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  height: 1.1em;
 }
 
 .reference-item-subtitle {
@@ -265,7 +266,13 @@ wa-details.reference-form-optional-fields::part(content) {
   padding: 0;
 }
 
-select[name="tag"] {
-  padding: 5px;
-  margin-bottom: 10px;
+.reference-item-tags {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.reference-item-tags wa-badge {
+  flex-grow: 0;
 }
