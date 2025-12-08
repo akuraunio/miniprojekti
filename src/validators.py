@@ -1,7 +1,7 @@
 from flask import abort
 from reference_data import (
     ReferenceFieldType,
-    TestReferenceType,
+    MockReferenceType,
     reference_fields,
     reference_data,
     test_reference_data,
@@ -34,7 +34,7 @@ def _validate_single_field(field_name, field_type, field_value):
 
 # viitteiden kenttien validointi
 def _validate_required_fields(reference_type, form):
-    if isinstance(reference_type, TestReferenceType):
+    if isinstance(reference_type, MockReferenceType):
         data_dict = test_reference_data
         fields_dict = test_reference_fields
     else:

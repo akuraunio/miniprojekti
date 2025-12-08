@@ -24,8 +24,7 @@ Viitteet{% endblock %} {% block content %}
     value="{{ value }}"
     {% if data["required"] %}required{% endif %}
     pattern=".*[0-9A-Za-zÄÖÅäöå].*"
-    title="Syötä ainakin yksi kirjain tai numero"
-  /><br />
+    title="Syötä ainakin yksi kirjain tai numero" /><br />
 
   {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
 
@@ -37,7 +36,41 @@ Viitteet{% endblock %} {% block content %}
   <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
   <input type="number" name="{{ field.value }}" value="{{ value }}" {% if data["required"] %}required{% endif %} min="0"/><br />
 
-  {% endif %} {% endfor %}
+  {% endif %}
+  {% endfor %}
+
+  {% for field, data in reference_data[reference_type]["fields"].items() %}
+  {% if field != ReferenceField.TAG and not data["required"] %}
+  {% set value = prefill_data.get(field.value, "") %}
+  {% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
+
+  <label>{{ reference_fields[field]["name"] }}</label><br />
+  <input
+    type="text"
+    name="{{ field.value }}"
+    value="{{ value }}"
+    pattern=".*[0-9A-Za-zÄÖÅäöå].*"
+    title="Syötä ainakin yksi kirjain tai numero" /><br />
+
+  {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
+
+  <label>{{ reference_fields[field]["name"] }}</label><br />
+  <textarea name="{{ field.value }}">{{ value }}</textarea><br />
+
+  {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
+
+  <label>{{ reference_fields[field]["name"] }}</label><br />
+  <input type="number" name="{{ field.value }}" value="{{ value }}" min="0" /><br />
+
+  {% endif %} {% endif %} {% endfor %}
+
+  <label>Tagi</label><br />
+  <select name="tag">
+    <option value="">Ei tagia</option>
+    <option value="kandityö">Kandidaatintutkielma</option>
+    <option value="gradu">Pro gradu -tutkielma</option>
+    <option value="väitöskirja">Väitöskirja</option></select
+  ><br />
 
   <input type="hidden" name="reference_type" value="{{ reference_type.value }}" />
   <br />

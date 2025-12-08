@@ -35,5 +35,5 @@ class TestReferenceCreation(unittest.TestCase):
         repr_actual = repr(ref)
 
         # testaa että repr palauttaa oikean viite tyypin ja id:n
-        self.assertIn("TestReferenceType.TEST", repr_actual)
+        self.assertIn("MockReferenceType.TEST", repr_actual)
         self.assertIn("id=100", repr_actual)

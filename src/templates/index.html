@@ -34,8 +34,16 @@
         <option value="note" {% if search_field == 'note' %}selected{% endif %}>Huomautus</option>
       </select>
       <br>
+      <label for="tag">Hae tagilla:</label><br>
+      <select name="tag" id="tag">
+        <option value="">Kaikki tagit</option>
+        <option value="kandityö" {% if search_tag == 'kandityö' %}selected{% endif %}>Kandidaatintutkielma</option>
+        <option value="gradu" {% if search_tag == 'gradu' %}selected{% endif %}>Pro gradu -tutkielma</option>
+        <option value="väitöskirja" {% if search_tag == 'väitöskirja' %}selected{% endif %}>Väitöskirja</option>
+      </select>
+      <br>  
       <button type="submit">Hae</button>
-      {% if search_query or search_field %}
+      {% if search_query or search_field or search_tag %}
       <a href="{{ url_for('index') }}">
         <button type="button">Tyhjennä haku</button>
       </a>
@@ -43,14 +51,22 @@
     </form>
     <br />
     
-    {% if search_query or search_field %}
+    {% if search_query or search_field or search_tag %}
     <h2>Hakutulokset ({{ search_results|length }} tulosta)</h2>
-    {% if search_query and search_field %}
+    {% if search_query and search_field and search_tag %}
+    <p><strong>Hakusana:</strong> "{{ search_query }}" <strong>Kentässä:</strong> {{ search_field_name }} <strong>Tagilla:</strong> {{ search_tag_name }}</p>
+    {% elif search_query and search_field %}
     <p><strong>Hakusana:</strong> "{{ search_query }}" <strong>Kentässä:</strong> {{ search_field_name }}</p>
+    {% elif search_query and search_tag %}
+    <p><strong>Hakusana:</strong> "{{ search_query }}" <strong>Tagilla:</strong> {{ search_tag_name }}</p>
     {% elif search_query %}
     <p><strong>Hakusana:</strong> "{{ search_query }}" <strong>Kentässä:</strong> Kaikki kentät</p>
+    {% elif search_field and search_tag %}
+    <p><strong>Hakutulos:</strong> Kaikki viitteet joissa kenttä {{ search_field_name }} <strong>Tagilla:</strong> {{ search_tag_name }}</p>
     {% elif search_field %}
     <p><strong>Hakutulos:</strong> Kaikki viitteet joissa kenttä {{ search_field_name }}</p>
+    {% elif search_tag %}
+    <p><strong>Hakutulos:</strong> Kaikki viitteet tagilla {{ search_tag_name }}</p>
     {% endif %}
     
     {% if search_results %}
@@ -64,12 +80,20 @@
       {% endfor %}
     </ul>
     {% else %}
-    {% if search_query and search_field %}
+    {% if search_query and search_field and search_tag %}
+    <p>Ei hakutuloksia hakusanalla "{{ search_query }}" kentässä "{{ search_field_name }}" tagilla "{{ search_tag_name }}"</p>
+    {% elif search_query and search_field %}
     <p>Ei hakutuloksia hakusanalla "{{ search_query }}" kentässä "{{ search_field_name }}"</p>
+    {% elif search_query and search_tag %}
+    <p>Ei hakutuloksia hakusanalla "{{ search_query }}" tagilla "{{ search_tag_name }}"</p>
     {% elif search_query %}
     <p>Ei hakutuloksia hakusanalla "{{ search_query }}"</p>
+    {% elif search_field and search_tag %}
+    <p>Ei viitteitä joissa olisi kenttä {{ search_field_name }} tagilla "{{ search_tag_name }}"</p>
     {% elif search_field %}
     <p>Ei viitteitä joissa olisi kenttä {{ search_field_name }}</p>
+    {% elif search_tag %}
+    <p>Ei viitteitä tagilla "{{ search_tag_name }}"</p>
     {% endif %}
     {% endif %}
     {% else %}

@@ -12,7 +12,9 @@ from repositories.references_repository import (
     search_references,
 )
 from repositories.referencetaglinks_repository import (
+    add_new_referencetaglink,
     get_tags_for_reference,
+    delete_referencetaglink,
     get_references_with_tag,
 )
 from repositories.tags_repository import (
@@ -114,12 +116,9 @@ def crossref_data(data):
     return prefill_data
 
 
-@app.route("/")
-def index():
-    query = request.args.get("query", "").strip()
-    field = request.args.get("field", "").strip()
-
-    field_names = {
+def _get_field_names():
+    """Get mapping of field names to their display names."""
+    return {
         "title": "Otsikko",
         "author": "Tekijä",
         "year": "Vuosi",
@@ -133,14 +132,60 @@ def index():
         "note": "Huomautus",
     }
 
+
+def _get_tag_names():
+    """Get mapping of tag names to their display names."""
+    return {
+        "kandityö": "Kandidaatintutkielma",
+        "gradu": "Pro gradu -tutkielma",
+        "väitöskirja": "Väitöskirja",
+    }
+
+
+def _perform_search(query, field, tag):
+    """Perform search based on query, field, and tag parameters."""
+    tag_results = None
+    if tag:
+        tag_obj = get_tag_by_name(tag)
+        tag_results = get_references_with_tag(tag_obj.id) if tag_obj else []
+
+    text_results = None
     if query or field:
-        search_results = search_references(query, field if field else None)
+        text_results = search_references(query, field if field else None)
+
+    result = []
+    if tag_results is not None and text_results is not None:
+        result = [
+            ref for ref in text_results if any(tr.id == ref.id for tr in tag_results)
+        ]
+    elif tag_results is not None:
+        result = tag_results
+    elif text_results is not None:
+        result = text_results
+
+    return result
+
+
+@app.route("/")
+def index():
+    query = request.args.get("query", "").strip()
+    field = request.args.get("field", "").strip()
+    tag = request.args.get("tag", "").strip()
+
+    field_names = _get_field_names()
+    tag_names = _get_tag_names()
+
+    if query or field or tag:
+        search_results = _perform_search(query, field, tag)
         return render_template(
             "index.html",
             search_results=search_results,
             search_query=query,
             search_field=field,
             search_field_name=field_names.get(field, ""),
+            search_tag=tag,
+            search_tag_name=tag_names.get(tag, ""),
+            ReferenceField=ReferenceField,
         )
 
     # Lisätään viitelistaan tägit
@@ -149,43 +194,71 @@ def index():
     for reference in references:
         tags = get_tags_for_reference(reference.id)
         references_tags.append((reference, tags))
-    return render_template("index.html", references=references_tags)
+    return render_template(
+        "index.html", references=references_tags, ReferenceField=ReferenceField
+    )
+
+
+def _get_reference_type():
+    """Get and validate reference type from request."""
+    reference_type = None
+    if request.method == "GET":
+        reference_type = request.args.get("type")
+    elif request.method == "POST":
+        reference_type = request.form.get("reference_type")
+
+    if not reference_type or reference_type not in [rt.value for rt in ReferenceType]:
+        abort(400, "Virheellinen tai puuttuva viitteen tyyppi")
+
+    return ReferenceType(reference_type)
+
+
+def _get_prefill_data():
+    """Get prefill data from DOI if provided."""
+    doi = request.args.get("doi")
+    if doi:
+        data = doi_data(doi)
+        if data:
+            return crossref_data(data)
+    return {}
+
+
+def _process_add_form(reference_type):
+    """Process the add form submission."""
+    _validate_required_fields(reference_type, request.form)
+
+    fields = {}
+    for field in reference_data[reference_type]["fields"]:
+        if field.value != "tag":
+            value = request.form.get(field.value, "")
+            fields[field] = value if value else None
+
+    reference_id = add_new_reference(reference_type, fields)
+
+    tag_name = request.form.get("tag")
+    if tag_name:
+        tag = get_tag_by_name(tag_name)
+        if tag:
+            add_new_referencetaglink(reference_id, tag.id)
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa
 # get metodissa voi myös käyttää url query parametria
 @app.route("/add", methods=["GET", "POST"])
 def add():
-
-    reference_type = None
-    if request.method == "GET":
-        reference_type = request.args.get("type")
-    if request.method == "POST":
-        reference_type = request.form.get("reference_type")
-
-    if not reference_type or reference_type not in [rt.value for rt in ReferenceType]:
-        abort(400, "Virheellinen tai puuttuva viitteen tyyppi")
-
-    reference_type = ReferenceType(reference_type)
-
-    # DOI-haku Crossrefista
-    doi = request.args.get("doi")
-    prefill_data = {}
-
-    if doi:
-        data = doi_data(doi)
-        if data:
-            prefill_data = crossref_data(data)
+    reference_type = _get_reference_type()
+    prefill_data = _get_prefill_data()
 
     if request.method == "GET":
         return render_template(
             "add.html", reference_type=reference_type, prefill_data=prefill_data
         )
 
-    _validate_required_fields(reference_type, request.form)
-    fields = collect_fields(reference_type, request.form)
-    add_new_reference(reference_type, fields)
-    return redirect(url_for("index"))
+    if request.method == "POST":
+        _process_add_form(reference_type)
+        return redirect(url_for("index"))
+
+    return abort(405)
 
 
 def collect_fields(reference_type, form):
@@ -196,6 +269,29 @@ def collect_fields(reference_type, form):
     return fields
 
 
+def _process_edit_form(reference_id, reference):
+    """Process the edit form submission."""
+    _validate_required_fields(reference.type, request.form)
+
+    # Collect fields excluding tag (merge both approaches)
+    fields = collect_fields(reference.type, request.form)
+
+    # Update reference with collected fields
+    update_reference(reference_id, fields)
+
+    # Remove existing tags
+    current_tags = get_tags_for_reference(reference_id)
+    for tag in current_tags:
+        delete_referencetaglink(reference_id, tag.id)
+
+    # Add new tag if provided
+    tag_name = request.form.get("tag")
+    if tag_name:
+        tag = get_tag_by_name(tag_name)
+        if tag:
+            add_new_referencetaglink(reference_id, tag.id)
+
+
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
 def edit(reference_id):
     reference = get_reference(reference_id)
@@ -204,11 +300,11 @@ def edit(reference_id):
         abort(404)
 
     if request.method == "GET":
+        current_tags = get_tags_for_reference(reference_id)
+        reference.current_tag = current_tags[0] if current_tags else None
         return render_template("edit.html", reference=reference)
 
-    _validate_required_fields(reference.type, request.form)
-    fields = collect_fields(reference.type, request.form)
-    update_reference(reference_id, fields)
+    _process_edit_form(reference_id, reference)
     return redirect(url_for("index"))
 
 
