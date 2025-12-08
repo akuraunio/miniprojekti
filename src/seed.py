@@ -2,6 +2,8 @@ from config import app, db
 from repositories.references_repository import add_new_reference
 from reference_data import ReferenceType, reference_data
 
+# Suorita: poetry run python src/seed.py , jotta esimerkkiviitteet lisätään tietokantaan.
+
 def seed_references():
     example_references = [
         (
