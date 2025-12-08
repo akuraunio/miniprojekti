@@ -11,10 +11,12 @@ from repositories.references_repository import (
     delete_reference,
     search_references,
 )
+from repositories.referencetaglinks_repository import get_tags_for_reference
 from db_helper import reset_db
 from bibtex_transform import ReferenceToBibtex
 from reference_data import reference_data, ReferenceType, ReferenceField
 from validators import _validate_required_fields
+
 
 test_env = os.getenv("TEST_ENV") == "true"
 
@@ -134,8 +136,13 @@ def index():
             search_field_name=field_names.get(field, ""),
         )
 
+    # Lisätään viitelistaan tägit
+    references_tags = []
     references = get_references()
-    return render_template("index.html", references=references)
+    for reference in references:
+        tags = get_tags_for_reference(reference.id)
+        references_tags.append((reference, tags))
+    return render_template("index.html", references=references_tags)
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa

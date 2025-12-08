@@ -6,26 +6,30 @@
 <p>Ei viitteitä</p>
 {% else %}
 <ul>
-  {% for reference in references %}
+  {% for reference, tags in references %}
   <li>
     <details open>
       <summary>
-        {{ reference.fields[ReferenceField.AUTHOR] }}: {{ reference.fields[ReferenceField.TITLE] }} ({{ reference.fields[ReferenceField.YEAR] }})
+        {{ reference.fields[ReferenceField.AUTHOR] }}: {{ reference.fields[ReferenceField.TITLE] }}
+        ({{ reference.fields[ReferenceField.YEAR] }})
       </summary>
       <p>
         <a href="{{url_for('delete', reference_id=reference.id)}}">Poista</a>
         <a href="{{url_for('edit', reference_id=reference.id)}}">Muokkaa</a>
       </p>
-      
+
       <ul>
-        {% for field, value in reference.fields.items() %}
-          {% if value %}
-          <li>
-            <strong>{{ reference_fields[field]["name"] }}:</strong> {{ value }}
-          </li>
-          {% endif %}
-        {% endfor %}
+        {% for field, value in reference.fields.items() %} {% if value %}
+        <li><strong>{{ reference_fields[field]["name"] }}:</strong> {{ value }}</li>
+        {% endif %} {% endfor %}
       </ul>
+      {% if tags %}
+      <p>
+        {% for tag in tags %}
+        <span>{{ tag.name }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
     </details>
   </li>
   {% endfor %}
