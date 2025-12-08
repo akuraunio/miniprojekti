@@ -46,9 +46,6 @@ Add Reference
             Input Text    ${field}    ${FIELD_VALUES["${type}"]}
         END
     END
-
-
-    Select From List By Value    name=tag    kandityö
     
     Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
     
