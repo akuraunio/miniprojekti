@@ -5,3 +5,4 @@ Robot testit:
 - viitteen validointi
 - viitteen suodatus
 - doi lisäys viitteeseen
+- tägin lisäys viitteeseen
