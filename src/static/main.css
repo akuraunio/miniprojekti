@@ -245,6 +245,17 @@ body {
   max-width: 30rem;
 }
 
+.bibtex-tag-form {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  max-width: 36rem;
+}
+
+.bibtex-tag-form-input {
+  flex-grow: 1;
+}
+
 .doi-form-input {
   flex-grow: 1;
 }
@@ -275,4 +286,25 @@ wa-details.reference-form-optional-fields::part(content) {
 
 .reference-item-tags wa-badge {
   flex-grow: 0;
+}
+
+wa-select::part(tags) {
+  flex-wrap: nowrap;
+}
+
+.bibtex-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.bibtex-text-container {
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+}
+
+.bibtex-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

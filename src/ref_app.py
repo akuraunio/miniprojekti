@@ -15,7 +15,7 @@ from repositories.referencetaglinks_repository import (
     add_new_referencetaglink,
     get_tags_for_reference,
     delete_referencetaglink,
-    get_references_with_tag,
+    get_references_with_tags,
 )
 from repositories.tags_repository import (
     get_tag_by_name,
@@ -158,7 +158,7 @@ def _perform_search(query, field, tag):
     tag_results = None
     if tag:
         tag_obj = get_tag_by_name(tag)
-        tag_results = get_references_with_tag(tag_obj.id) if tag_obj else []
+        tag_results = get_references_with_tags(tag_obj.id) if tag_obj else []
 
     text_results = None
     if query or field:
@@ -347,11 +347,11 @@ def delete(reference_id):
 # routet bibtex-näkymälle ja lataukselle
 @app.route("/bibtex")
 def bibtex():
-    filter_tag = request.args.get("tag", "").strip()
+    selected_tags = request.args.getlist("tags")
+    tag_names = _get_tag_names()
 
-    if filter_tag:
-        tag_object = get_tag_by_name(filter_tag)
-        references = get_references_with_tag(tag_object.id)
+    if selected_tags:
+        references = get_references_with_tags(selected_tags)
     else:
         references = get_references()
 
@@ -363,17 +363,17 @@ def bibtex():
         "bibtex.html",
         bibtex_reference=bibtex_reference,
         tags=all_tags,
-        filter_tag=filter_tag,
+        selected_tags=selected_tags,
+        tag_names=tag_names,
     )
 
 
 @app.route("/bibtex/download")
 def bibtex_download():
-    filter_tag = request.args.get("tag", "").strip()
+    selected_tags = request.args.getlist("tags")
 
-    if filter_tag:
-        tag_object = get_tag_by_name(filter_tag)
-        references = get_references_with_tag(tag_object.id)
+    if selected_tags:
+        references = get_references_with_tags(selected_tags)
     else:
         references = get_references()
 
