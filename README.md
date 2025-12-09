@@ -31,5 +31,6 @@ Ohjelmistuotanto syksy 2025
    DATABASE_URL=postgresql://xxx
    TEST_ENV=true
    SECRET_KEY=satunnainen_merkkijono
- - Ennen sovelluksen käynnistämistä ensimmäistä kertaa suorita komento          "python src/db_helper.py"
- - Sovellus käynnistetään Poetry-virtuaaliympäristössä antamalla komento        "python src/index.py"
+ - Ennen sovelluksen käynnistämistä ensimmäistä kertaa suorita komento             "python src/db_helper.py"
+ - Jos haluat ladata seed-datan (esimerkkiviitteet) tietokantaan, suorita komento  "python src/seed.py"
+ - Sovellus käynnistetään Poetry-virtuaaliympäristössä antamalla komento           "python src/index.py"
