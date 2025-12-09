@@ -35,8 +35,9 @@ def get_tags_for_reference(reference_id):
 def get_references_with_tags(tag_ids):
     sql_tag_ids = ",".join([f"'{tag_id}'" for tag_id in tag_ids])
     sql = text(
-        f"""SELECT * FROM Reference r JOIN ReferenceTagLink rtl ON
-          r.id=rtl.reference_id WHERE rtl.tag_id IN ({sql_tag_ids})"""
+        f"""SELECT r.* FROM Reference r JOIN ReferenceTagLink rtl ON
+          r.id=rtl.reference_id WHERE rtl.tag_id IN ({sql_tag_ids})
+          GROUP BY r.id"""
     )
     rows = db.session.execute(sql)
 

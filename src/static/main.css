@@ -295,7 +295,7 @@ wa-select::part(tags) {
 .bibtex-actions {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .bibtex-text-container {
@@ -307,4 +307,8 @@ wa-select::part(tags) {
 .bibtex-text {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.bibtex-divider {
+  margin-block: 2rem;
 }

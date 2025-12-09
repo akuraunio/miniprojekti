@@ -18,7 +18,7 @@
   <wa-button variant="brand" type="submit">Käytä</wa-button>
 </form>
 
-<wa-divider></wa-divider>
+<wa-divider class="bibtex-divider"></wa-divider>
 
 {% if bibtex_reference %}
 <div class="bibtex-actions">
@@ -37,7 +37,7 @@
   id="bibtex-text-container"
   class="bibtex-text-container"><code class="bibtex-text">{{ bibtex_reference }}</code></pre>
 {% else %}
-<p>Ei viitteitä näytettäväksi.</p>
+<p class="text-note">Ei viitteitä näytettäväksi.</p>
 {% endif %}
 
 <script>

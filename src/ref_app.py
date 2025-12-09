@@ -248,11 +248,12 @@ def _process_add_form(reference_type):
 
     reference_id = add_new_reference(reference_type, fields)
 
-    tag_name = request.form.get("tag")
-    if tag_name:
-        tag = get_tag_by_name(tag_name)
-        if tag:
-            add_new_referencetaglink(reference_id, tag.id)
+    tag_names = request.form.getlist("tag")
+    if tag_names:
+        for tag_name in tag_names:
+            tag = get_tag_by_name(tag_name)
+            if tag:
+                add_new_referencetaglink(reference_id, tag.id)
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa
