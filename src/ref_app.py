@@ -302,12 +302,13 @@ def _process_edit_form(reference_id, reference):
     for tag in current_tags:
         delete_referencetaglink(reference_id, tag.id)
 
-    # Add new tag if provided
-    tag_name = request.form.get("tag")
-    if tag_name:
-        tag = get_tag_by_name(tag_name)
-        if tag:
-            add_new_referencetaglink(reference_id, tag.id)
+    # Add new tags if provided
+    tag_names = request.form.getlist("tag")
+    if tag_names:
+        for tag_name in tag_names:
+            tag = get_tag_by_name(tag_name)
+            if tag:
+                add_new_referencetaglink(reference_id, tag.id)
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
@@ -321,7 +322,7 @@ def edit(reference_id):
 
     if request.method == "GET":
         current_tags = get_tags_for_reference(reference_id)
-        reference.current_tag = current_tags[0] if current_tags else None
+        reference.current_tags = current_tags
         prefill_data = _get_prefill_data(reference_id=reference_id)
         return render_template(
             "edit.html",

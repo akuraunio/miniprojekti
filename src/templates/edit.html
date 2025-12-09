@@ -6,10 +6,9 @@
 <h2>Muokkaa viitettä {{ reference.fields[ReferenceField.KEY] }}</h2>
 
 <form class="reference-form" method="POST" action="{{ url_for('edit', reference_id=reference.id) }}">
-  <wa-select label="Tagi" appearance="filled" name="tag">
-    <wa-option {% if not reference.current_tag %}selected{% endif %} value="">Ei tagia</wa-option>
+  <wa-select multiple label="Tagi" appearance="filled" name="tag">
     {% for tag, tag_name in tag_names.items() %}
-    <wa-option {% if reference.current_tag and reference.current_tag.name == tag %}selected{% endif %} value="{{ tag }}">{{ tag_name }}</wa-option>
+    <wa-option {% if reference.current_tags and reference.current_tags|selectattr("name", "equalto", tag)|list %}selected{% endif %} value="{{ tag }}">{{ tag_name }}</wa-option>
     {% endfor %}
   </wa-select>
 
