@@ -16,12 +16,19 @@ Remove Reference
     Page Should Contain    Test Text
 
     Go To    ${HOME_URL}
+    
+    Wait Until Page Contains Element    xpath=//wa-details    timeout=5s
+    ${details_element}=    Get WebElement    xpath=//wa-details
+    Scroll Element Into View    ${details_element}
+    Click Element    ${details_element}
+    Sleep    0.3s
 
-    Click Element    xpath=//wa-details
-
-    Click Element    xpath=//wa-button[contains(text(),"Poista")]
-
-    Click Element    xpath=//wa-button[@type="submit" and contains(text(),"Kyllä, poista")]
+    Wait Until Page Contains Element    xpath=//wa-button[contains(text(),"Poista")]    timeout=5s
+    Execute Javascript    document.evaluate("//wa-button[contains(text(),'Poista')]", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click()
+    Sleep    0.3s
+    
+    Wait Until Page Contains Element    xpath=//wa-button[@type="submit" and contains(text(),"Kyllä, poista")]    timeout=5s
+    Execute Javascript    document.evaluate("//wa-button[@type='submit' and contains(text(),'Kyllä, poista')]", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click()
     
     Location Should Be    ${HOME_URL}/
 

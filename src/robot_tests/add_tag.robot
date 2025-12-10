@@ -29,8 +29,15 @@ Add Reference With Tag
     Type Text Into All WebAwesome Inputs    wa-input[type="number"]:not([name="doi"])    ${FIELD_VALUES["number"]}
     Type Text Into All WebAwesome Inputs    wa-textarea:not([name="doi"])    ${FIELD_VALUES["textarea"]}
 
-    Click Element    xpath=//wa-select[@name="tag"]
-    Click Element    xpath=//wa-option[@value="${tag_value}"]
+    Wait Until Page Contains Element    xpath=//wa-select[@name="tag"]    timeout=5s
+    ${select_element}=    Get WebElement    xpath=//wa-select[@name="tag"]
+    Scroll Element Into View    ${select_element}
+    Sleep    0.3s
+    Execute Javascript    document.evaluate("//wa-select[@name='tag']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click()
+    Sleep    0.3s
+    
+    Wait Until Page Contains Element    xpath=//wa-option[@value="${tag_value}"]    timeout=5s
+    Execute Javascript    document.evaluate("//wa-option[@value='${tag_value}']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click()
 
     Click Element    xpath=//wa-button[@type="submit" and @value="tallenna"]
     Location Should Be    ${HOME_URL}/

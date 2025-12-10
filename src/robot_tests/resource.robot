@@ -18,13 +18,14 @@ ${HEADLESS}   true
 Open And Configure Browser
     IF  $HEADLESS == "true"
         ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-        Call Method    ${options}    add_argument    --headless
+        Evaluate    $options.add_argument('--headless')
+        Evaluate    $options.add_argument('--start-maximized')
         Open Browser    ${HOME_URL}    ${BROWSER}   options=${options}
     ELSE
         Open Browser   ${HOME_URL}    ${BROWSER}
+        Maximize Browser Window
     END
     Set Selenium Speed  ${DELAY}
-    Maximize Browser Window
 
 Close Browser
     Close All Browsers
