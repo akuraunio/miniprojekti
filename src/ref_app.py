@@ -158,7 +158,7 @@ def _perform_search(query, field, tag):
     tag_results = None
     if tag:
         tag_obj = get_tag_by_name(tag)
-        tag_results = get_references_with_tags(tag_obj.id) if tag_obj else []
+        tag_results = get_references_with_tags([tag_obj.id]) if tag_obj else []
 
     text_results = None
     if query or field:
