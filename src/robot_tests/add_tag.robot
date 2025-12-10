@@ -32,9 +32,8 @@ Add Reference With Tag
     Wait Until Page Contains Element    xpath=//wa-select[@name="tag"]    timeout=5s
     ${select_element}=    Get WebElement    xpath=//wa-select[@name="tag"]
     Scroll Element Into View    ${select_element}
-    Sleep    0.3s
+
     Execute Javascript    document.evaluate("//wa-select[@name='tag']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click()
-    Sleep    0.3s
     
     Wait Until Page Contains Element    xpath=//wa-option[@value="${tag_value}"]    timeout=5s
     Execute Javascript    document.evaluate("//wa-option[@value='${tag_value}']", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue.click()
