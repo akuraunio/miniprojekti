@@ -238,6 +238,11 @@ body {
   max-width: 30rem;
 }
 
+.reference-form-optional-fields wa-input,
+.reference-form-optional-fields wa-textarea {
+  margin-bottom: 1rem;
+}
+
 .doi-form {
   display: flex;
   gap: 1rem;

@@ -13,8 +13,16 @@ Delete Reference Test
 *** Keywords ***
 Remove Reference
     Add Reference    article
+    Page Should Contain    Test Text
+
     Go To    ${HOME_URL}
-    Click Link    xpath=//a[text()="Poista"]
-    Page Should Contain    Haluatko varmasti poistaa tämän viitteen?
-    Click Button    xpath=//input[@type="submit" and @value="Poista"]
+
+    Click Element    xpath=//wa-details
+
+    Click Element    xpath=//wa-button[contains(text(),"Poista")]
+
+    Click Element    xpath=//wa-button[@type="submit" and contains(text(),"Kyllä, poista")]
+    
+    Location Should Be    ${HOME_URL}/
+
     Page Should Not Contain    Test Text
