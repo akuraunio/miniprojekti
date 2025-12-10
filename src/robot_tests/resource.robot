@@ -2,7 +2,7 @@
 Library  SeleniumLibrary
 
 *** Variables ***
-${DELAY}     0.1 seconds
+${DELAY}     0.5 seconds
 ${HOME_URL}  http://localhost:5001
 ${RESET_URL}  http://localhost:5001/reset_db
 ${BROWSER}   chrome
@@ -18,13 +18,14 @@ ${HEADLESS}   true
 Open And Configure Browser
     IF  $HEADLESS == "true"
         ${options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
-        Call Method    ${options}    add_argument    --headless
+        Evaluate    $options.add_argument('--headless')
+        Evaluate    $options.add_argument('--start-maximized')
         Open Browser    ${HOME_URL}    ${BROWSER}   options=${options}
     ELSE
         Open Browser   ${HOME_URL}    ${BROWSER}
+        Maximize Browser Window
     END
     Set Selenium Speed  ${DELAY}
-    Maximize Browser Window
 
 Close Browser
     Close All Browsers
@@ -35,65 +36,40 @@ Reset Database
 Add Reference
     [Arguments]    ${reference_type}
     Go To    ${HOME_URL}/add?type=${reference_type}
-
-    Input Text    name=key    TestKey123
-
-    ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
-    FOR    ${field}    IN    @{elements}
-        ${type}=    Get Element Attribute    ${field}    type
-        ${name}=    Get Element Attribute    ${field}    name
-        IF    "${name}" != "doi" and "${name}" != "key"
-            Input Text    ${field}    ${FIELD_VALUES["${type}"]}
-        END
-    END
     
-    Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
+    Click Element    xpath=//wa-details
     
-    Scroll Element Into View    xpath=//button[@type="submit" and @value="lisää"]
+    Type Text Into All WebAwesome Inputs    wa-input[type="text"]:not([name="doi"])    ${FIELD_VALUES["text"]}
+    Type Text Into All WebAwesome Inputs    wa-input[type="number"]:not([name="doi"])    ${FIELD_VALUES["number"]}
+    Type Text Into All WebAwesome Inputs    wa-textarea:not([name="doi"])    ${FIELD_VALUES["textarea"]}
 
-    Click Button    xpath=//button[@type="submit" and @value="lisää"]
+    Click Element    xpath=//wa-button[@type="submit" and @value="tallenna"]
+
+    Location Should Be    ${HOME_URL}/
     Page Should Contain    Test Text
 
 Edit Reference
     [Arguments]    ${reference_type}
     Add Reference    ${reference_type}
 
-    Go To   ${HOME_URL}
-    Click Link    xpath=(//a[contains(@href, "/edit/")])[1]
+    Click Element    xpath=//wa-details
 
-    ${inputs}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"]
-    FOR    ${field}    IN    @{inputs}
-        ${type}=    Get Element Attribute    ${field}    type
-        Input Text    ${field}    ${FIELD_VALUES}[${type}]
-    END
+    Click Element    xpath=//wa-button[contains(text(),"Muokkaa")]
 
-    ${areas}=    Get WebElements    xpath=//textarea
-    FOR    ${field}    IN    @{areas}
-        Input Text    ${field}    ${FIELD_VALUES}[textarea]
-    END
+    Type Text Into All WebAwesome Inputs    wa-input[type="text"]:not([name="doi"])    Edited
+    Type Text Into All WebAwesome Inputs    wa-input[type="number"]:not([name="doi"])    456
+    Type Text Into All WebAwesome Inputs    wa-textarea:not([name="doi"])    Edited
 
-    Select From List By Value    name=tag    gradu
+    Click Element    xpath=//wa-select[@name="tag"]
+    Click Element    xpath=//wa-option[@value="gradu"]
 
-    Click Button    xpath=//button[@type="submit"]
-
-    Page Should Contain    Test Text
-
-Add Tag Reference
-    [Arguments]    ${reference_type}    ${tag}
-    Go To    ${HOME_URL}/add?type=${reference_type}
-    ${elements}=    Get WebElements    xpath=//input[@type="text"] | //input[@type="number"] | //textarea
-    FOR    ${field}    IN    @{elements}
-        ${type}=    Get Element Attribute    ${field}    type
-        Input Text    ${field}    ${FIELD_VALUES["${type}"]}
-    END
+    Click Element    xpath=//wa-button[@type="submit" and @value="tallenna"]
     
-    Select From List By Value    xpath=//select[@name='tag']    ${tag}
-    
-    Wait Until Element Is Visible    xpath=//button[@type="submit" and @value="lisää"]    timeout=5s
-    
-    Scroll Element Into View    xpath=//button[@type="submit" and @value="lisää"]
+    Location Should Be    ${HOME_URL}/
+    Page Should Contain    Edited
 
-    Click Button    xpath=//button[@type="submit" and @value="lisää"]
+    Click Element    xpath=//wa-details
+    Page Should Contain    Pro gradu -tutkielma
 
 Clear Contents From Table Reference
     Reset Database
@@ -105,3 +81,13 @@ Search With Tag
     [Arguments]    ${tag}
     Select From List By Value    xpath=//select[@name='tag']    ${tag}
     Click Button    xpath=//button[text()='Hae']
+
+Type Text Into All WebAwesome Inputs
+    [Arguments]    ${selector}    ${text}
+    
+    Execute Javascript    const elements = document.querySelectorAll('${selector}'); elements.forEach(elem => { const shadow = elem.shadowRoot; const inner = shadow.querySelector("input, textarea"); inner.value = '${text}'; inner.dispatchEvent(new Event('input', { bubbles: true })); });
+
+Type Text Into WebAwesome Input
+    [Arguments]    ${selector}    ${text}
+
+    Execute Javascript    const elem = document.querySelector('${selector}'); const shadow = elem.shadowRoot; const inner = shadow.querySelector("input, textarea"); inner.value = '${text}'; inner.dispatchEvent(new Event('input', { bubbles: true }));

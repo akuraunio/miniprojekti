@@ -1,32 +1,48 @@
 {% extends "layout.html" %} {% block title %}Viitteet{% endblock %} {% block content %}
 <h2>Viitteet BibTeX-muodossa</h2>
 
-<div>
-  <p>Suodata tägi:</p>
-  {% for tag in tags %}
-  <a href="{{ url_for('bibtex', tag=tag.name) }}"> {{ tag.name }} </a>
-  {% endfor %}
-  <a href="{{ url_for('bibtex') }}">Kaikki tägit</a>
-</div>
+<form class="bibtex-tag-form" action="{{ url_for('bibtex') }}" method="get">
+  <wa-select
+    appearance="filled"
+    class="bibtex-tag-form-input"
+    name="tags"
+    label="Tiedostoon kuuluvat tagit"
+    multiple
+    with-clear>
+    {% for tag in tags %}
+    <wa-option value="{{ tag.id }}" {% if tag.id|string in selected_tags %}selected{% endif %}>
+      {{ tag_names[tag.name] }}
+    </wa-option>
+    {% endfor %}
+  </wa-select>
+  <wa-button variant="brand" type="submit">Käytä</wa-button>
+</form>
 
-<br />
+<wa-divider class="bibtex-divider"></wa-divider>
 
 {% if bibtex_reference %}
-<div class="actions">
-  <button onclick="copy_BibTex()">Kopioi leikepöydälle</button>
-  <a href="{{ url_for('bibtex_download', tag=filter_tag) }}">Lataa .bib tiedosto</a>
+<div class="bibtex-actions">
+  <wa-button variant="brand" appearance="filled" onclick="copy_BibTex()"
+    >Kopioi leikepöydälle</wa-button
+  >
+  <wa-button
+    variant="brand"
+    appearance="filled"
+    onclick='location.href=`{{ url_for("bibtex_download", tags=selected_tags) }}`'
+    >Lataa .bib tiedosto</wa-button
+  >
 </div>
-<pre id="bibtex-refrence"><code>{{ bibtex_reference }}</code></pre>
+
+<pre
+  id="bibtex-text-container"
+  class="bibtex-text-container"><code class="bibtex-text">{{ bibtex_reference }}</code></pre>
 {% else %}
-<p>Ei viitteitä näytettäväksi.</p>
+<p class="text-note">Ei viitteitä näytettäväksi.</p>
 {% endif %}
 
-<div class="actions">
-  <a href="/">Takaisin etusivulle</a>
-</div>
 <script>
   function copy_BibTex() {
-    const bibtex = document.getElementById("bibtex-refrence").textContent
+    const bibtex = document.getElementById("bibtex-text-container").textContent
     navigator.clipboard.writeText(bibtex).then(function () {
       alert("BibTeX-viitteet kopioitu leikepöydälle")
     })

@@ -1,81 +1,46 @@
 {% extends "layout.html" %} {% block title %}Lisää {{ reference_data[reference_type]["name"] }} -
 Viitteet{% endblock %} {% block content %}
 <h2>Hae viite DOI:lla</h2>
-<form method="GET" action="{{ url_for('add') }}">
-  <label>DOI</label>
-  <input type="text" name="doi">
-  <input type="hidden" name="type" value="{{ reference_type.value }}">
-  <button type="submit" value="doi">Hae DOI</button>
-</form>
-<br>
-<br>
-
-<h2>Täytä viitteen tiedot</h2>
-<form method="POST" action="{{ url_for('add') }}">
-  {% for field, data in reference_data[reference_type]["fields"].items() %}
-    {% if field != ReferenceField.TAG %}
-      {% set value = prefill_data.get(field.value, "") %}
-
-      {% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
-
-      <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-      <input type="text" name="{{ field.value }}" 
-        value="{{ value }}"
-        {% if data["required"] %}required{% endif %}
-        pattern=".*[0-9A-Za-zÄÖÅäöå].*"
-        title="Syötä ainakin yksi kirjain tai numero" /><br />
-
-      {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
-
-      <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-      <textarea name="{{ field.value }}"{% if data["required"] %}required{% endif %}>{{ value }}</textarea><br />
-
-      {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
-
-      <label>{{ reference_fields[field]["name"] }}{% if data["required"] %}*{% endif %}</label><br />
-      <input type="number" name="{{ field.value }}" value="{{ value }}" {% if data["required"] %}required{% endif %} min="0"/><br />
-
-      {% endif %}
-    {% endif %}
-  {% endfor %}
-
-  {% for field, data in reference_data[reference_type]["fields"].items() %}
-  {% if field != ReferenceField.TAG and not data["required"] %}
-  {% set value = prefill_data.get(field.value, "") %}
-  {% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
-
-  <label>{{ reference_fields[field]["name"] }}</label><br />
-  <input
+<form class="doi-form" method="GET" action="{{ url_for('add') }}">
+  <wa-input
+    appearance="filled"
+    class="doi-form-input"
+    label="DOI"
     type="text"
-    name="{{ field.value }}"
-    value="{{ value }}"
-    pattern=".*[0-9A-Za-zÄÖÅäöå].*"
-    title="Syötä ainakin yksi kirjain tai numero" /><br />
+    name="doi"
+    value="{{ request.args.get('doi', '') }}"></wa-input>
+  <input type="hidden" name="type" value="{{ reference_type.value }}" />
+  <wa-button variant="brand" type="submit" value="doi">Hae</wa-button>
+</form>
+<br />
+<br />
 
-  {% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
-
-  <label>{{ reference_fields[field]["name"] }}</label><br />
-  <textarea name="{{ field.value }}">{{ value }}</textarea><br />
-
-  {% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
-
-  <label>{{ reference_fields[field]["name"] }}</label><br />
-  <input type="number" name="{{ field.value }}" value="{{ value }}" min="0" /><br />
-
-  {% endif %} {% endif %} {% endfor %}
-
-  <label>Tagi</label><br />
-  <select name="tag">
-    <option value="">Ei tagia</option>
-    <option value="kandityö">Kandidaatintutkielma</option>
-    <option value="gradu">Pro gradu -tutkielma</option>
-    <option value="väitöskirja">Väitöskirja</option></select
-  ><br />
-
+<h2>{{ reference_data[reference_type]["name"] }} viitteen tiedot</h2>
+<form class="reference-form" method="POST" action="{{ url_for('add') }}">
+  <wa-select multiple label="Tagi" appearance="filled" name="tag">
+    {% for tag, tag_name in tag_names.items() %}
+    <wa-option value="{{ tag }}">{{ tag_name }}</wa-option>
+    {% endfor %}
+  </wa-select>
+  <wa-divider></wa-divider>
+  {% for field, data in reference_data[reference_type]["fields"].items() %} {% if data["required"]
+  %} {% include "reference_form_field.html" with context %} {% endif %} {% endfor %}
+  <wa-details appearance="plain" icon-placement="start" class="reference-form-optional-fields">
+    <div class="reference-form-optional-fields-summary" slot="summary">
+      <p>Valinnaiset kentät</p>
+    </div>
+    {% for field, data in reference_data[reference_type]["fields"].items() %} {% if not
+    data["required"] %} {% include "reference_form_field.html" with context %} {% endif %} {% endfor
+    %}
+  </wa-details>
   <input type="hidden" name="reference_type" value="{{ reference_type.value }}" />
-  <br />
-  <button type="submit" value="lisää">Lisää</button>
+
+  <div class="reference-form-actions">
+    <wa-button variant="brand" type="submit" value="tallenna">Tallenna</wa-button>
+    <wa-button variant="brand" appearance="plain" onclick="window.history.back()"
+      >Takaisin</wa-button
+    >
+  </div>
 </form>
 
-<br /><a href="{{ url_for('index') }}">Takaisin</a>
 {% endblock %}

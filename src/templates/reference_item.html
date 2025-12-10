@@ -1,0 +1,83 @@
+<li class="reference-item">
+  <wa-details>
+    <summary slot="summary">
+      <p class="reference-item-title">{{ reference.fields[ReferenceField.TITLE] }}</p>
+      <div class="text-note reference-item-subtitle">
+        <div class="reference-item-subtitle-left">
+          <p>
+            <span class="reference-item-subtitle-author"
+              >{{ reference.fields[ReferenceField.AUTHOR] }}</span
+            >
+            <span class="text-note-light"> • </span> {{ reference.fields[ReferenceField.YEAR] }}
+          </p>
+        </div>
+        <div class="reference-item-subtitle-right">
+          <p class="text-note-light">
+            \cite{%raw%}{{%endraw%}<span class="text-note reference-item-subtitle-key"
+              >{{ reference.fields[ReferenceField.KEY] }}</span
+            >{%raw%}}{%endraw%}
+          </p>
+        </div>
+      </div>
+    </summary>
+
+    <wa-divider class="reference-item-top-divider"></wa-divider>
+
+    <div>
+      <wa-dialog light-dismiss label="Oletko varma?" id="delete-dialog{{ reference.id }}">
+        Haluatko varmasti poistaa viitteen avaimella "{{ reference.fields[ReferenceField.KEY] }}"?
+        <form
+          action="{{ url_for('delete', reference_id=reference.id) }}"
+          method="post"
+          slot="footer">
+          <div class="wa-dialog-footer-actions">
+            <wa-button type="submit" variant="danger">Kyllä, poista</wa-button>
+            <wa-button appearance="plain" variant="brand" data-dialog="close">Peruuta</wa-button>
+          </div>
+        </form>
+      </wa-dialog>
+      <div class="reference-item-action-buttons">
+        <wa-button
+          appearance="filled"
+          variant="danger"
+          size="small"
+          data-dialog="open delete-dialog{{ reference.id }}"
+          >Poista</wa-button
+        >
+        <wa-button
+          appearance="filled"
+          variant="brand"
+          size="small"
+          onclick='location.href=`{{ url_for("edit", reference_id=reference.id) }}`'
+          >Muokkaa</wa-button
+        >
+      </div>
+    </div>
+    {% if reference.tags %}
+    <div class="reference-item-tags">
+      {% for tag in reference.tags %}<wa-badge variant="neutral" appearance="filled"
+        >{{ tag_names[tag.name] }}</wa-badge
+      >
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div>
+      <div class="reference-item-fields text-note">
+        <div class="reference-item-field-names">
+          {% for field, value in reference.fields.items() %} {% if value %}
+          <div class="reference-item-field-name-container">
+            <p>{{ reference_fields[field]["name"] }}:</p>
+            <div class="reference-item-field-line"></div>
+          </div>
+          {% endif %} {% endfor %}
+        </div>
+        <div class="reference-item-field-values">
+          {% for field, value in reference.fields.items() %} {% if value %}
+          <p>{{ value }}</p>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+    </div>
+  </wa-details>
+</li>

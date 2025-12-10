@@ -32,12 +32,14 @@ def get_tags_for_reference(reference_id):
     return tags
 
 
-def get_references_with_tag(tag_id):
+def get_references_with_tags(tag_ids):
+    sql_tag_ids = ",".join([f"'{tag_id}'" for tag_id in tag_ids])
     sql = text(
-        """SELECT * FROM Reference r JOIN ReferenceTagLink rtl 
-        ON r.id=rtl.reference_id WHERE rtl.tag_id = :tag_id"""
+        f"""SELECT r.* FROM Reference r JOIN ReferenceTagLink rtl ON
+          r.id=rtl.reference_id WHERE rtl.tag_id IN ({sql_tag_ids})
+          GROUP BY r.id"""
     )
-    rows = db.session.execute(sql, {"tag_id": tag_id})
+    rows = db.session.execute(sql)
 
     references = []
     for row in rows:

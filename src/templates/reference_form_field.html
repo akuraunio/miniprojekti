@@ -1,0 +1,22 @@
+{% set value = prefill_data.get(field.value, "") %}
+  
+{% if reference_fields[field]["type"] == ReferenceFieldType.TEXT %}
+
+<wa-input appearance="filled" label="{{ reference_fields[field]['name'] }}" {% if data["required"] %} required {% endif %} pattern=".*[0-9A-Za-zÄÖÅäöå].*" title="Ainakin yksi kirjain tai numero" type="text" name="{{ field.value }}" 
+  value="{{ value }}"></wa-input>
+
+{% elif reference_fields[field]["type"] == ReferenceFieldType.TEXTAREA %}
+
+<wa-textarea appearance="filled" label="{{ reference_fields[field]['name'] }}" name="{{ field.value }}" {% if data["required"] %} required {% endif %} pattern=".*[0-9A-Za-zÄÖÅäöå].*" title="Ainakin yksi kirjain tai numero">{{ value }}</wa-textarea>
+
+{% elif reference_fields[field]["type"] == ReferenceFieldType.NUMBER %}
+
+{% if field == ReferenceField.YEAR %}
+<wa-input appearance="filled" type="number" label="{{ reference_fields[field]['name'] }}" name="{{ field.value }}" 
+  value="{{ value }}" {% if data["required"] %} required {% endif %} min="0" title="Positiivinen numero"></wa-input>
+{% else %}
+<wa-input appearance="filled" type="number" label="{{ reference_fields[field]['name'] }}" name="{{ field.value }}" 
+  value="{{ value }}" {% if data["required"] %} required {% endif %} title="Mikä tahansa numero"></wa-input>
+{% endif %}
+
+{% endif %}

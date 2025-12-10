@@ -15,7 +15,7 @@ from repositories.referencetaglinks_repository import (
     add_new_referencetaglink,
     get_tags_for_reference,
     delete_referencetaglink,
-    get_references_with_tag,
+    get_references_with_tags,
 )
 from repositories.tags_repository import (
     get_tag_by_name,
@@ -64,6 +64,17 @@ def doi_data(doi):
             return r.json()["message"]
     except (requests.RequestException, KeyError):
         pass
+    return {}
+
+
+def edit_data(reference_id):
+    reference = get_reference(reference_id)
+    if reference:
+        prefill_data = {}
+        for field, value in reference.fields.items():
+            if value is not None:
+                prefill_data[str(field.value)] = str(value)
+        return prefill_data
     return {}
 
 
@@ -147,7 +158,7 @@ def _perform_search(query, field, tag):
     tag_results = None
     if tag:
         tag_obj = get_tag_by_name(tag)
-        tag_results = get_references_with_tag(tag_obj.id) if tag_obj else []
+        tag_results = get_references_with_tags([tag_obj.id]) if tag_obj else []
 
     text_results = None
     if query or field:
@@ -177,6 +188,8 @@ def index():
 
     if query or field or tag:
         search_results = _perform_search(query, field, tag)
+        for reference in search_results:
+            reference.tags = get_tags_for_reference(reference.id)
         return render_template(
             "index.html",
             search_results=search_results,
@@ -185,17 +198,18 @@ def index():
             search_field_name=field_names.get(field, ""),
             search_tag=tag,
             search_tag_name=tag_names.get(tag, ""),
-            ReferenceField=ReferenceField,
+            tag_names=tag_names,
         )
 
     # Lisätään viitelistaan tägit
-    references_tags = []
     references = get_references()
     for reference in references:
-        tags = get_tags_for_reference(reference.id)
-        references_tags.append((reference, tags))
+        reference.tags = get_tags_for_reference(reference.id)
+
     return render_template(
-        "index.html", references=references_tags, ReferenceField=ReferenceField
+        "index.html",
+        references=references,
+        tag_names=tag_names,
     )
 
 
@@ -213,13 +227,14 @@ def _get_reference_type():
     return ReferenceType(reference_type)
 
 
-def _get_prefill_data():
-    """Get prefill data from DOI if provided."""
-    doi = request.args.get("doi")
+def _get_prefill_data(reference_id=None, doi=None):
+    """Get prefill data from DOI or reference ID."""
     if doi:
         data = doi_data(doi)
         if data:
             return crossref_data(data)
+    elif reference_id:
+        return edit_data(reference_id)
     return {}
 
 
@@ -235,11 +250,12 @@ def _process_add_form(reference_type):
 
     reference_id = add_new_reference(reference_type, fields)
 
-    tag_name = request.form.get("tag")
-    if tag_name:
-        tag = get_tag_by_name(tag_name)
-        if tag:
-            add_new_referencetaglink(reference_id, tag.id)
+    tag_names = request.form.getlist("tag")
+    if tag_names:
+        for tag_name in tag_names:
+            tag = get_tag_by_name(tag_name)
+            if tag:
+                add_new_referencetaglink(reference_id, tag.id)
 
 
 # Viitteen tyyppi saadaan piilotetuista kentistä lomakkeissa
@@ -247,11 +263,15 @@ def _process_add_form(reference_type):
 @app.route("/add", methods=["GET", "POST"])
 def add():
     reference_type = _get_reference_type()
-    prefill_data = _get_prefill_data()
+    prefill_data = _get_prefill_data(doi=request.args.get("doi"))
+    tag_names = _get_tag_names()
 
     if request.method == "GET":
         return render_template(
-            "add.html", reference_type=reference_type, prefill_data=prefill_data
+            "add.html",
+            reference_type=reference_type,
+            prefill_data=prefill_data,
+            tag_names=tag_names,
         )
 
     if request.method == "POST":
@@ -284,12 +304,13 @@ def _process_edit_form(reference_id, reference):
     for tag in current_tags:
         delete_referencetaglink(reference_id, tag.id)
 
-    # Add new tag if provided
-    tag_name = request.form.get("tag")
-    if tag_name:
-        tag = get_tag_by_name(tag_name)
-        if tag:
-            add_new_referencetaglink(reference_id, tag.id)
+    # Add new tags if provided
+    tag_names = request.form.getlist("tag")
+    if tag_names:
+        for tag_name in tag_names:
+            tag = get_tag_by_name(tag_name)
+            if tag:
+                add_new_referencetaglink(reference_id, tag.id)
 
 
 @app.route("/edit/<int:reference_id>", methods=["GET", "POST"])
@@ -299,26 +320,30 @@ def edit(reference_id):
     if not reference:
         abort(404)
 
+    tag_names = _get_tag_names()
+
     if request.method == "GET":
         current_tags = get_tags_for_reference(reference_id)
-        reference.current_tag = current_tags[0] if current_tags else None
-        return render_template("edit.html", reference=reference)
+        reference.current_tags = current_tags
+        prefill_data = _get_prefill_data(reference_id=reference_id)
+        return render_template(
+            "edit.html",
+            reference=reference,
+            prefill_data=prefill_data,
+            tag_names=tag_names,
+        )
 
     _process_edit_form(reference_id, reference)
     return redirect(url_for("index"))
 
 
-@app.route("/delete/<int:reference_id>", methods=["GET", "POST"])
+@app.route("/delete/<int:reference_id>", methods=["POST"])
 def delete(reference_id):
     reference = get_reference(reference_id)
     if not reference:
         abort(404)
 
-    if request.method == "GET":
-        return render_template("delete.html", reference=reference)
-
-    if request.method == "POST":
-        delete_reference(reference_id)
+    delete_reference(reference_id)
 
     return redirect(url_for("index"))
 
@@ -326,11 +351,11 @@ def delete(reference_id):
 # routet bibtex-näkymälle ja lataukselle
 @app.route("/bibtex")
 def bibtex():
-    filter_tag = request.args.get("tag", "").strip()
+    selected_tags = request.args.getlist("tags")
+    tag_names = _get_tag_names()
 
-    if filter_tag:
-        tag_object = get_tag_by_name(filter_tag)
-        references = get_references_with_tag(tag_object.id)
+    if selected_tags:
+        references = get_references_with_tags(selected_tags)
     else:
         references = get_references()
 
@@ -342,17 +367,17 @@ def bibtex():
         "bibtex.html",
         bibtex_reference=bibtex_reference,
         tags=all_tags,
-        filter_tag=filter_tag,
+        selected_tags=selected_tags,
+        tag_names=tag_names,
     )
 
 
 @app.route("/bibtex/download")
 def bibtex_download():
-    filter_tag = request.args.get("tag", "").strip()
+    selected_tags = request.args.getlist("tags")
 
-    if filter_tag:
-        tag_object = get_tag_by_name(filter_tag)
-        references = get_references_with_tag(tag_object.id)
+    if selected_tags:
+        references = get_references_with_tags(selected_tags)
     else:
         references = get_references()
 
