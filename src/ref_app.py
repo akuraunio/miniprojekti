@@ -188,6 +188,8 @@ def index():
 
     if query or field or tag:
         search_results = _perform_search(query, field, tag)
+        for reference in search_results:
+            reference.tags = get_tags_for_reference(reference.id)
         return render_template(
             "index.html",
             search_results=search_results,
