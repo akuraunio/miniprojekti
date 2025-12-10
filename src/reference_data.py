@@ -38,7 +38,6 @@ class ReferenceField(Enum):
     PUBLISHER = "publisher"
     SCHOOL = "school"
     SERIES = "series"
-    TAG = "tag"
     TITLE = "title"
     TYPE = "type"
     VOLUME = "volume"
@@ -103,7 +102,6 @@ reference_fields = {
     ReferenceField.PUBLISHER: {"type": ReferenceFieldType.TEXT, "name": "Kustantaja"},
     ReferenceField.SCHOOL: {"type": ReferenceFieldType.TEXT, "name": "Koulu"},
     ReferenceField.SERIES: {"type": ReferenceFieldType.TEXT, "name": "Sarja"},
-    ReferenceField.TAG: {"type": ReferenceFieldType.TEXT, "name": "Tagi"},
     ReferenceField.TITLE: {"type": ReferenceFieldType.TEXT, "name": "Otsikko"},
     ReferenceField.TYPE: {"type": ReferenceFieldType.TEXT, "name": "Tyyppi"},
     ReferenceField.VOLUME: {"type": ReferenceFieldType.NUMBER, "name": "Vuosikerta"},
@@ -122,7 +120,6 @@ reference_data = {
             ReferenceField.TITLE: {"required": True},
             ReferenceField.JOURNAL: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.VOLUME: {"required": False},
             ReferenceField.NUMBER: {"required": False},
             ReferenceField.PAGES_FROM: {"required": False},
@@ -144,7 +141,6 @@ reference_data = {
             ReferenceField.TITLE: {"required": True},
             ReferenceField.PUBLISHER: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.VOLUME: {"required": False},
             ReferenceField.NUMBER: {"required": False},
             ReferenceField.PAGES_FROM: {"required": False},
@@ -165,7 +161,6 @@ reference_data = {
             ReferenceField.TITLE: {"required": True},
             ReferenceField.HOWPUBLISHED: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.EDITOR: {"required": False},
             ReferenceField.VOLUME: {"required": False},
             ReferenceField.NUMBER: {"required": False},
@@ -188,7 +183,6 @@ reference_data = {
             ReferenceField.BOOKTITLE: {"required": True},
             ReferenceField.PUBLISHER: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.EDITOR: {"required": False},
             ReferenceField.VOLUME: {"required": False},
             ReferenceField.NUMBER: {"required": False},
@@ -212,7 +206,6 @@ reference_data = {
             ReferenceField.TITLE: {"required": True},
             ReferenceField.BOOKTITLE: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.EDITOR: {"required": False},
             ReferenceField.VOLUME: {"required": False},
             ReferenceField.NUMBER: {"required": False},
@@ -235,7 +228,6 @@ reference_data = {
             ReferenceField.KEY: {"required": True},
             ReferenceField.YEAR: {"required": True},
             ReferenceField.TITLE: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.AUTHOR: {"required": False},
             ReferenceField.ORGANIZATION: {"required": False},
             ReferenceField.EDITION: {"required": False},
@@ -255,7 +247,6 @@ reference_data = {
             ReferenceField.TITLE: {"required": True},
             ReferenceField.SCHOOL: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.TYPE: {"required": False},
             ReferenceField.ADDRESS: {"required": False},
             ReferenceField.MONTH: {"required": False},
@@ -271,7 +262,6 @@ reference_data = {
         "fields": {
             ReferenceField.KEY: {"required": True},
             ReferenceField.TITLE: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.AUTHOR: {"required": False},
             ReferenceField.HOWPUBLISHED: {"required": False},
             ReferenceField.MONTH: {"required": False},
@@ -291,7 +281,6 @@ reference_data = {
             ReferenceField.TITLE: {"required": True},
             ReferenceField.SCHOOL: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.TYPE: {"required": False},
             ReferenceField.ADDRESS: {"required": False},
             ReferenceField.MONTH: {"required": False},
@@ -308,7 +297,6 @@ reference_data = {
             ReferenceField.KEY: {"required": True},
             ReferenceField.TITLE: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.EDITOR: {"required": False},
             ReferenceField.VOLUME: {"required": False},
             ReferenceField.NUMBER: {"required": False},
@@ -331,7 +319,6 @@ reference_data = {
             ReferenceField.TITLE: {"required": True},
             ReferenceField.INSTITUTION: {"required": True},
             ReferenceField.YEAR: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.TYPE: {"required": False},
             ReferenceField.NUMBER: {"required": False},
             ReferenceField.ADDRESS: {"required": False},
@@ -349,7 +336,6 @@ reference_data = {
             ReferenceField.KEY: {"required": True},
             ReferenceField.AUTHOR: {"required": True},
             ReferenceField.TITLE: {"required": True},
-            ReferenceField.TAG: {"required": False},
             ReferenceField.NOTE: {"required": False},
             ReferenceField.ANNOTE: {"required": False},
             ReferenceField.MONTH: {"required": False},
