@@ -30,6 +30,8 @@ Retrospektiivissä palasimme takaisin Start-Continue-Stop -tekniikkaan, koska ko
 
 Neljännessä sprintissä paransimme sovelluksen ulkoasua, lisäsimme mahdollisuuden lisätä viitteen DOI:n avulla, ja lisäsimme mahdollisuuden lisätä tagin viitteeseen. Lisäksi hioimme sovellusta, maksoimme lopun teknisen velan pois, ja viimeistelimme tuotoksen loppu demoa varten. Kommunikoimme yhä enemmän missä mennään ja mitä on vielä tehtävänä, jotta lopputulos olisi mahdollisimman hyvä. Lisäsimme vielä extra tapaamisen ennen demoa, jossa katsoimme kaiken olevan kunnossa.
 
+## Reflektio
+
 Feature branchien nopean integroinnin avulla uusi koodi saatiin mainiin ja muiden käyttöön nopeasti. Selkeät commit -kokonaisuudet, koodikatselmointi ja yhteinen ongelmanratkaisu ryhmächatissa tekivät projektityöskentelystä sujuvaa, eikä työtä hidastavia pullonkauloja syntynyt. Maanantain dailyt ja keskiviikon retrot sekä sprint planning -tapaamiset rytmittivät hyvin tekemistä, tapaamisten määrä ja ajankohta tuntui sopivalta. Projektin edetessä backlogin ylläpito ja taskien kuvaukset parantuivat, mikä nopeutti koodausta ja vähensi virheitä.
 
 Parantamisen varaa on viestinnässä ja dokumentaatiossa, etenkin jos projekti laajenee ja monimutkaistuu. Sprintin suunnittelutapaamisen ja dailien ansiosta kaikki ryhmässä olivat kartalla siitä, mitä muut tekevät. Yksityiskohtaisemmat commit -viestit, pull requestien kuvaukset ja koodin dokumentointi voisi auttaa tekemään kokonaisuudesta selkeämmän ulkopuolisillekin.
